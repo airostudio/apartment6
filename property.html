@@ -664,10 +664,6 @@
           <h3 style="font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:600;color:#1a1a2e;margin-bottom:20px;">What this place offers</h3>
           <div class="amenities-grid">
             <div class="amenity-item">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
-              Free Wi-Fi
-            </div>
-            <div class="amenity-item">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
               Fully Equipped Kitchen
             </div>
@@ -722,25 +718,25 @@
             <div class="rate-card featured">
               <div class="rate-season">Peak Season</div>
               <div class="rate-dates">Jun &ndash; Aug (Ski Season)</div>
-              <div class="rate-price">$280 <span>/ night</span></div>
+              <div class="rate-price" id="dispPeak">$280 <span>/ night</span></div>
               <div class="rate-note">Minimum 2 nights on weekends</div>
             </div>
             <div class="rate-card">
               <div class="rate-season">Shoulder Season</div>
               <div class="rate-dates">Sep &ndash; Nov &amp; Apr &ndash; May</div>
-              <div class="rate-price">$220 <span>/ night</span></div>
+              <div class="rate-price" id="dispShoulder">$220 <span>/ night</span></div>
               <div class="rate-note">Minimum 1 night</div>
             </div>
             <div class="rate-card">
               <div class="rate-season">Summer Season</div>
               <div class="rate-dates">Dec &ndash; Mar</div>
-              <div class="rate-price">$200 <span>/ night</span></div>
+              <div class="rate-price" id="dispSummer">$200 <span>/ night</span></div>
               <div class="rate-note">Minimum 1 night</div>
             </div>
             <div class="rate-card">
               <div class="rate-season">Midweek Special</div>
               <div class="rate-dates">Mon &ndash; Thu (all year)</div>
-              <div class="rate-price">$180 <span>/ night</span></div>
+              <div class="rate-price" id="dispMidweek">$180 <span>/ night</span></div>
               <div class="rate-note">Minimum 1 night</div>
             </div>
           </div>
@@ -865,7 +861,7 @@
       <!-- Booking Sidebar -->
       <aside class="booking-sidebar">
         <div class="booking-price-header">
-          <span class="price">From $220</span>
+          <span class="price" id="sidebarFromPrice">From $180</span>
           <span class="per-night">/ night</span>
         </div>
 
@@ -895,22 +891,22 @@
         <button class="btn-book" id="bookNowBtn">Check Availability</button>
         <p class="booking-note">You won't be charged yet</p>
 
-        <div class="price-breakdown" id="priceBreakdown">
+        <div class="price-breakdown" id="priceBreakdown" style="display:none;">
           <div class="price-row">
-            <span class="label" title="Nightly rate x number of nights">$220 x 2 nights</span>
-            <span>$440</span>
+            <span class="label" id="sbNightsLabel">$220 x 2 nights</span>
+            <span id="sbAccomTotal">$440</span>
           </div>
           <div class="price-row">
             <span class="label" title="One-time cleaning fee">Cleaning fee</span>
-            <span>$60</span>
+            <span id="sbCleanFee">$60</span>
           </div>
           <div class="price-row">
             <span class="label" title="Service charge">Service fee</span>
-            <span>$30</span>
+            <span id="sbServiceFee">$44</span>
           </div>
           <div class="price-row total">
-            <span>Total</span>
-            <span>$530</span>
+            <span>Estimated Total</span>
+            <span id="sbTotal">$544</span>
           </div>
         </div>
 
@@ -1133,6 +1129,78 @@
       var dx = e.changedTouches[0].clientX - touchStartX;
       if (Math.abs(dx) > 50) dx < 0 ? goTo(currentIdx + 1) : goTo(currentIdx - 1);
     }, { passive: true });
+
+    // ── Rates from localStorage + live sidebar pricing ─────────────
+    (function() {
+      var _r = (function() {
+        try { return JSON.parse(localStorage.getItem('cascade6_rates') || 'null'); } catch(e) { return null; }
+      })() || {};
+      var PEAK     = _r.peak        || 280;
+      var SHOULDER = _r.shoulder    || 220;
+      var SUMMER   = _r.summer      || 200;
+      var MIDWEEK  = _r.midweek     || 180;
+      var CLEAN    = _r.cleaningFee || 60;
+      var SVC_PCT  = (_r.serviceRate || 10) / 100;
+
+      // Update rates tab display
+      function setPriceEl(id, val) {
+        var el = document.getElementById(id);
+        if (el) el.innerHTML = '$' + val + ' <span>/ night</span>';
+      }
+      setPriceEl('dispPeak',     PEAK);
+      setPriceEl('dispShoulder', SHOULDER);
+      setPriceEl('dispSummer',   SUMMER);
+      setPriceEl('dispMidweek',  MIDWEEK);
+
+      // Update "From" label in sidebar to lowest rate
+      var lowestRate = Math.min(PEAK, SHOULDER, SUMMER, MIDWEEK);
+      var fromEl = document.getElementById('sidebarFromPrice');
+      if (fromEl) fromEl.textContent = 'From $' + lowestRate;
+
+      function getNightlyRate(date) {
+        var m   = date.getMonth() + 1;
+        var dow = date.getDay();
+        if (dow >= 1 && dow <= 4) return MIDWEEK;
+        if (m >= 6 && m <= 8) return PEAK;
+        if ([4,5,9,10,11].indexOf(m) !== -1) return SHOULDER;
+        return SUMMER;
+      }
+
+      function updateSidebarPrice() {
+        var checkinVal  = document.getElementById('checkin').value;
+        var checkoutVal = document.getElementById('checkout').value;
+        var bd = document.getElementById('priceBreakdown');
+        if (!checkinVal || !checkoutVal) { bd.style.display = 'none'; return; }
+        var ci = new Date(checkinVal + 'T00:00:00');
+        var co = new Date(checkoutVal + 'T00:00:00');
+        if (co <= ci) { bd.style.display = 'none'; return; }
+
+        var nights = 0, accom = 0;
+        var cur = new Date(ci);
+        while (cur < co) {
+          accom += getNightlyRate(cur);
+          nights++;
+          cur.setDate(cur.getDate() + 1);
+        }
+        var svc   = Math.round(accom * SVC_PCT);
+        var total = accom + CLEAN + svc;
+
+        document.getElementById('sbNightsLabel').textContent = '$' + Math.round(accom / nights) + ' avg x ' + nights + ' night' + (nights !== 1 ? 's' : '');
+        document.getElementById('sbAccomTotal').textContent  = '$' + accom;
+        document.getElementById('sbCleanFee').textContent    = '$' + CLEAN;
+        document.getElementById('sbServiceFee').textContent  = '$' + svc;
+        document.getElementById('sbTotal').textContent       = '$' + total;
+        bd.style.display = 'block';
+      }
+
+      document.getElementById('checkin').addEventListener('change', function() {
+        var co = document.getElementById('checkout');
+        if (co.value && co.value <= this.value) co.value = '';
+        co.min = this.value;
+        updateSidebarPrice();
+      });
+      document.getElementById('checkout').addEventListener('change', updateSidebarPrice);
+    })();
   </script>
 </body>
 </html>
