@@ -3,4 +3,4 @@ Disallow: /admin/
 Disallow: /data/
 Allow: /
 
-Sitemap: https://app.trendaccom.com/sitemap.xml
+Sitemap: https://app.cascadeapartments.com.au/sitemap.xml

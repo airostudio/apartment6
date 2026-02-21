@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stripe Connect — TrendAccom Admin</title>
+    <title>Stripe Connect — Cascade Apartment 6 Admin</title>
     <meta name="robots" content="noindex,nofollow">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -245,7 +245,7 @@
     <aside class="admin-sidebar">
         <div class="admin-sidebar__header">
             <a href="index.html" class="admin-sidebar__logo">
-                <span class="admin-sidebar__logo-text">TrendAccom</span>
+                <span class="admin-sidebar__logo-text">Cascade Apartment 6</span>
                 <span class="admin-sidebar__logo-badge">Admin</span>
             </a>
         </div>
@@ -591,7 +591,7 @@
             setTimeout(function() {
                 refreshBtn.disabled = false;
                 refreshBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg> Refresh Status';
-                window.TrendAccom && window.TrendAccom.showToast && window.TrendAccom.showToast('Account status refreshed', 'success');
+                window.Cascade Apartment 6 && window.Cascade Apartment 6.showToast && window.Cascade Apartment 6.showToast('Account status refreshed', 'success');
             }, 1400);
         });
     }
@@ -601,7 +601,7 @@
     if (disconnectBtn) {
         disconnectBtn.addEventListener('click', function() {
             if (confirm('Are you sure you want to disconnect your Stripe account?\n\nThis will disable payment processing immediately. You will need to reconnect to accept new bookings.')) {
-                window.TrendAccom && window.TrendAccom.showToast && window.TrendAccom.showToast('Contact support to disconnect your Stripe account.', 'warning');
+                window.Cascade Apartment 6 && window.Cascade Apartment 6.showToast && window.Cascade Apartment 6.showToast('Contact support to disconnect your Stripe account.', 'warning');
             }
         });
     }
@@ -610,7 +610,7 @@
     var instantBtn = document.getElementById('instantPayoutBtn');
     if (instantBtn) {
         instantBtn.addEventListener('click', function() {
-            window.TrendAccom && window.TrendAccom.showToast && window.TrendAccom.showToast('Instant payout — connect Stripe API to process.', 'info');
+            window.Cascade Apartment 6 && window.Cascade Apartment 6.showToast && window.Cascade Apartment 6.showToast('Instant payout — connect Stripe API to process.', 'info');
         });
     }
 })();
