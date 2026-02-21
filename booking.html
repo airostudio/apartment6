@@ -279,38 +279,45 @@
   <!-- Header -->
   <header class="site-header" id="siteHeader">
     <div class="header-inner">
-      <a href="index.html" class="logo">
-        <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M16 2L2 14h4v14h8v-8h4v8h8V14h4L16 2z" fill="currentColor"/>
-        </svg>
-        Cascade Apartment 6
-      </a>
       <nav class="nav-main">
         <a href="index.html" class="nav-link">Home</a>
-        <a href="index.html" class="nav-link">Home</a>
-        <a href="property.html" class="nav-link">Hotels</a>
+        <a href="property.html" class="nav-link">The Apartment</a>
         <a href="index.html#amenities" class="nav-link">Amenities</a>
         <a href="index.html#reviews" class="nav-link">Reviews</a>
       </nav>
-      <div class="nav-actions">
-        <a href="admin/index.html" class="btn btn--sm btn--outline">List Your Property</a>
-        <a href="admin/index.html" class="btn btn--sm btn--ghost">Sign In</a>
+      <a href="index.html" class="logo logo--apt6" aria-label="Cascade Apartment 6 — home">
+        <svg class="logo-mark" viewBox="0 0 48 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M0 36 L11 9 L22 36Z" fill="currentColor" opacity="0.30"/>
+          <path d="M26 36 L37 15 L48 36Z" fill="currentColor" opacity="0.22"/>
+          <path d="M12 36 L24 0 L36 36Z" fill="currentColor"/>
+          <path d="M20.5 14 L24 0 L27.5 14 Q24 18.5 20.5 14Z" fill="#c9a84c"/>
+          <rect x="0" y="37.5" width="48" height="2.5" rx="1.25" fill="#c9a84c"/>
+        </svg>
+        <div class="logo-wordmark">
+          <span class="logo-name">CASCADE</span>
+          <span class="logo-apt">APARTMENT 6</span>
+        </div>
+      </a>
+      <div class="header-right">
+        <div class="nav-actions">
+          <a href="property.html" class="btn btn--sm btn--outline">View Details</a>
+          <a href="admin/login.html" class="btn btn--sm btn--ghost">Owner Login</a>
+        </div>
+        <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu">
+          <span></span><span></span><span></span>
+        </button>
       </div>
-      <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu">
-        <span></span><span></span><span></span>
-      </button>
     </div>
   </header>
 
   <!-- Mobile Navigation -->
   <nav class="mobile-nav" id="mobileNav">
     <a href="index.html" class="nav-link">Home</a>
-    <a href="index.html" class="nav-link">Home All</a>
-    <a href="property.html" class="nav-link">Hotels</a>
+    <a href="property.html" class="nav-link">The Apartment</a>
     <a href="index.html#amenities" class="nav-link">Amenities</a>
     <a href="index.html#reviews" class="nav-link">Reviews</a>
-    <a href="admin/index.html" class="btn btn--primary btn--block">List Your Property</a>
-    <a href="admin/index.html" class="btn btn--outline btn--block">Sign In</a>
+    <a href="property.html" class="btn btn--outline btn--block">View Details</a>
+    <a href="admin/login.html" class="btn btn--ghost btn--block">Owner Login</a>
   </nav>
 
   <!-- Main Content -->
@@ -415,7 +422,7 @@
 
               <label class="addon-option">
                 <div class="addon-option__left">
-                  <input type="checkbox" id="earlyCheckin" name="earlyCheckin" value="30">
+                  <input type="checkbox" id="earlyCheckin" name="earlyCheckin" value="30" data-addon-label="Early check-in">
                   <div>
                     <div class="addon-option__label">Early Check-in</div>
                     <div class="addon-option__desc">Arrive from 10:00 AM instead of the standard 2:00 PM</div>
@@ -426,10 +433,10 @@
 
               <label class="addon-option">
                 <div class="addon-option__left">
-                  <input type="checkbox" id="lateCheckout" name="lateCheckout" value="30">
+                  <input type="checkbox" id="lateCheckout" name="lateCheckout" value="30" data-addon-label="Late checkout">
                   <div>
                     <div class="addon-option__label">Late Checkout</div>
-                    <div class="addon-option__desc">Extend your stay until 4:00 PM instead of the standard 11:00 AM</div>
+                    <div class="addon-option__desc">Depart by 12:00 PM instead of the standard 10:00 AM</div>
                   </div>
                 </div>
                 <span class="addon-option__price">+ $30</span>
@@ -437,24 +444,24 @@
 
               <label class="addon-option">
                 <div class="addon-option__left">
-                  <input type="checkbox" id="airportTransfer" name="airportTransfer" value="85">
+                  <input type="checkbox" id="linenHire" name="linenHire" value="55" data-addon-label="Linen hire pack">
                   <div>
-                    <div class="addon-option__label">Airport Transfer</div>
-                    <div class="addon-option__desc">Private return transfer from the airport to the property</div>
+                    <div class="addon-option__label">Linen Hire Pack</div>
+                    <div class="addon-option__desc">Full linen &amp; towels for all beds for your entire stay (pre-book recommended)</div>
                   </div>
                 </div>
-                <span class="addon-option__price">+ $85</span>
+                <span class="addon-option__price">+ $55</span>
               </label>
 
               <label class="addon-option">
                 <div class="addon-option__left">
-                  <input type="checkbox" id="breakfastPackage" name="breakfastPackage" value="25">
+                  <input type="checkbox" id="welcomeHamper" name="welcomeHamper" value="45" data-addon-label="Welcome hamper">
                   <div>
-                    <div class="addon-option__label">Breakfast Package</div>
-                    <div class="addon-option__desc">Full buffet breakfast for all guests, per night</div>
+                    <div class="addon-option__label">Welcome Hamper</div>
+                    <div class="addon-option__desc">Local produce hamper ready in the apartment on arrival — perfect mountain welcome</div>
                   </div>
                 </div>
-                <span class="addon-option__price">+ $25 /night</span>
+                <span class="addon-option__price">+ $45</span>
               </label>
             </div>
 
@@ -466,55 +473,61 @@
           <div class="booking-summary__property">Cascade Apartment 6</div>
           <div class="booking-summary__rating">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            <strong>4.8</strong> (246 reviews) &middot; Mt Baw Baw Alpine Resort, VIC
+            <strong>4.7</strong> (47 reviews) &middot; Mt Baw Baw Alpine Resort, VIC
           </div>
 
           <div class="summary-divider"></div>
 
           <div class="summary-detail">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-            <span><strong>Check-in:</strong> Sat, 14 Mar 2026</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            <span id="sumCheckin"><strong>Check-in:</strong> —</span>
           </div>
           <div class="summary-detail">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-            <span><strong>Check-out:</strong> Wed, 18 Mar 2026</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            <span id="sumCheckout"><strong>Check-out:</strong> —</span>
           </div>
           <div class="summary-detail">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-            <span><strong>Guests:</strong> 2 Adults, 0 Children</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <span id="sumGuests"><strong>Guests:</strong> 2 Adults</span>
           </div>
           <div class="summary-detail">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            <span>2 nights &middot; Entire Apartment</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span id="sumNights">Select dates to see nights</span>
           </div>
 
           <div class="summary-divider"></div>
 
-          <div class="price-breakdown">
-            <div class="price-row">
-              <span>$289 x 4 nights</span>
-              <span>$1,156.00</span>
+          <div class="price-breakdown" id="priceBreakdown">
+            <div class="price-row" id="rowNightly" style="display:none">
+              <span id="lblNightly">—</span>
+              <span id="valNightly">—</span>
             </div>
-            <div class="price-row">
+            <!-- Add-on rows injected here by JS -->
+            <div class="price-row" id="rowCleaning" style="display:none">
               <span>Cleaning fee</span>
-              <span>$75.00</span>
+              <span id="valCleaning">$60.00</span>
             </div>
-            <div class="price-row">
+            <div class="price-row" id="rowService" style="display:none">
               <span>Service fee</span>
-              <span>$98.00</span>
+              <span id="valService">—</span>
             </div>
-            <div class="price-row">
-              <span>Taxes &amp; levies</span>
-              <span>$132.90</span>
+            <div class="price-row" id="rowTax" style="display:none">
+              <span>GST (10%)</span>
+              <span id="valTax">—</span>
             </div>
-            <div class="price-row price-row--total">
+            <div class="price-row price-row--total" id="rowTotal" style="display:none">
               <span>Total</span>
-              <span>$1,461.90</span>
+              <span id="valTotal">—</span>
             </div>
+            <p id="noDatesMsg" style="font-size:0.85rem;color:#888;text-align:center;padding:8px 0;">
+              Enter your dates above to see pricing
+            </p>
           </div>
 
-          <div class="summary-cta">
-            <a href="checkout.html" class="btn btn--primary btn--lg" id="continueToPayment">Continue to Payment</a>
+          <div class="summary-cta" style="margin-top:16px;">
+            <button class="btn btn--primary btn--lg" id="continueToPayment" style="width:100%;padding:16px;font-size:1rem;" disabled>
+              Continue to Payment
+            </button>
           </div>
           <p class="summary-note">You won't be charged yet. Review payment on the next step.</p>
         </aside>
@@ -528,64 +541,250 @@
     <div class="container">
       <div class="footer-grid">
         <div class="footer-brand">
-          <a href="index.html" class="logo">
-            <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M16 2L2 14h4v14h8v-8h4v8h8V14h4L16 2z" fill="currentColor"/>
+          <a href="index.html" class="logo logo--apt6" aria-label="Cascade Apartment 6 — home">
+            <svg class="logo-mark" viewBox="0 0 48 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M0 36 L11 9 L22 36Z" fill="currentColor" opacity="0.30"/>
+              <path d="M26 36 L37 15 L48 36Z" fill="currentColor" opacity="0.22"/>
+              <path d="M12 36 L24 0 L36 36Z" fill="currentColor"/>
+              <path d="M20.5 14 L24 0 L27.5 14 Q24 18.5 20.5 14Z" fill="#c9a84c"/>
+              <rect x="0" y="37.5" width="48" height="2.5" rx="1.25" fill="#c9a84c"/>
             </svg>
-            Cascade Apartment 6
+            <div class="logo-wordmark">
+              <span class="logo-name">CASCADE</span>
+              <span class="logo-apt">APARTMENT 6</span>
+            </div>
           </a>
           <p>Direct booking for Cascade Apartment 6 at Mt Baw Baw Alpine Resort, Victoria.</p>
         </div>
         <div>
-          <h4 class="footer-heading">Explore</h4>
+          <h4 class="footer-heading">The Apartment</h4>
           <div class="footer-links">
-            <a href="property.html">Hotels</a>
+            <a href="index.html#gallery">Photo Gallery</a>
             <a href="index.html#amenities">Amenities</a>
-            <a href="search.html?type=motel">Motels</a>
-            <a href="search.html?type=pub">Pubs & Inns</a>
-            <a href="search.html?type=caravan-park">Caravan Parks</a>
-            <a href="index.html#reviews">Reviews</a>
+            <a href="index.html#reviews">Guest Reviews</a>
+            <a href="property.html">Full Details</a>
           </div>
         </div>
         <div>
-          <h4 class="footer-heading">Company</h4>
+          <h4 class="footer-heading">Mt Baw Baw</h4>
           <div class="footer-links">
-            <a href="#">About Us</a>
-            <a href="#">Contact</a>
-            <a href="#">Careers</a>
-            <a href="#">Press</a>
-            <a href="#">Blog</a>
+            <a href="https://www.mountbawbaw.com.au" target="_blank" rel="noopener noreferrer">Resort Website</a>
+            <a href="https://www.mountbawbaw.com.au/snow-conditions/" target="_blank" rel="noopener noreferrer">Snow Conditions</a>
+            <a href="https://www.cascadeapartments.com.au" target="_blank" rel="noopener noreferrer">Cascade Apartments</a>
           </div>
         </div>
         <div>
-          <h4 class="footer-heading">Support</h4>
+          <h4 class="footer-heading">Contact &amp; Info</h4>
           <div class="footer-links">
-            <a href="#">Help Centre</a>
-            <a href="#">Terms of Service</a>
-            <a href="#">Privacy Policy</a>
-            <a href="#">Cancellation Policy</a>
-            <a href="admin/index.html">Property Owners</a>
+            <a href="mailto:info@cascadeapartments.com.au">Email Us</a>
+            <a href="mailto:info@cascadeapartments.com.au">Cancellation Policy</a>
+            <a href="mailto:info@cascadeapartments.com.au">Terms of Stay</a>
+            <a href="admin/login.html">Owner Login</a>
           </div>
         </div>
       </div>
       <div class="footer-bottom">
-        <p>&copy; 2026 Cascade Apartment 6. All rights reserved.</p>
-        <div class="footer-social">
-          <a href="#" aria-label="Facebook">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
-          </a>
-          <a href="#" aria-label="Twitter">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg>
-          </a>
-          <a href="#" aria-label="Instagram">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
-          </a>
-        </div>
+        <p>&copy; 2026 Cascade Apartment 6. Mt Baw Baw Alpine Resort, Victoria.</p>
       </div>
     </div>
   </footer>
 
   <script src="js/app.js"></script>
-  <script src="js/booking-engine.js"></script>
+  <script>
+  // ── Live Pricing Engine ────────────────────────────────────────────────────
+  (function() {
+    // Seasonal nightly rates (AUD)
+    var RATE_PEAK     = 280;  // Jun, Jul, Aug (ski season)
+    var RATE_SHOULDER = 220;  // Apr, May, Sep, Oct, Nov
+    var RATE_SUMMER   = 200;  // Dec, Jan, Feb, Mar
+    var RATE_MIDWEEK  = 180;  // Mon–Thu any season
+    var CLEANING_FEE  = 60;
+    var SERVICE_RATE  = 0.10; // 10% of accommodation subtotal
+    var TAX_RATE      = 0.10; // 10% GST on total
+
+    var DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    var MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+    function getNightlyRate(date) {
+      var m   = date.getMonth() + 1; // 1–12
+      var dow = date.getDay();       // 0=Sun … 6=Sat
+      var isWeekday = dow >= 1 && dow <= 4; // Mon–Thu
+      if (isWeekday) return RATE_MIDWEEK;
+      if (m >= 6 && m <= 8) return RATE_PEAK;
+      if ([4,5,9,10,11].indexOf(m) !== -1) return RATE_SHOULDER;
+      return RATE_SUMMER;
+    }
+
+    function calcStay(checkinVal, checkoutVal) {
+      if (!checkinVal || !checkoutVal) return null;
+      var cin  = new Date(checkinVal  + 'T00:00:00');
+      var cout = new Date(checkoutVal + 'T00:00:00');
+      var nights = Math.round((cout - cin) / 86400000);
+      if (nights <= 0) return null;
+      var accom = 0;
+      var d = new Date(cin);
+      for (var i = 0; i < nights; i++) {
+        accom += getNightlyRate(d);
+        d.setDate(d.getDate() + 1);
+      }
+      return { nights: nights, accom: accom, avgRate: Math.round(accom / nights), cin: cin, cout: cout };
+    }
+
+    function fmtDate(d) {
+      return DAYS[d.getDay()] + ', ' + d.getDate() + ' ' + MONTHS[d.getMonth()] + ' ' + d.getFullYear();
+    }
+
+    function fmtMoney(n) {
+      return '$' + n.toLocaleString('en-AU', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function getAddonsTotal() {
+      var total = 0;
+      document.querySelectorAll('.addon-option input[type="checkbox"]').forEach(function(cb) {
+        if (cb.checked) total += parseFloat(cb.value) || 0;
+      });
+      return total;
+    }
+
+    function getCheckedAddons() {
+      var list = [];
+      document.querySelectorAll('.addon-option input[type="checkbox"]').forEach(function(cb) {
+        if (cb.checked) list.push({ label: cb.getAttribute('data-addon-label'), price: parseFloat(cb.value) || 0 });
+      });
+      return list;
+    }
+
+    // Remove previously injected addon rows
+    function clearAddonRows() {
+      document.querySelectorAll('.price-row--addon').forEach(function(r) { r.remove(); });
+    }
+
+    function show(id) { var el = document.getElementById(id); if (el) el.style.display = ''; }
+    function hide(id) { var el = document.getElementById(id); if (el) el.style.display = 'none'; }
+    function text(id, val) { var el = document.getElementById(id); if (el) el.textContent = val; }
+
+    function updateSummary() {
+      var checkinVal  = document.getElementById('checkinDate').value;
+      var checkoutVal = document.getElementById('checkoutDate').value;
+      var adults      = parseInt(document.getElementById('numAdults').value) || 2;
+      var children    = parseInt(document.getElementById('numChildren').value) || 0;
+      var stay        = calcStay(checkinVal, checkoutVal);
+
+      // Guests line
+      var guestStr = adults + ' Adult' + (adults !== 1 ? 's' : '');
+      if (children > 0) guestStr += ', ' + children + ' Child' + (children !== 1 ? 'ren' : '');
+      document.getElementById('sumGuests').innerHTML = '<strong>Guests:</strong> ' + guestStr;
+
+      if (!stay) {
+        // No valid dates: hide breakdown
+        document.getElementById('sumCheckin').innerHTML  = '<strong>Check-in:</strong> —';
+        document.getElementById('sumCheckout').innerHTML = '<strong>Check-out:</strong> —';
+        text('sumNights', 'Select dates to see nights');
+        clearAddonRows();
+        ['rowNightly','rowCleaning','rowService','rowTax','rowTotal'].forEach(hide);
+        show('noDatesMsg');
+        document.getElementById('continueToPayment').disabled = true;
+        return;
+      }
+
+      // Dates
+      document.getElementById('sumCheckin').innerHTML  = '<strong>Check-in:</strong> ' + fmtDate(stay.cin);
+      document.getElementById('sumCheckout').innerHTML = '<strong>Check-out:</strong> ' + fmtDate(stay.cout);
+      text('sumNights', stay.nights + ' night' + (stay.nights !== 1 ? 's' : '') + ' · Entire Apartment');
+      hide('noDatesMsg');
+
+      // Nightly row
+      text('lblNightly', fmtMoney(stay.avgRate) + ' avg × ' + stay.nights + ' night' + (stay.nights !== 1 ? 's' : ''));
+      text('valNightly', fmtMoney(stay.accom));
+      show('rowNightly');
+
+      // Add-on rows
+      clearAddonRows();
+      var addons = getCheckedAddons();
+      var addonsTotal = 0;
+      var cleaningRow = document.getElementById('rowCleaning');
+      addons.forEach(function(a) {
+        addonsTotal += a.price;
+        var row = document.createElement('div');
+        row.className = 'price-row price-row--addon';
+        row.innerHTML = '<span>' + a.label.charAt(0).toUpperCase() + a.label.slice(1) + '</span><span>' + fmtMoney(a.price) + '</span>';
+        cleaningRow.parentNode.insertBefore(row, cleaningRow);
+      });
+
+      // Cleaning, service, tax, total
+      var serviceFee = Math.round(stay.accom * SERVICE_RATE);
+      var subtotal   = stay.accom + addonsTotal + CLEANING_FEE + serviceFee;
+      var tax        = Math.round(subtotal * TAX_RATE);
+      var grand      = subtotal + tax;
+
+      text('valCleaning', fmtMoney(CLEANING_FEE));
+      text('valService',  fmtMoney(serviceFee));
+      text('valTax',      fmtMoney(tax));
+      text('valTotal',    fmtMoney(grand));
+      ['rowCleaning','rowService','rowTax','rowTotal'].forEach(show);
+
+      // Animate total
+      var totalEl = document.getElementById('valTotal');
+      totalEl.style.transition = 'color 0.3s';
+      totalEl.style.color = '#c9a84c';
+      setTimeout(function() { totalEl.style.color = ''; }, 600);
+
+      // Enable continue button, pass params
+      var btn = document.getElementById('continueToPayment');
+      btn.disabled = false;
+      btn.onclick = function() {
+        var p = new URLSearchParams({
+          checkin:  checkinVal,
+          checkout: checkoutVal,
+          guests:   adults + children,
+          nights:   stay.nights,
+          total:    grand.toFixed(2)
+        });
+        window.location.href = 'checkout.html?' + p.toString();
+      };
+    }
+
+    // Pre-fill from URL params
+    var urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('checkin'))  document.getElementById('checkinDate').value  = urlParams.get('checkin');
+    if (urlParams.get('checkout')) document.getElementById('checkoutDate').value = urlParams.get('checkout');
+    if (urlParams.get('guests')) {
+      var g = parseInt(urlParams.get('guests'));
+      if (g >= 1 && g <= 5) document.getElementById('numAdults').value = g;
+    }
+
+    // Set minimum check-in to today
+    var today = new Date().toISOString().split('T')[0];
+    document.getElementById('checkinDate').min  = today;
+    document.getElementById('checkoutDate').min = today;
+
+    // Enforce check-out after check-in
+    document.getElementById('checkinDate').addEventListener('change', function() {
+      var cout = document.getElementById('checkoutDate');
+      if (cout.value && cout.value <= this.value) cout.value = '';
+      cout.min = this.value;
+      updateSummary();
+    });
+
+    // Wire all change events
+    ['checkoutDate','numAdults','numChildren'].forEach(function(id) {
+      document.getElementById(id).addEventListener('change', updateSummary);
+    });
+    document.querySelectorAll('.addon-option input[type="checkbox"]').forEach(function(cb) {
+      cb.addEventListener('change', updateSummary);
+    });
+
+    // Highlight selected addon row
+    document.querySelectorAll('.addon-option').forEach(function(opt) {
+      var cb = opt.querySelector('input[type="checkbox"]');
+      function syncStyle() { opt.style.borderColor = cb.checked ? '#0f2744' : ''; opt.style.background = cb.checked ? 'rgba(15,39,68,0.04)' : ''; }
+      cb.addEventListener('change', syncStyle);
+      syncStyle();
+    });
+
+    // Initial render
+    updateSummary();
+  })();
+  </script>
 </body>
 </html>
