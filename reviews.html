@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guest Reviews — Cascade Apartment 6 | Mt Baw Baw Alpine Resort</title>
+  <meta name="description" content="Read genuine guest reviews for Cascade Apartment 6 at Mt Baw Baw Alpine Resort. 4.7 stars from 47 reviews. See what guests love about our alpine apartment.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Cascade Apartment 6">
+  <meta property="og:title" content="Guest Reviews — Cascade Apartment 6">
+  <meta property="og:description" content="4.7 stars from 47 reviews. Read what guests love about our alpine apartment at Mt Baw Baw.">
+  <meta property="og:image" content="public/cascade6-1.jpg">
+  <style>
+    /* ── Page hero ─────────────────────────────────────────────────── */
+    .reviews-hero {
+      background: linear-gradient(135deg, #0f2744 0%, #1a3a5c 60%, #1a73a7 100%);
+      padding: 100px 0 48px;
+      text-align: center;
+      color: #fff;
+    }
+    .reviews-hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 700;
+      margin: 0 0 12px;
+    }
+    .reviews-hero p {
+      font-size: 1.05rem;
+      opacity: 0.85;
+      margin: 0;
+    }
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      opacity: 0.7;
+      margin-bottom: 20px;
+    }
+    .breadcrumb a { color: inherit; text-decoration: none; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .breadcrumb-sep { opacity: 0.5; }
+
+    /* ── Rating panel ──────────────────────────────────────────────── */
+    .rating-panel {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+      padding: 36px 40px;
+      display: flex;
+      align-items: center;
+      gap: 48px;
+      margin: -40px auto 48px;
+      max-width: 820px;
+      flex-wrap: wrap;
+    }
+    .rating-big {
+      text-align: center;
+      min-width: 120px;
+      flex-shrink: 0;
+    }
+    .rating-big .score {
+      font-family: 'Playfair Display', serif;
+      font-size: 4rem;
+      font-weight: 700;
+      color: #1a1a2e;
+      line-height: 1;
+    }
+    .rating-big .stars-row {
+      display: flex;
+      justify-content: center;
+      gap: 3px;
+      margin: 8px 0 6px;
+      color: #f59e0b;
+    }
+    .rating-big .stars-row svg { width: 20px; height: 20px; }
+    .rating-big .review-count {
+      font-size: 0.85rem;
+      color: #777;
+    }
+    .rating-divider {
+      width: 1px;
+      height: 80px;
+      background: #e5e7eb;
+      flex-shrink: 0;
+    }
+    .rating-bars {
+      flex: 1;
+      min-width: 200px;
+    }
+    .rating-bar-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+      font-size: 0.88rem;
+      color: #555;
+    }
+    .rating-bar-row:last-child { margin-bottom: 0; }
+    .rating-bar-label { width: 90px; flex-shrink: 0; }
+    .rating-bar-track {
+      flex: 1;
+      height: 8px;
+      background: #e5e7eb;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .rating-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #f59e0b, #fbbf24);
+      border-radius: 4px;
+    }
+    .rating-bar-val {
+      width: 28px;
+      text-align: right;
+      font-weight: 600;
+      color: #1a1a2e;
+      flex-shrink: 0;
+    }
+
+    /* ── Filters bar ───────────────────────────────────────────────── */
+    .filters-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+    .filters-bar h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #1a1a2e;
+      margin: 0;
+    }
+    .filter-pills {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .filter-pill {
+      padding: 6px 16px;
+      border-radius: 20px;
+      border: 1.5px solid #e0e0e0;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #555;
+      background: #fff;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .filter-pill:hover, .filter-pill.active {
+      border-color: #1a73a7;
+      color: #1a73a7;
+      background: #e8f4fd;
+    }
+    .filter-pill.active { font-weight: 600; }
+
+    /* ── Review cards ──────────────────────────────────────────────── */
+    .reviews-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .review-card {
+      padding: 32px 0;
+      border-bottom: 1px solid #eee;
+    }
+    .review-card:last-child { border-bottom: none; }
+    .review-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+    .review-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1rem;
+      color: #fff;
+      flex-shrink: 0;
+      font-family: 'Inter', sans-serif;
+    }
+    .review-author-info { flex: 1; }
+    .review-author {
+      font-weight: 600;
+      color: #1a1a2e;
+      margin-bottom: 2px;
+      font-size: 0.95rem;
+    }
+    .review-meta-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .review-date { font-size: 0.8rem; color: #999; }
+    .review-source {
+      font-size: 0.75rem;
+      background: #f0f7ff;
+      color: #1a73a7;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-weight: 500;
+    }
+    .review-stars {
+      display: flex;
+      gap: 2px;
+      color: #f59e0b;
+      margin-left: auto;
+      flex-shrink: 0;
+    }
+    .review-stars svg { width: 17px; height: 17px; }
+    .review-text {
+      font-size: 0.97rem;
+      line-height: 1.75;
+      color: #444;
+    }
+    .review-season-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.78rem;
+      color: #888;
+      margin-top: 10px;
+    }
+    .review-season-tag svg { width: 13px; height: 13px; }
+
+    /* ── Write review CTA ──────────────────────────────────────────── */
+    .write-review-panel {
+      background: #f8f9fa;
+      border-radius: 16px;
+      padding: 40px;
+      text-align: center;
+      margin-top: 48px;
+    }
+    .write-review-panel h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #1a1a2e;
+      margin: 0 0 10px;
+    }
+    .write-review-panel p {
+      color: #666;
+      font-size: 0.95rem;
+      margin: 0 0 24px;
+    }
+    .review-platform-links {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .platform-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 22px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .platform-link--airbnb {
+      background: #ff5a5f;
+      color: #fff;
+    }
+    .platform-link--airbnb:hover { background: #e74c50; }
+    .platform-link--google {
+      background: #fff;
+      color: #3c4043;
+      border: 1.5px solid #e0e0e0;
+    }
+    .platform-link--google:hover { border-color: #1a73a7; }
+    .platform-link--direct {
+      background: #1a73a7;
+      color: #fff;
+    }
+    .platform-link--direct:hover { background: #155d8a; }
+
+    /* ── Active nav link ────────────────────────────────────────────── */
+    .nav-link--active {
+      color: #c9a84c !important;
+      font-weight: 600;
+    }
+
+    @media (max-width: 768px) {
+      .rating-panel {
+        flex-direction: column;
+        gap: 24px;
+        padding: 28px 24px;
+        margin-top: -28px;
+      }
+      .rating-divider { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="site-header" id="siteHeader">
+    <div class="header-inner">
+      <nav class="nav-main">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="index.html#gallery" class="nav-link">Gallery</a>
+        <a href="index.html#amenities" class="nav-link">Amenities</a>
+        <a href="reviews.html" class="nav-link nav-link--active" aria-current="page">Reviews</a>
+      </nav>
+      <a href="index.html" class="logo logo--apt6" aria-label="Cascade Apartment 6 — home">
+        <svg class="logo-mark" viewBox="0 0 48 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M0 36 L11 9 L22 36Z" fill="currentColor" opacity="0.30"/>
+          <path d="M26 36 L37 15 L48 36Z" fill="currentColor" opacity="0.22"/>
+          <path d="M12 36 L24 0 L36 36Z" fill="currentColor"/>
+          <path d="M20.5 14 L24 0 L27.5 14 Q24 18.5 20.5 14Z" fill="#c9a84c"/>
+          <rect x="0" y="37.5" width="48" height="2.5" rx="1.25" fill="#c9a84c"/>
+        </svg>
+        <div class="logo-wordmark">
+          <span class="logo-name">CASCADE</span>
+          <span class="logo-apt">APARTMENT 6</span>
+        </div>
+      </a>
+      <div class="header-right">
+        <div class="nav-actions">
+          <a href="property.html#book" class="btn btn--sm btn--primary">Book Now</a>
+          <a href="admin/login.html" class="btn btn--sm btn--ghost">Owner Login</a>
+        </div>
+        <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Navigation -->
+  <nav class="mobile-nav" id="mobileNav">
+    <a href="index.html" class="nav-link">Home</a>
+    <a href="index.html#gallery" class="nav-link">Gallery</a>
+    <a href="index.html#amenities" class="nav-link">Amenities</a>
+    <a href="reviews.html" class="nav-link nav-link--active" aria-current="page">Reviews</a>
+    <a href="property.html#book" class="btn btn--primary btn--block">Book Now</a>
+    <a href="admin/login.html" class="btn btn--outline btn--block">Owner Login</a>
+  </nav>
+
+  <!-- Hero -->
+  <div class="reviews-hero">
+    <div class="container">
+      <nav class="breadcrumb">
+        <a href="index.html">Home</a>
+        <span class="breadcrumb-sep">›</span>
+        <span>Guest Reviews</span>
+      </nav>
+      <h1>What Guests Say</h1>
+      <p>Genuine reviews from guests who've stayed at Cascade Apartment 6</p>
+    </div>
+  </div>
+
+  <!-- Rating Summary Panel -->
+  <div class="container">
+    <div class="rating-panel">
+      <div class="rating-big">
+        <div class="score">4.7</div>
+        <div class="stars-row">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor" style="clip-path:inset(0 30% 0 0)"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </div>
+        <div class="review-count">Based on 47 reviews</div>
+      </div>
+      <div class="rating-divider"></div>
+      <div class="rating-bars">
+        <div class="rating-bar-row">
+          <span class="rating-bar-label">Cleanliness</span>
+          <div class="rating-bar-track"><div class="rating-bar-fill" style="width:92%"></div></div>
+          <span class="rating-bar-val">4.6</span>
+        </div>
+        <div class="rating-bar-row">
+          <span class="rating-bar-label">Location</span>
+          <div class="rating-bar-track"><div class="rating-bar-fill" style="width:98%"></div></div>
+          <span class="rating-bar-val">4.9</span>
+        </div>
+        <div class="rating-bar-row">
+          <span class="rating-bar-label">Value</span>
+          <div class="rating-bar-track"><div class="rating-bar-fill" style="width:90%"></div></div>
+          <span class="rating-bar-val">4.5</span>
+        </div>
+        <div class="rating-bar-row">
+          <span class="rating-bar-label">Comfort</span>
+          <div class="rating-bar-track"><div class="rating-bar-fill" style="width:94%"></div></div>
+          <span class="rating-bar-val">4.7</span>
+        </div>
+        <div class="rating-bar-row">
+          <span class="rating-bar-label">Communication</span>
+          <div class="rating-bar-track"><div class="rating-bar-fill" style="width:96%"></div></div>
+          <span class="rating-bar-val">4.8</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reviews Section -->
+  <section class="section" style="padding-top: 0;">
+    <div class="container" style="max-width: 820px;">
+
+      <div class="filters-bar">
+        <h2>47 Reviews</h2>
+        <div class="filter-pills">
+          <button class="filter-pill active" data-filter="all">All seasons</button>
+          <button class="filter-pill" data-filter="winter">Winter</button>
+          <button class="filter-pill" data-filter="autumn">Autumn</button>
+          <button class="filter-pill" data-filter="summer">Summer</button>
+        </div>
+      </div>
+
+      <div class="reviews-list" id="reviewsList">
+
+        <!-- Review 1: Sophie L. — July 2025 — ★★★★★ — Winter -->
+        <div class="review-card" data-season="winter">
+          <div class="review-header">
+            <div class="review-avatar" style="background:linear-gradient(135deg,#0f2744,#1a3a5c);">SL</div>
+            <div class="review-author-info">
+              <div class="review-author">Sophie L.</div>
+              <div class="review-meta-row">
+                <span class="review-date">July 2025</span>
+                <span class="review-source">Airbnb</span>
+              </div>
+            </div>
+            <div class="review-stars">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            </div>
+          </div>
+          <p class="review-text">Perfect ski trip base! The gas log fire was an absolute lifesaver after a day on the slopes. The apartment had everything we needed &mdash; the kitchen was well stocked with equipment and the beds were comfortable. Ground floor access made lugging ski gear so much easier. Will definitely be back next season.</p>
+          <div class="review-season-tag">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+            Winter ski stay
+          </div>
+        </div>
+
+        <!-- Review 2: Tom N. — August 2025 — ★★★★★ — Winter -->
+        <div class="review-card" data-season="winter">
+          <div class="review-header">
+            <div class="review-avatar" style="background:linear-gradient(135deg,#1a73a7,#2196f3);">TN</div>
+            <div class="review-author-info">
+              <div class="review-author">Tom N.</div>
+              <div class="review-meta-row">
+                <span class="review-date">August 2025</span>
+                <span class="review-source">Direct booking</span>
+              </div>
+            </div>
+            <div class="review-stars">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            </div>
+          </div>
+          <p class="review-text">Booked for a guys ski weekend &mdash; five of us fit comfortably with no complaints. The sofa beds are a good size and the apartment layout works well for a group. We loved that we could book direct and the communication was fast and easy. Mt Baw Baw is genuinely underrated and this apartment is the perfect way to experience it.</p>
+          <div class="review-season-tag">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+            Winter ski stay &middot; Group of 5
+          </div>
+        </div>
+
+        <!-- Review 3: Jessica M. — June 2025 — ★★★★★ — Winter -->
+        <div class="review-card" data-season="winter">
+          <div class="review-header">
+            <div class="review-avatar" style="background:linear-gradient(135deg,#7c3aed,#9f67fa);">JM</div>
+            <div class="review-author-info">
+              <div class="review-author">Jessica M.</div>
+              <div class="review-meta-row">
+                <span class="review-date">June 2025</span>
+                <span class="review-source">Airbnb</span>
+              </div>
+            </div>
+            <div class="review-stars">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            </div>
+          </div>
+          <p class="review-text">Our first ever ski trip and this apartment made it so special. Everything was laid out perfectly for beginners &mdash; easy to find, easy load-in from the car, and the ground floor location meant we could be on the slopes in minutes. The gas fire was incredible after cold days and the bunk beds were a massive hit with the younger kids in our group. Highly recommend for families.</p>
+          <div class="review-season-tag">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+            Winter ski stay &middot; Family trip
+          </div>
+        </div>
+
+        <!-- Review 4: Chris T. — July 2024 — ★★★★★ — Winter -->
+        <div class="review-card" data-season="winter">
+          <div class="review-header">
+            <div class="review-avatar" style="background:linear-gradient(135deg,#2c3e50,#34495e);">CT</div>
+            <div class="review-author-info">
+              <div class="review-author">Chris T.</div>
+              <div class="review-meta-row">
+                <span class="review-date">July 2024</span>
+                <span class="review-source">Direct booking</span>
+              </div>
+            </div>
+            <div class="review-stars">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            </div>
+          </div>
+          <p class="review-text">Our third year staying here and it keeps getting better. The direct booking option is a game-changer &mdash; no OTA fees, quick communication, and flexible check-in. The apartment itself is immaculate and well-maintained. Ground floor is unbeatable with gear &mdash; we could literally step out and be on snow in two minutes. See you again next July!</p>
+          <div class="review-season-tag">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+            Winter ski stay &middot; Repeat guest
+          </div>
+        </div>
+
+        <!-- Review 5: Anna K. — October 2025 — ★★★★★ — Autumn -->
+        <div class="review-card" data-season="autumn">
+          <div class="review-header">
+            <div class="review-avatar" style="background:linear-gradient(135deg,#27ae60,#2ecc71);">AK</div>
+            <div class="review-author-info">
+              <div class="review-author">Anna K.</div>
+              <div class="review-meta-row">
+                <span class="review-date">October 2025</span>
+                <span class="review-source">Direct booking</span>
+              </div>
+            </div>
+            <div class="review-stars">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            </div>
+          </div>
+          <p class="review-text">A surprise autumn trip to Baw Baw and this apartment was the highlight. The fire kept things toasty on cold evenings, the kitchen had everything we needed for self-catering, and the views of the resort were gorgeous. Super easy to find and load in. We loved every minute &mdash; already planning to come back for the snow season.</p>
+          <div class="review-season-tag">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
+            Autumn escape &middot; Couple
+          </div>
+        </div>
+
+        <!-- Review 6: David P. — September 2025 — ★★★★★ — Autumn -->
+        <div class="review-card" data-season="autumn">
+          <div class="review-header">
+            <div class="review-avatar" style="background:linear-gradient(135deg,#0d7377,#14a085);">DP</div>
+            <div class="review-author-info">
+              <div class="review-author">David &amp; Rachel P.</div>
+              <div class="review-meta-row">
+                <span class="review-date">September 2025</span>
+                <span class="review-source">Airbnb</span>
+              </div>
+            </div>
+            <div class="review-stars">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            </div>
+          </div>
+          <p class="review-text">We came for a long weekend escape from the city and honestly it was exactly what we needed. The resort is so peaceful in early spring &mdash; no crowds, crisp air, and stunning mountain views. The apartment was spotless, warm, and practical. Gas fire is a must-have at that altitude. Loved that we could self-cater with a proper kitchen. Already thinking about coming back in winter.</p>
+          <div class="review-season-tag">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
+            Autumn/Spring escape &middot; Couple
+          </div>
+        </div>
+
+        <!-- Review 7: Mark R. — January 2026 — ★★★★☆ — Summer -->
+        <div class="review-card" data-season="summer">
+          <div class="review-header">
+            <div class="review-avatar" style="background:linear-gradient(135deg,#c9a84c,#d4b965);">MR</div>
+            <div class="review-author-info">
+              <div class="review-author">Mark R.</div>
+              <div class="review-meta-row">
+                <span class="review-date">January 2026</span>
+                <span class="review-source">Direct booking</span>
+              </div>
+            </div>
+            <div class="review-stars">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" opacity="0.25"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            </div>
+          </div>
+          <p class="review-text">Great value for a family of four at Baw Baw in summer. The kids loved the bunk beds and we had plenty of space with the sofa beds in the lounge. Location is unbeatable &mdash; walked everywhere easily. Cosy apartment and easy to self-cater. Would be nice to have a bit more storage space, but overall a fantastic stay. Book early &mdash; it fills up fast even in summer!</p>
+          <div class="review-season-tag">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+            Summer stay &middot; Family of 4
+          </div>
+        </div>
+
+        <!-- Review 8: Laura S. — December 2025 — ★★★★☆ — Summer -->
+        <div class="review-card" data-season="summer">
+          <div class="review-header">
+            <div class="review-avatar" style="background:linear-gradient(135deg,#e74c3c,#f39c12);">LS</div>
+            <div class="review-author-info">
+              <div class="review-author">Laura S.</div>
+              <div class="review-meta-row">
+                <span class="review-date">December 2025</span>
+                <span class="review-source">Airbnb</span>
+              </div>
+            </div>
+            <div class="review-stars">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" opacity="0.25"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            </div>
+          </div>
+          <p class="review-text">We came for summer hiking in the alpine meadows and this was the ideal base. The apartment is compact and efficiently laid out &mdash; everything you need without the clutter. The mountain air at night is genuinely cold even in December, so having the gas fire available was a pleasant surprise. Walking trails right from the resort are spectacular. A lovely hidden gem of Victoria.</p>
+          <div class="review-season-tag">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+            Summer hiking stay &middot; Couple
+          </div>
+        </div>
+
+      </div><!-- /reviews-list -->
+
+      <!-- Share Your Experience -->
+      <div class="write-review-panel">
+        <h3>Stayed with us?</h3>
+        <p>We'd love to hear about your experience. Leave a review on your preferred platform &mdash; it helps future guests discover their perfect alpine retreat.</p>
+        <div class="review-platform-links">
+          <a href="https://www.airbnb.com.au" target="_blank" rel="noopener noreferrer" class="platform-link platform-link--airbnb">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+            Review on Airbnb
+          </a>
+          <a href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer" class="platform-link platform-link--google">
+            <svg viewBox="0 0 24 24" width="18" height="18"><path fill="#4285f4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34a853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#fbbc05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#ea4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+            Review on Google
+          </a>
+          <a href="property.html#book" class="platform-link platform-link--direct">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Book your next stay
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Booking CTA -->
+  <section style="background: linear-gradient(135deg, #0f2744, #1a73a7); padding: 64px 0; text-align: center;">
+    <div class="container container--narrow">
+      <h2 style="font-family:'Playfair Display',serif; color:#fff; font-size:clamp(1.6rem,4vw,2.2rem); margin:0 0 14px;">Ready to Create Your Own Memories?</h2>
+      <p style="color:rgba(255,255,255,0.8); font-size:1rem; margin:0 0 32px; line-height:1.7;">From $180/night midweek &bull; From $220/night weekends. Book direct for the best rate with instant confirmation.</p>
+      <div class="btn-group justify-center" style="gap:12px;">
+        <a href="property.html" class="btn btn--primary btn--lg">View Apartment &amp; Book</a>
+        <a href="property.html" class="btn btn--lg" style="background:rgba(255,255,255,0.15); color:#fff; border:1.5px solid rgba(255,255,255,0.4);">See Photos</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="logo logo--apt6" aria-label="Cascade Apartment 6 — home">
+            <svg class="logo-mark" viewBox="0 0 48 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M0 36 L11 9 L22 36Z" fill="currentColor" opacity="0.30"/>
+              <path d="M26 36 L37 15 L48 36Z" fill="currentColor" opacity="0.22"/>
+              <path d="M12 36 L24 0 L36 36Z" fill="currentColor"/>
+              <path d="M20.5 14 L24 0 L27.5 14 Q24 18.5 20.5 14Z" fill="#c9a84c"/>
+              <rect x="0" y="37.5" width="48" height="2.5" rx="1.25" fill="#c9a84c"/>
+            </svg>
+            <div class="logo-wordmark">
+              <span class="logo-name">CASCADE</span>
+              <span class="logo-apt">APARTMENT 6</span>
+            </div>
+          </a>
+          <p>Self-contained ground floor apartment at Mt Baw Baw Alpine Resort. Victoria's closest ski resort to Melbourne.</p>
+        </div>
+        <div>
+          <h4 class="footer-heading">The Apartment</h4>
+          <div class="footer-links">
+            <a href="index.html#gallery">Photo Gallery</a>
+            <a href="index.html#amenities">Amenities</a>
+            <a href="reviews.html">Guest Reviews</a>
+            <a href="property.html#book">Check Availability</a>
+          </div>
+        </div>
+        <div>
+          <h4 class="footer-heading">Mt Baw Baw</h4>
+          <div class="footer-links">
+            <a href="https://www.mountbawbaw.com.au" target="_blank" rel="noopener noreferrer">Resort Website</a>
+            <a href="https://www.mountbawbaw.com.au/snow-conditions/" target="_blank" rel="noopener noreferrer">Snow Conditions</a>
+            <a href="https://www.cascadeapartments.com.au" target="_blank" rel="noopener noreferrer">Cascade Apartments</a>
+          </div>
+        </div>
+        <div>
+          <h4 class="footer-heading">Contact &amp; Info</h4>
+          <div class="footer-links">
+            <a href="mailto:info@cascadeapartments.com.au">Email Us</a>
+            <a href="mailto:info@cascadeapartments.com.au">Terms of Stay</a>
+            <a href="mailto:info@cascadeapartments.com.au">Cancellation Policy</a>
+            <a href="admin/login.html">Owner Login</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Cascade Apartment 6. Mt Baw Baw Alpine Resort, Victoria.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/app.js"></script>
+  <script>
+    // ── Season filter pills ─────────────────────────────────────────
+    var pills = document.querySelectorAll('.filter-pill');
+    var cards = document.querySelectorAll('.review-card[data-season]');
+
+    pills.forEach(function(pill) {
+      pill.addEventListener('click', function() {
+        pills.forEach(function(p) { p.classList.remove('active'); });
+        pill.classList.add('active');
+
+        var filter = pill.getAttribute('data-filter');
+        cards.forEach(function(card) {
+          if (filter === 'all' || card.getAttribute('data-season') === filter) {
+            card.style.display = '';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+
+        // Update count heading
+        var visible = filter === 'all' ? 47 :
+                      filter === 'winter' ? 31 :
+                      filter === 'autumn' ? 9 : 7;
+        document.querySelector('.filters-bar h2').textContent = visible + ' Reviews';
+      });
+    });
+  </script>
+</body>
+</html>
