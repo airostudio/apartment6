@@ -258,6 +258,76 @@ h6 { font-size: var(--font-size-md); }
 .text-center { text-align: center; }
 .text-right { text-align: right; }
 
+/* --- Cascade Apartment 6 Logo --- */
+.logo--apt6 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.logo-mark {
+  width: 38px;
+  height: 32px;
+  flex-shrink: 0;
+  transition: transform var(--transition-fast);
+  display: block;
+}
+
+.logo--apt6:hover .logo-mark {
+  transform: translateY(-2px);
+}
+
+.logo-wordmark {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.logo-name {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: currentColor;
+  line-height: 1;
+  display: block;
+}
+
+.logo-apt {
+  font-family: var(--font-primary);
+  font-size: 0.57rem;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--color-secondary);
+  line-height: 1;
+  display: block;
+}
+
+/* Footer logo: slightly larger */
+.site-footer .logo-mark {
+  width: 44px;
+  height: 37px;
+}
+
+.site-footer .logo-name {
+  font-size: 1.3rem;
+}
+
+.site-footer .logo-apt {
+  font-size: 0.62rem;
+}
+
+/* Header right-side wrapper */
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  justify-content: flex-end;
+}
+
 /* --- Header & Navigation --- */
 .site-header {
   position: fixed;
@@ -285,6 +355,10 @@ h6 { font-size: var(--font-size-md); }
   color: var(--color-white);
 }
 
+.site-header--transparent .mobile-menu-toggle span {
+  background: var(--color-white);
+}
+
 .site-header--scrolled {
   background: rgba(255, 255, 255, 0.97);
   border-bottom-color: rgba(0, 0, 0, 0.06);
@@ -300,9 +374,9 @@ h6 { font-size: var(--font-size-md); }
 }
 
 .header-inner {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  justify-content: space-between;
   height: 100%;
   max-width: var(--container-wide);
   margin: 0 auto;
@@ -1833,6 +1907,12 @@ h6 { font-size: var(--font-size-md); }
 }
 
 @media (max-width: 768px) {
+  /* Revert header to simple flex on mobile: logo left, toggle right */
+  .header-inner {
+    display: flex;
+    justify-content: space-between;
+  }
+
   .nav-main {
     display: none;
   }

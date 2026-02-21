@@ -379,25 +379,34 @@
   <!-- Header -->
   <header class="site-header" id="siteHeader">
     <div class="header-inner">
-      <a href="index.html" class="logo">
-        <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M16 2L2 14h4v14h8v-8h4v8h8V14h4L16 2z" fill="currentColor"/>
-        </svg>
-        Cascade Apt 6
-      </a>
       <nav class="nav-main">
         <a href="index.html" class="nav-link">Home</a>
         <a href="index.html#gallery" class="nav-link">Gallery</a>
         <a href="index.html#amenities" class="nav-link">Amenities</a>
         <a href="index.html#reviews" class="nav-link">Reviews</a>
       </nav>
-      <div class="nav-actions">
-        <a href="#book" class="btn btn--sm btn--primary">Book Now</a>
-        <a href="admin/login.html" class="btn btn--sm btn--ghost">Owner Login</a>
+      <a href="index.html" class="logo logo--apt6" aria-label="Cascade Apartment 6 — home">
+        <svg class="logo-mark" viewBox="0 0 48 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M0 36 L11 9 L22 36Z" fill="currentColor" opacity="0.30"/>
+          <path d="M26 36 L37 15 L48 36Z" fill="currentColor" opacity="0.22"/>
+          <path d="M12 36 L24 0 L36 36Z" fill="currentColor"/>
+          <path d="M20.5 14 L24 0 L27.5 14 Q24 18.5 20.5 14Z" fill="#c9a84c"/>
+          <rect x="0" y="37.5" width="48" height="2.5" rx="1.25" fill="#c9a84c"/>
+        </svg>
+        <div class="logo-wordmark">
+          <span class="logo-name">CASCADE</span>
+          <span class="logo-apt">APARTMENT 6</span>
+        </div>
+      </a>
+      <div class="header-right">
+        <div class="nav-actions">
+          <a href="#book" class="btn btn--sm btn--primary">Book Now</a>
+          <a href="admin/login.html" class="btn btn--sm btn--ghost">Owner Login</a>
+        </div>
+        <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu">
+          <span></span><span></span><span></span>
+        </button>
       </div>
-      <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu">
-        <span></span><span></span><span></span>
-      </button>
     </div>
   </header>
 
@@ -785,11 +794,18 @@
     <div class="container">
       <div class="footer-grid">
         <div class="footer-brand">
-          <a href="index.html" class="logo">
-            <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M16 2L2 14h4v14h8v-8h4v8h8V14h4L16 2z" fill="currentColor"/>
+          <a href="index.html" class="logo logo--apt6" aria-label="Cascade Apartment 6 — home">
+            <svg class="logo-mark" viewBox="0 0 48 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M0 36 L11 9 L22 36Z" fill="currentColor" opacity="0.30"/>
+              <path d="M26 36 L37 15 L48 36Z" fill="currentColor" opacity="0.22"/>
+              <path d="M12 36 L24 0 L36 36Z" fill="currentColor"/>
+              <path d="M20.5 14 L24 0 L27.5 14 Q24 18.5 20.5 14Z" fill="#c9a84c"/>
+              <rect x="0" y="37.5" width="48" height="2.5" rx="1.25" fill="#c9a84c"/>
             </svg>
-            Cascade Apt 6
+            <div class="logo-wordmark">
+              <span class="logo-name">CASCADE</span>
+              <span class="logo-apt">APARTMENT 6</span>
+            </div>
           </a>
           <p>Self-contained ground floor apartment at Mt Baw Baw Alpine Resort. Victoria's closest ski resort to Melbourne.</p>
         </div>
