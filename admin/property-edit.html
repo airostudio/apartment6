@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Add New Property - TrendAccom Admin</title>
+  <title>Edit Property — Cascade Apartment 6 Admin</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -87,22 +87,46 @@
     }
 
     /* --- Photos Grid --- */
-    .photos-grid-placeholder {
+    .photos-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
       gap: var(--space-md);
       margin-top: var(--space-xl);
     }
-    .photo-placeholder {
+    .photo-item {
+      position: relative;
       aspect-ratio: 4/3;
-      background: var(--color-off-white);
       border-radius: var(--radius-md);
+      overflow: hidden;
       border: 1px solid var(--color-light);
+    }
+    .photo-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .photo-item-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
       display: flex;
       align-items: center;
       justify-content: center;
-      color: var(--color-muted);
-      font-size: var(--font-size-xs);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .photo-item:hover .photo-item-overlay { opacity: 1; }
+    .photo-item-label {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 4px 8px;
+      background: rgba(0,0,0,0.55);
+      color: #fff;
+      font-size: 11px;
+      text-align: center;
     }
 
     /* --- Cards for Room Types & Rate Rules --- */
@@ -164,6 +188,42 @@
       padding-bottom: var(--space-sm);
       border-bottom: 1px solid var(--color-light);
     }
+
+    /* --- Toast --- */
+    .toast {
+      position: fixed;
+      bottom: var(--space-xl);
+      right: var(--space-xl);
+      background: var(--color-dark);
+      color: #fff;
+      padding: var(--space-md) var(--space-xl);
+      border-radius: var(--radius-lg);
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-medium);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      transform: translateY(20px);
+      opacity: 0;
+      transition: all 0.3s ease;
+      pointer-events: none;
+    }
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    .toast-icon {
+      width: 20px;
+      height: 20px;
+      background: #27ae60;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
   </style>
 </head>
 <body>
@@ -171,18 +231,19 @@
 
     <!-- Sidebar -->
     <aside class="admin-sidebar" id="adminSidebar">
-      <!-- Logo -->
       <div class="sidebar-logo">
         <a href="index.html" class="sidebar-logo-link">
-          <span class="sidebar-logo-text">TrendAccom</span>
-          <span class="sidebar-logo-badge">Admin</span>
+          <svg viewBox="0 0 40 32" fill="none" xmlns="http://www.w3.org/2000/svg" width="32" height="26">
+            <path d="M20 2L6 14h4v14h6v-8h8v8h6V14h4L20 2z" fill="#c9a84c"/>
+          </svg>
+          <div>
+            <span class="sidebar-logo-text">Cascade</span>
+            <span class="sidebar-logo-badge">Apt 6</span>
+          </div>
         </a>
       </div>
 
-      <!-- Navigation -->
       <nav class="sidebar-nav">
-
-        <!-- MAIN -->
         <div class="sidebar-nav-section">
           <span class="sidebar-nav-section-title">Main</span>
           <ul class="sidebar-nav-list">
@@ -203,7 +264,7 @@
                   <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
                   <polyline points="9 22 9 12 15 12 15 22"></polyline>
                 </svg>
-                <span>Properties</span>
+                <span>Property</span>
               </a>
             </li>
             <li class="sidebar-nav-item">
@@ -232,7 +293,6 @@
           </ul>
         </div>
 
-        <!-- MANAGEMENT -->
         <div class="sidebar-nav-section">
           <span class="sidebar-nav-section-title">Management</span>
           <ul class="sidebar-nav-list">
@@ -267,7 +327,6 @@
           </ul>
         </div>
 
-        <!-- INTEGRATIONS -->
         <div class="sidebar-nav-section">
           <span class="sidebar-nav-section-title">Integrations</span>
           <ul class="sidebar-nav-list">
@@ -294,7 +353,6 @@
           </ul>
         </div>
 
-        <!-- SYSTEM -->
         <div class="sidebar-nav-section">
           <span class="sidebar-nav-section-title">System</span>
           <ul class="sidebar-nav-list">
@@ -319,7 +377,6 @@
             </li>
           </ul>
         </div>
-
       </nav>
     </aside>
 
@@ -339,9 +396,9 @@
           <nav class="topbar-breadcrumb" aria-label="Breadcrumb">
             <a href="index.html" class="breadcrumb-item">Dashboard</a>
             <span class="breadcrumb-separator">/</span>
-            <a href="properties.html" class="breadcrumb-item">Properties</a>
+            <a href="properties.html" class="breadcrumb-item">Property</a>
             <span class="breadcrumb-separator">/</span>
-            <span class="breadcrumb-item breadcrumb-current">Add New Property</span>
+            <span class="breadcrumb-item breadcrumb-current">Edit Property</span>
           </nav>
         </div>
         <div class="topbar-right">
@@ -350,7 +407,7 @@
               <circle cx="11" cy="11" r="8"></circle>
               <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
             </svg>
-            <input type="text" class="topbar-search-input" placeholder="Search properties, bookings...">
+            <input type="text" class="topbar-search-input" placeholder="Search...">
           </div>
           <button class="topbar-notification" aria-label="Notifications">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -360,8 +417,8 @@
             <span class="topbar-notification-dot"></span>
           </button>
           <div class="topbar-user">
-            <span class="topbar-user-avatar">AD</span>
-            <span class="topbar-user-name">Admin</span>
+            <span class="topbar-user-avatar" id="userAvatar">C6</span>
+            <span class="topbar-user-name" id="userName">Admin</span>
           </div>
         </div>
       </header>
@@ -372,17 +429,17 @@
         <!-- Page Header -->
         <div class="admin-page-header">
           <div class="admin-page-header-text">
-            <h1 class="admin-page-title">Add New Property</h1>
-            <p class="admin-page-subtitle">Create a new accommodation listing</p>
+            <h1 class="admin-page-title">Edit Property</h1>
+            <p class="admin-page-subtitle">Update Cascade Apartment 6 listing details</p>
           </div>
           <div style="display: flex; gap: var(--space-md);">
-            <button class="btn btn--outline">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" style="margin-right: 6px;"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-              Save Draft
+            <button class="btn btn--outline" id="revertBtn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" style="margin-right: 6px;"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.51"/></svg>
+              Revert Changes
             </button>
-            <button class="btn btn-primary">
+            <button class="btn btn-primary" id="saveBtn">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" style="margin-right: 6px;"><polyline points="20 6 9 17 4 12"/></svg>
-              Publish
+              Save Changes
             </button>
           </div>
         </div>
@@ -406,29 +463,27 @@
             <!-- Tab: Basic Info                  -->
             <!-- ================================ -->
             <div class="tab-panel active" id="tab-basic-info">
-              <form>
+              <form id="propertyForm" onsubmit="return false;">
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-lg); margin-bottom: var(--space-lg);">
                   <div class="form-group">
                     <label class="form-label">Property Name <span class="required">*</span></label>
-                    <input type="text" class="form-input" placeholder="e.g. The Grand Harbour Hotel">
+                    <input type="text" class="form-input" id="propertyName" value="Cascade Apartment 6">
                   </div>
                   <div class="form-group">
                     <label class="form-label">Property Type <span class="required">*</span></label>
-                    <select class="form-select">
+                    <select class="form-select" id="propertyType">
                       <option value="">Select type...</option>
-                      <option>Hotel</option>
-                      <option>Motel</option>
-                      <option>Apartment</option>
-                      <option>Pub</option>
-                      <option>Caravan Park</option>
-                      <option>Holiday Park</option>
+                      <option value="apartment" selected>Apartment</option>
+                      <option value="holiday-home">Holiday Home</option>
+                      <option value="chalet">Chalet</option>
+                      <option value="alpine-apartment">Alpine Apartment</option>
                     </select>
                   </div>
                 </div>
 
                 <div class="form-group" style="margin-bottom: var(--space-lg);">
                   <label class="form-label">Description</label>
-                  <textarea class="form-textarea" rows="5" placeholder="Describe your property, its unique features and what guests can expect..."></textarea>
+                  <textarea class="form-textarea" rows="5" id="propertyDescription">Cascade Apartment 6 is a stunning self-contained apartment nestled in the heart of Mt. Baw Baw Alpine Resort. Enjoy breathtaking mountain views, modern alpine furnishings, and access to world-class skiing, snowboarding, and year-round hiking trails right from your doorstep.</textarea>
                   <span class="form-hint">Write a compelling description that highlights key selling points.</span>
                 </div>
 
@@ -436,26 +491,26 @@
 
                 <div class="form-group" style="margin-bottom: var(--space-lg);">
                   <label class="form-label">Street Address <span class="required">*</span></label>
-                  <input type="text" class="form-input" placeholder="123 Main Street">
+                  <input type="text" class="form-input" id="address" value="Cascade Apartments">
                 </div>
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-lg); margin-bottom: var(--space-lg);">
                   <div class="form-group">
                     <label class="form-label">City <span class="required">*</span></label>
-                    <input type="text" class="form-input" placeholder="e.g. Sydney">
+                    <input type="text" class="form-input" id="city" value="Mt Baw Baw">
                   </div>
                   <div class="form-group">
                     <label class="form-label">State <span class="required">*</span></label>
-                    <select class="form-select">
+                    <select class="form-select" id="state">
                       <option value="">Select state...</option>
-                      <option>NSW</option>
-                      <option>VIC</option>
-                      <option>QLD</option>
-                      <option>WA</option>
-                      <option>SA</option>
-                      <option>TAS</option>
-                      <option>ACT</option>
-                      <option>NT</option>
+                      <option value="NSW">NSW</option>
+                      <option value="VIC" selected>VIC</option>
+                      <option value="QLD">QLD</option>
+                      <option value="WA">WA</option>
+                      <option value="SA">SA</option>
+                      <option value="TAS">TAS</option>
+                      <option value="ACT">ACT</option>
+                      <option value="NT">NT</option>
                     </select>
                   </div>
                 </div>
@@ -463,11 +518,11 @@
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-lg); margin-bottom: var(--space-lg);">
                   <div class="form-group">
                     <label class="form-label">Postcode <span class="required">*</span></label>
-                    <input type="text" class="form-input" placeholder="e.g. 2000">
+                    <input type="text" class="form-input" id="postcode" value="3833">
                   </div>
                   <div class="form-group">
                     <label class="form-label">Country</label>
-                    <select class="form-select">
+                    <select class="form-select" id="country">
                       <option selected>Australia</option>
                       <option>New Zealand</option>
                     </select>
@@ -483,7 +538,7 @@
                         <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                         <circle cx="12" cy="10" r="3"></circle>
                       </svg>
-                      <span>Map will load after address is entered</span>
+                      <span>Mt Baw Baw Alpine Resort, VIC 3833</span>
                     </div>
                   </div>
                 </div>
@@ -493,11 +548,11 @@
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-lg);">
                   <div class="form-group">
                     <label class="form-label">Contact Email</label>
-                    <input type="email" class="form-input" placeholder="info@property.com.au">
+                    <input type="email" class="form-input" id="contactEmail" value="info@cascade6.com.au">
                   </div>
                   <div class="form-group">
                     <label class="form-label">Contact Phone</label>
-                    <input type="tel" class="form-input" placeholder="+61 2 1234 5678">
+                    <input type="tel" class="form-input" id="contactPhone" value="+61 3 5165 1136">
                   </div>
                 </div>
               </form>
@@ -510,73 +565,35 @@
 
               <h3 class="form-section-heading" style="border-bottom: none; padding-bottom: 0;">Room Types</h3>
 
-              <!-- Room Type Card 1 -->
+              <!-- Single Room Type Card -->
               <div class="room-type-card">
-                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-lg);">
-                  <h4 style="font-family: var(--font-primary); font-size: var(--font-size-sm); font-weight: var(--font-weight-semibold);">Room Type #1</h4>
-                  <button class="btn btn--sm btn--ghost" style="color: var(--color-danger);">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-                    Remove
-                  </button>
+                <div style="margin-bottom: var(--space-lg);">
+                  <h4 style="font-family: var(--font-primary); font-size: var(--font-size-sm); font-weight: var(--font-weight-semibold);">Entire Apartment</h4>
                 </div>
                 <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: var(--space-lg);">
                   <div class="form-group">
                     <label class="form-label">Room Type Name</label>
-                    <input type="text" class="form-input" placeholder="e.g. Standard Double" value="Standard Double">
+                    <input type="text" class="form-input" value="Entire Apartment">
                   </div>
                   <div class="form-group">
                     <label class="form-label">Max Guests</label>
-                    <input type="number" class="form-input" value="2" min="1">
+                    <input type="number" class="form-input" value="6" min="1">
                   </div>
                   <div class="form-group">
                     <label class="form-label">Base Price / Night</label>
-                    <input type="number" class="form-input" value="149" min="0" step="0.01">
+                    <input type="number" class="form-input" value="280" min="0" step="0.01">
                   </div>
                   <div class="form-group">
                     <label class="form-label">Quantity</label>
-                    <input type="number" class="form-input" value="10" min="1">
+                    <input type="number" class="form-input" value="1" min="1">
                   </div>
                 </div>
               </div>
 
-              <!-- Room Type Card 2 -->
-              <div class="room-type-card">
-                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-lg);">
-                  <h4 style="font-family: var(--font-primary); font-size: var(--font-size-sm); font-weight: var(--font-weight-semibold);">Room Type #2</h4>
-                  <button class="btn btn--sm btn--ghost" style="color: var(--color-danger);">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-                    Remove
-                  </button>
-                </div>
-                <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: var(--space-lg);">
-                  <div class="form-group">
-                    <label class="form-label">Room Type Name</label>
-                    <input type="text" class="form-input" value="Deluxe Suite">
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label">Max Guests</label>
-                    <input type="number" class="form-input" value="4" min="1">
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label">Base Price / Night</label>
-                    <input type="number" class="form-input" value="289" min="0" step="0.01">
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label">Quantity</label>
-                    <input type="number" class="form-input" value="5" min="1">
-                  </div>
-                </div>
-              </div>
-
-              <button class="btn btn--outline" style="margin-bottom: var(--space-2xl);">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" style="margin-right: 6px;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                Add Room Type
-              </button>
-
-              <h3 class="form-section-heading" style="border-bottom: none; padding-bottom: 0;">Seasonal Rate Rules</h3>
+              <h3 class="form-section-heading" style="border-bottom: none; padding-bottom: 0; margin-top: var(--space-2xl);">Seasonal Rate Rules</h3>
               <p style="font-size: var(--font-size-sm); color: var(--color-gray); margin-bottom: var(--space-lg);">Adjust pricing for peak seasons, holidays and special periods.</p>
 
-              <!-- Rate Rule Card 1 -->
+              <!-- Rate Rule: Peak Summer -->
               <div class="rate-rule-card">
                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-lg);">
                   <h4 style="font-family: var(--font-primary); font-size: var(--font-size-sm); font-weight: var(--font-weight-semibold);">Peak Summer</h4>
@@ -600,8 +617,9 @@
                     <select class="form-select">
                       <option>+10%</option>
                       <option>+15%</option>
-                      <option selected>+25%</option>
-                      <option>+30%</option>
+                      <option>+25%</option>
+                      <option selected>+30%</option>
+                      <option>+40%</option>
                       <option>+50%</option>
                       <option>-10%</option>
                       <option>-15%</option>
@@ -611,16 +629,16 @@
                 </div>
               </div>
 
-              <!-- Rate Rule Card 2 -->
+              <!-- Rate Rule: Ski Season -->
               <div class="rate-rule-card">
                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-lg);">
-                  <h4 style="font-family: var(--font-primary); font-size: var(--font-size-sm); font-weight: var(--font-weight-semibold);">Winter Low Season</h4>
+                  <h4 style="font-family: var(--font-primary); font-size: var(--font-size-sm); font-weight: var(--font-weight-semibold);">Ski Season Jun-Sep</h4>
                   <button class="btn btn--sm btn--ghost" style="color: var(--color-danger);">Remove</button>
                 </div>
                 <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: var(--space-lg);">
                   <div class="form-group">
                     <label class="form-label">Season Name</label>
-                    <input type="text" class="form-input" value="Winter Low Season">
+                    <input type="text" class="form-input" value="Ski Season Jun-Sep">
                   </div>
                   <div class="form-group">
                     <label class="form-label">Start Date</label>
@@ -628,7 +646,7 @@
                   </div>
                   <div class="form-group">
                     <label class="form-label">End Date</label>
-                    <input type="date" class="form-input" value="2026-08-31">
+                    <input type="date" class="form-input" value="2026-09-30">
                   </div>
                   <div class="form-group">
                     <label class="form-label">Price Modifier</label>
@@ -637,9 +655,10 @@
                       <option>+15%</option>
                       <option>+25%</option>
                       <option>+30%</option>
+                      <option selected>+40%</option>
                       <option>+50%</option>
                       <option>-10%</option>
-                      <option selected>-15%</option>
+                      <option>-15%</option>
                       <option>-25%</option>
                     </select>
                   </div>
@@ -676,12 +695,13 @@
                 <div class="amenity-grid">
                   <label class="form-check"><input type="checkbox" checked> Air Conditioning</label>
                   <label class="form-check"><input type="checkbox" checked> TV</label>
-                  <label class="form-check"><input type="checkbox"> Kitchen / Kitchenette</label>
+                  <label class="form-check"><input type="checkbox" checked> Kitchen / Kitchenette</label>
                   <label class="form-check"><input type="checkbox"> Minibar</label>
-                  <label class="form-check"><input type="checkbox" checked> Ensuite Bathroom</label>
-                  <label class="form-check"><input type="checkbox"> Balcony</label>
+                  <label class="form-check"><input type="checkbox"> Ensuite Bathroom</label>
+                  <label class="form-check"><input type="checkbox" checked> Balcony</label>
                   <label class="form-check"><input type="checkbox"> Safe</label>
-                  <label class="form-check"><input type="checkbox"> Hairdryer</label>
+                  <label class="form-check"><input type="checkbox" checked> Hairdryer</label>
+                  <label class="form-check"><input type="checkbox" checked> Heating</label>
                 </div>
               </div>
 
@@ -693,7 +713,7 @@
                   <label class="form-check"><input type="checkbox"> Laundry Service</label>
                   <label class="form-check"><input type="checkbox"> Concierge</label>
                   <label class="form-check"><input type="checkbox"> Airport Shuttle</label>
-                  <label class="form-check"><input type="checkbox" checked> 24-Hour Reception</label>
+                  <label class="form-check"><input type="checkbox"> 24-Hour Reception</label>
                   <label class="form-check"><input type="checkbox"> Tour Desk</label>
                   <label class="form-check"><input type="checkbox"> Luggage Storage</label>
                 </div>
@@ -716,22 +736,63 @@
                 <button class="btn btn--outline btn--sm" style="margin-top: var(--space-md);">Browse Files</button>
               </div>
 
-              <h4 style="font-family: var(--font-primary); font-size: var(--font-size-sm); font-weight: var(--font-weight-semibold); margin-top: var(--space-2xl); margin-bottom: var(--space-md);">Existing Photos</h4>
-              <div class="photos-grid-placeholder">
-                <div class="photo-placeholder" style="background: linear-gradient(135deg, #1a5276, #2980b9);">
-                  <span style="color: rgba(255,255,255,0.7);">Main</span>
+              <h4 style="font-family: var(--font-primary); font-size: var(--font-size-sm); font-weight: var(--font-weight-semibold); margin-top: var(--space-2xl); margin-bottom: var(--space-md);">Existing Photos (8)</h4>
+              <div class="photos-grid">
+                <div class="photo-item">
+                  <img src="/public/cascade6-1.jpg" alt="cascade6-1.jpg" onerror="this.parentElement.style.background='linear-gradient(135deg,#0f2744,#1a3a5c)';this.style.display='none'">
+                  <div class="photo-item-overlay">
+                    <button class="btn btn--sm" style="background:rgba(220,53,69,0.9);color:#fff;border:none;">Remove</button>
+                  </div>
+                  <div class="photo-item-label">cascade6-1.jpg</div>
                 </div>
-                <div class="photo-placeholder" style="background: linear-gradient(135deg, #16a085, #1abc9c);">
-                  <span style="color: rgba(255,255,255,0.7);">Lobby</span>
+                <div class="photo-item">
+                  <img src="/public/cascade6-2.jpg" alt="cascade6-2.jpg" onerror="this.parentElement.style.background='linear-gradient(135deg,#1a3a5c,#2a5070)';this.style.display='none'">
+                  <div class="photo-item-overlay">
+                    <button class="btn btn--sm" style="background:rgba(220,53,69,0.9);color:#fff;border:none;">Remove</button>
+                  </div>
+                  <div class="photo-item-label">cascade6-2.jpg</div>
                 </div>
-                <div class="photo-placeholder" style="background: linear-gradient(135deg, #8e44ad, #9b59b6);">
-                  <span style="color: rgba(255,255,255,0.7);">Room</span>
+                <div class="photo-item">
+                  <img src="/public/cascade6-3.jpg" alt="cascade6-3.jpg" onerror="this.parentElement.style.background='linear-gradient(135deg,#27ae60,#1abc9c)';this.style.display='none'">
+                  <div class="photo-item-overlay">
+                    <button class="btn btn--sm" style="background:rgba(220,53,69,0.9);color:#fff;border:none;">Remove</button>
+                  </div>
+                  <div class="photo-item-label">cascade6-3.jpg</div>
                 </div>
-                <div class="photo-placeholder" style="background: linear-gradient(135deg, #d35400, #e67e22);">
-                  <span style="color: rgba(255,255,255,0.7);">Pool</span>
+                <div class="photo-item">
+                  <img src="/public/cascade6-4.jpg" alt="cascade6-4.jpg" onerror="this.parentElement.style.background='linear-gradient(135deg,#c9a84c,#d4a050)';this.style.display='none'">
+                  <div class="photo-item-overlay">
+                    <button class="btn btn--sm" style="background:rgba(220,53,69,0.9);color:#fff;border:none;">Remove</button>
+                  </div>
+                  <div class="photo-item-label">cascade6-4.jpg</div>
                 </div>
-                <div class="photo-placeholder">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="24" height="24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                <div class="photo-item">
+                  <img src="/public/cascade6-5.jpg" alt="cascade6-5.jpg" onerror="this.parentElement.style.background='linear-gradient(135deg,#8e44ad,#9b59b6)';this.style.display='none'">
+                  <div class="photo-item-overlay">
+                    <button class="btn btn--sm" style="background:rgba(220,53,69,0.9);color:#fff;border:none;">Remove</button>
+                  </div>
+                  <div class="photo-item-label">cascade6-5.jpg</div>
+                </div>
+                <div class="photo-item">
+                  <img src="/public/cascade6-6.jpg" alt="cascade6-6.jpg" onerror="this.parentElement.style.background='linear-gradient(135deg,#d35400,#e67e22)';this.style.display='none'">
+                  <div class="photo-item-overlay">
+                    <button class="btn btn--sm" style="background:rgba(220,53,69,0.9);color:#fff;border:none;">Remove</button>
+                  </div>
+                  <div class="photo-item-label">cascade6-6.jpg</div>
+                </div>
+                <div class="photo-item">
+                  <img src="/public/cascade6-7.jpg" alt="cascade6-7.jpg" onerror="this.parentElement.style.background='linear-gradient(135deg,#16a085,#27ae60)';this.style.display='none'">
+                  <div class="photo-item-overlay">
+                    <button class="btn btn--sm" style="background:rgba(220,53,69,0.9);color:#fff;border:none;">Remove</button>
+                  </div>
+                  <div class="photo-item-label">cascade6-7.jpg</div>
+                </div>
+                <div class="photo-item">
+                  <img src="/public/cascade6-8.jpg" alt="cascade6-8.jpg" onerror="this.parentElement.style.background='linear-gradient(135deg,#2c3e50,#3498db)';this.style.display='none'">
+                  <div class="photo-item-overlay">
+                    <button class="btn btn--sm" style="background:rgba(220,53,69,0.9);color:#fff;border:none;">Remove</button>
+                  </div>
+                  <div class="photo-item-label">cascade6-8.jpg</div>
                 </div>
               </div>
             </div>
@@ -767,7 +828,7 @@
               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-lg); margin-bottom: var(--space-xl);">
                 <div class="form-group">
                   <label class="form-label">Minimum Stay (nights)</label>
-                  <input type="number" class="form-input" value="1" min="1">
+                  <input type="number" class="form-input" value="2" min="1">
                 </div>
                 <div class="form-group">
                   <label class="form-label">Maximum Stay (nights)</label>
@@ -854,7 +915,7 @@
                   <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
                   <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
                 </svg>
-                <code>https://trendaccom.com.au/ical/export/prop-abc123-def456.ics</code>
+                <code>https://cascade6.com.au/ical/export/cascade-apt6.ics</code>
                 <button class="btn btn--sm btn--outline" title="Copy URL">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
                   Copy
@@ -908,30 +969,58 @@
     </div>
   </div>
 
+  <!-- Toast Notification -->
+  <div class="toast" id="toast">
+    <div class="toast-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" width="12" height="12"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <span id="toastMsg">Changes saved successfully.</span>
+  </div>
+
   <script src="../js/app.js"></script>
   <script src="../js/admin.js"></script>
+  <script src="js/auth-check.js"></script>
   <script>
-    // Tab switching functionality
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
+
+      // Sidebar toggle
+      document.getElementById('sidebarToggle').addEventListener('click', function () {
+        document.getElementById('adminSidebar').classList.toggle('open');
+      });
+
+      // Tab switching
       var tabs = document.querySelectorAll('.form-tab');
       var panels = document.querySelectorAll('.tab-panel');
 
-      tabs.forEach(function(tab) {
-        tab.addEventListener('click', function() {
+      tabs.forEach(function (tab) {
+        tab.addEventListener('click', function () {
           var targetId = 'tab-' + this.getAttribute('data-tab');
-
-          // Deactivate all tabs and panels
-          tabs.forEach(function(t) { t.classList.remove('active'); });
-          panels.forEach(function(p) { p.classList.remove('active'); });
-
-          // Activate clicked tab and matching panel
+          tabs.forEach(function (t) { t.classList.remove('active'); });
+          panels.forEach(function (p) { p.classList.remove('active'); });
           this.classList.add('active');
           var targetPanel = document.getElementById(targetId);
-          if (targetPanel) {
-            targetPanel.classList.add('active');
-          }
+          if (targetPanel) { targetPanel.classList.add('active'); }
         });
       });
+
+      // Toast helper
+      function showToast(msg) {
+        var toast = document.getElementById('toast');
+        document.getElementById('toastMsg').textContent = msg;
+        toast.classList.add('show');
+        setTimeout(function () { toast.classList.remove('show'); }, 3500);
+      }
+
+      // Save Changes button
+      document.getElementById('saveBtn').addEventListener('click', function () {
+        showToast('Changes saved successfully.');
+      });
+
+      // Revert Changes button
+      document.getElementById('revertBtn').addEventListener('click', function () {
+        showToast('Changes reverted to last saved state.');
+      });
+
     });
   </script>
 </body>
