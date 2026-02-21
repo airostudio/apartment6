@@ -219,7 +219,6 @@
       // 3. Server parses events and blocks dates in your system
       // 4. Server sets up periodic sync (every 15-60 minutes)
 
-      console.log('iCal import:', { url, propertyId, platform });
 
       return {
         success: true,
@@ -236,7 +235,6 @@
      * Trigger manual sync
      */
     async syncNow(connectionId) {
-      console.log('Manual sync triggered for connection:', connectionId);
 
       // Simulate sync
       return {
@@ -354,7 +352,6 @@
       btn.addEventListener('click', () => {
         if (confirm('Are you sure you want to remove this calendar connection?')) {
           const connectionId = btn.dataset.removeConnection;
-          console.log('Removing connection:', connectionId);
           window.TrendAccom?.showToast('Calendar connection removed', 'info');
           btn.closest('.ical-connection')?.remove();
         }

@@ -272,7 +272,6 @@
           const date = day.dataset.date || day.querySelector('.day-number')?.textContent;
           if (date) {
             // Could open a modal to add/edit bookings for this day
-            console.log('Admin calendar day clicked:', date);
           }
         });
       });
@@ -293,7 +292,6 @@
       document.querySelectorAll('.toggle input').forEach(toggle => {
         toggle.addEventListener('change', () => {
           const label = toggle.closest('.settings-row')?.querySelector('h4')?.textContent;
-          console.log(`Setting ${label} changed to ${toggle.checked}`);
         });
       });
     },

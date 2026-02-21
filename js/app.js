@@ -7,6 +7,17 @@
 (function() {
   'use strict';
 
+
+  // ============================================
+  // Hero Search Button
+  // ============================================
+  const heroSearchBtn = document.getElementById('heroSearchBtn');
+  if (heroSearchBtn) {
+    heroSearchBtn.addEventListener('click', function() {
+      if (typeof performSearch === 'function') performSearch();
+    });
+  }
+
   // ============================================
   // Header Scroll Behavior
   // ============================================
@@ -38,6 +49,7 @@
     if (slides.length <= 1) return;
 
     slideshowInterval = setInterval(() => {
+      if (document.hidden) return;
       slides[currentSlide].classList.remove('active');
       currentSlide = (currentSlide + 1) % slides.length;
       slides[currentSlide].classList.add('active');

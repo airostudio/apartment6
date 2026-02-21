@@ -9,781 +9,100 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/main.css">
     <link rel="stylesheet" href="../css/admin.css">
+    
     <style>
-        :root {
-            --sidebar-width: 260px;
-            --topbar-height: 64px;
-            --primary: #2563eb;
-            --primary-dark: #1d4ed8;
-            --primary-light: #dbeafe;
-            --secondary: #0f172a;
-            --gray-50: #f8fafc;
-            --gray-100: #f1f5f9;
-            --gray-200: #e2e8f0;
-            --gray-300: #cbd5e1;
-            --gray-400: #94a3b8;
-            --gray-500: #64748b;
-            --gray-600: #475569;
-            --gray-700: #334155;
-            --gray-800: #1e293b;
-            --gray-900: #0f172a;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --danger: #ef4444;
-            --radius: 8px;
-            --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--gray-50);
-            color: var(--gray-800);
-            display: flex;
-            min-height: 100vh;
-        }
-
-        /* ========== Sidebar ========== */
-        .sidebar {
-            width: var(--sidebar-width);
-            background: var(--secondary);
-            color: #fff;
-            position: fixed;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            z-index: 100;
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-        }
-
-        .sidebar-logo {
-            padding: 20px 24px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .sidebar-logo h1 {
-            font-size: 20px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-        }
-
-        .sidebar-logo .admin-badge {
-            background: var(--primary);
-            color: #fff;
-            font-size: 10px;
-            font-weight: 600;
-            padding: 2px 8px;
-            border-radius: 20px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .sidebar-nav {
-            flex: 1;
-            padding: 16px 0;
-        }
-
-        .nav-section {
-            margin-bottom: 8px;
-        }
-
-        .nav-section-title {
-            padding: 8px 24px;
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--gray-400);
-        }
-
-        .nav-link {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 10px 24px;
-            color: var(--gray-300);
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 500;
-            transition: all 0.15s ease;
-            border-left: 3px solid transparent;
-        }
-
-        .nav-link:hover {
-            background: rgba(255, 255, 255, 0.05);
-            color: #fff;
-        }
-
-        .nav-link.active {
-            background: rgba(37, 99, 235, 0.15);
-            color: #fff;
-            border-left-color: var(--primary);
-        }
-
-        .nav-link svg {
-            width: 20px;
-            height: 20px;
-            flex-shrink: 0;
-            opacity: 0.7;
-        }
-
-        .nav-link.active svg,
-        .nav-link:hover svg {
-            opacity: 1;
-        }
-
-        /* ========== Main Content ========== */
-        .main-wrapper {
-            margin-left: var(--sidebar-width);
-            flex: 1;
-            min-height: 100vh;
-        }
-
-        /* ========== Topbar ========== */
-        .topbar {
-            height: var(--topbar-height);
-            background: #fff;
-            border-bottom: 1px solid var(--gray-200);
-            display: flex;
-            align-items: center;
-            padding: 0 32px;
-            position: sticky;
-            top: 0;
-            z-index: 50;
-        }
-
-        .breadcrumb {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 14px;
-        }
-
-        .breadcrumb a {
-            color: var(--gray-500);
-            text-decoration: none;
-        }
-
-        .breadcrumb a:hover {
-            color: var(--primary);
-        }
-
-        .breadcrumb .separator {
-            color: var(--gray-300);
-        }
-
-        .breadcrumb .current {
-            color: var(--gray-800);
-            font-weight: 500;
-        }
-
-        /* ========== Content Area ========== */
-        .content {
-            padding: 32px;
-            max-width: 1200px;
-        }
-
-        .page-header {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            margin-bottom: 32px;
-        }
-
-        .page-header-text h2 {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--gray-900);
-            margin-bottom: 4px;
-        }
-
-        .page-header-text p {
-            font-size: 14px;
-            color: var(--gray-500);
-        }
-
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 20px;
-            border-radius: var(--radius);
-            font-size: 14px;
-            font-weight: 500;
-            font-family: inherit;
-            cursor: pointer;
-            border: 1px solid transparent;
-            transition: all 0.15s ease;
-        }
-
-        .btn-primary {
-            background: var(--primary);
-            color: #fff;
-            border-color: var(--primary);
-        }
-
-        .btn-primary:hover {
-            background: var(--primary-dark);
-        }
-
-        .btn-secondary {
-            background: #fff;
-            color: var(--gray-700);
-            border-color: var(--gray-300);
-        }
-
-        .btn-secondary:hover {
-            background: var(--gray-50);
-        }
-
-        /* ========== Tabs ========== */
-        .settings-tabs {
-            display: flex;
-            gap: 0;
-            border-bottom: 2px solid var(--gray-200);
-            margin-bottom: 32px;
-        }
-
-        .settings-tab {
-            padding: 12px 24px;
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--gray-500);
-            background: none;
-            border: none;
-            cursor: pointer;
-            border-bottom: 2px solid transparent;
-            margin-bottom: -2px;
-            transition: all 0.15s ease;
-            font-family: inherit;
-        }
-
-        .settings-tab:hover {
-            color: var(--gray-700);
-        }
-
-        .settings-tab.active {
-            color: var(--primary);
-            border-bottom-color: var(--primary);
-        }
-
-        /* ========== Tab Content ========== */
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        /* ========== Settings Sections ========== */
-        .settings-section {
-            background: #fff;
-            border: 1px solid var(--gray-200);
-            border-radius: var(--radius);
-            padding: 28px;
-            margin-bottom: 24px;
-        }
-
-        .settings-section h3 {
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--gray-900);
-            margin-bottom: 20px;
-            padding-bottom: 16px;
-            border-bottom: 1px solid var(--gray-100);
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group:last-child {
-            margin-bottom: 0;
-        }
-
-        .form-group label {
-            display: block;
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--gray-700);
-            margin-bottom: 6px;
-        }
-
-        .form-group .form-hint {
-            font-size: 12px;
-            color: var(--gray-400);
-            margin-top: 4px;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        .form-row-3 {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 20px;
-        }
-
-        input[type="text"],
-        input[type="email"],
-        input[type="url"],
-        input[type="tel"],
-        input[type="number"],
-        input[type="time"],
-        input[type="color"],
-        textarea,
-        select {
-            width: 100%;
-            padding: 10px 14px;
-            border: 1px solid var(--gray-300);
-            border-radius: 6px;
-            font-size: 14px;
-            font-family: inherit;
-            color: var(--gray-800);
-            background: #fff;
-            transition: border-color 0.15s ease;
-        }
-
-        input:focus,
-        textarea:focus,
-        select:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-        }
-
-        textarea {
-            resize: vertical;
-            min-height: 80px;
-        }
-
-        input[type="color"] {
-            height: 44px;
-            padding: 4px;
-            cursor: pointer;
-        }
-
-        /* ========== Toggle Switch ========== */
-        .toggle-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 14px 0;
-            border-bottom: 1px solid var(--gray-100);
-        }
-
-        .toggle-row:last-child {
-            border-bottom: none;
-            padding-bottom: 0;
-        }
-
-        .toggle-row:first-of-type {
-            padding-top: 0;
-        }
-
-        .toggle-info h4 {
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--gray-800);
-            margin-bottom: 2px;
-        }
-
-        .toggle-info p {
-            font-size: 13px;
-            color: var(--gray-400);
-        }
-
-        .toggle-controls {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .toggle-switch {
-            position: relative;
-            width: 44px;
-            height: 24px;
-            flex-shrink: 0;
-        }
-
-        .toggle-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .toggle-slider {
-            position: absolute;
-            cursor: pointer;
-            inset: 0;
-            background: var(--gray-300);
-            border-radius: 24px;
-            transition: 0.2s ease;
-        }
-
-        .toggle-slider::before {
-            content: '';
-            position: absolute;
-            height: 18px;
-            width: 18px;
-            left: 3px;
-            bottom: 3px;
-            background: #fff;
-            border-radius: 50%;
-            transition: 0.2s ease;
-        }
-
-        .toggle-switch input:checked + .toggle-slider {
-            background: var(--primary);
-        }
-
-        .toggle-switch input:checked + .toggle-slider::before {
-            transform: translateX(20px);
-        }
-
-        /* ========== Policy Cards ========== */
-        .policy-card {
-            border: 1px solid var(--gray-200);
-            border-radius: var(--radius);
-            padding: 16px 20px;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            transition: border-color 0.15s ease;
-        }
-
-        .policy-card:last-of-type {
-            margin-bottom: 0;
-        }
-
-        .policy-card.active-policy {
-            border-color: var(--primary);
-            background: var(--primary-light);
-        }
-
-        .policy-info h4 {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--gray-800);
-            margin-bottom: 2px;
-        }
-
-        .policy-info p {
-            font-size: 13px;
-            color: var(--gray-500);
-        }
-
-        /* ========== Upload Placeholder ========== */
-        .upload-area {
-            border: 2px dashed var(--gray-300);
-            border-radius: var(--radius);
-            padding: 32px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.15s ease;
-        }
-
-        .upload-area:hover {
-            border-color: var(--primary);
-            background: var(--primary-light);
-        }
-
-        .upload-area svg {
-            width: 40px;
-            height: 40px;
-            color: var(--gray-400);
-            margin-bottom: 8px;
-        }
-
-        .upload-area p {
-            font-size: 13px;
-            color: var(--gray-500);
-        }
-
-        .upload-area .upload-label {
-            font-weight: 500;
-            color: var(--primary);
-        }
-
-        /* ========== Users Table ========== */
-        .users-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .users-table thead th {
-            text-align: left;
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--gray-500);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            padding: 12px 16px;
-            border-bottom: 1px solid var(--gray-200);
-        }
-
-        .users-table tbody td {
-            padding: 14px 16px;
-            font-size: 14px;
-            border-bottom: 1px solid var(--gray-100);
-            vertical-align: middle;
-        }
-
-        .user-cell {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .user-avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            font-weight: 600;
-            color: #fff;
-            flex-shrink: 0;
-        }
-
-        .user-avatar.bg-blue { background: var(--primary); }
-        .user-avatar.bg-green { background: var(--success); }
-        .user-avatar.bg-orange { background: var(--warning); }
-
-        .user-name {
-            font-weight: 500;
-            color: var(--gray-800);
-        }
-
-        .role-badge {
-            display: inline-block;
-            padding: 3px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 500;
-        }
-
-        .role-owner { background: #fef3c7; color: #92400e; }
-        .role-admin { background: #dbeafe; color: #1e40af; }
-        .role-manager { background: #d1fae5; color: #065f46; }
-
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 13px;
-        }
-
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-        }
-
-        .status-dot.active { background: var(--success); }
-        .status-dot.inactive { background: var(--gray-300); }
-
-        .action-link {
-            color: var(--primary);
-            text-decoration: none;
-            font-size: 13px;
-            font-weight: 500;
-            margin-right: 12px;
-        }
-
-        .action-link:hover {
-            text-decoration: underline;
-        }
-
-        .action-link.danger {
-            color: var(--danger);
-        }
-
-        .invite-section {
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid var(--gray-100);
-            text-align: right;
-        }
-
-        /* ========== Inline Select ========== */
-        .inline-select {
-            width: auto;
-            padding: 6px 10px;
-            font-size: 13px;
-            margin-left: 8px;
-        }
-
-        /* ========== Responsive ========== */
-        @media (max-width: 1024px) {
-            .sidebar {
-                transform: translateX(-100%);
-            }
-            .main-wrapper {
-                margin-left: 0;
-            }
-            .form-row, .form-row-3 {
-                grid-template-columns: 1fr;
-            }
-        }
+        .settings-tabs { display:flex; border-bottom:2px solid var(--color-light); margin-bottom:var(--space-xl); gap:0; }
+        .tab-btn { padding:var(--space-md) var(--space-xl); font-size:var(--font-size-sm); font-weight:var(--font-weight-medium); color:var(--color-gray); border:none; border-bottom:2px solid transparent; margin-bottom:-2px; background:none; cursor:pointer; font-family:inherit; transition:all var(--transition-fast); }
+        .tab-btn:hover { color:var(--color-dark); }
+        .tab-btn.active { color:var(--color-primary); border-bottom-color:var(--color-primary); font-weight:var(--font-weight-semibold); }
+        .tab-content { display:none; }
+        .tab-content.active { display:block; }
+        .settings-section { background:var(--color-white); border:1px solid var(--color-light); border-radius:var(--radius-lg); margin-bottom:var(--space-lg); }
+        .settings-section-header { padding:var(--space-lg) var(--space-xl); border-bottom:1px solid var(--color-light); display:flex; align-items:center; justify-content:space-between; }
+        .settings-section-title { font-size:var(--font-size-base); font-weight:var(--font-weight-semibold); color:var(--color-darker); font-family:var(--font-primary); }
+        .settings-section-body { padding:var(--space-xl); }
+        .settings-row { display:flex; align-items:center; justify-content:space-between; padding:var(--space-md) 0; border-bottom:1px solid var(--color-light); gap:var(--space-md); }
+        .settings-row:last-child { border-bottom:none; }
+        .settings-row-label { font-size:var(--font-size-sm); font-weight:var(--font-weight-medium); color:var(--color-dark); }
+        .settings-row-sub { font-size:var(--font-size-xs); color:var(--color-gray); margin-top:2px; }
+        .page-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:var(--space-xl); gap:var(--space-md); flex-wrap:wrap; }
+        .page-title { font-size:var(--font-size-xl); font-weight:var(--font-weight-bold); color:var(--color-darker); font-family:var(--font-primary); }
+        .page-subtitle { font-size:var(--font-size-sm); color:var(--color-gray); margin-top:2px; }
+        .btn-save { display:inline-flex; align-items:center; gap:var(--space-sm); padding:var(--space-sm) var(--space-lg); background:var(--color-primary); color:#fff; border:none; border-radius:var(--radius-md); font-size:var(--font-size-sm); font-weight:var(--font-weight-semibold); cursor:pointer; font-family:inherit; transition:background var(--transition-fast); }
+        .btn-save:hover { background:var(--color-primary-light); }
+        .toggle { position:relative; width:44px; height:24px; display:inline-block; }
+        .toggle input { opacity:0; width:0; height:0; }
+        .toggle-slider { position:absolute; inset:0; background:var(--color-muted); border-radius:24px; cursor:pointer; transition:background var(--transition-fast); }
+        .toggle-slider::before { content:''; position:absolute; width:18px; height:18px; left:3px; top:3px; background:#fff; border-radius:50%; transition:transform var(--transition-fast); }
+        .toggle input:checked + .toggle-slider { background:var(--color-success); }
+        .toggle input:checked + .toggle-slider::before { transform:translateX(20px); }
     </style>
 </head>
-<body>
+<body class="admin-body">
+<div class="admin-layout">
 
     <!-- ========== Sidebar ========== -->
-    <aside class="sidebar">
-        <div class="sidebar-logo">
-            <h1>TrendAccom</h1>
-            <span class="admin-badge">Admin</span>
+    <aside class="admin-sidebar">
+        <div class="admin-sidebar__header">
+            <a href="index.html" class="admin-sidebar__logo">
+                <span class="admin-sidebar__logo-text">TrendAccom</span>
+                <span class="admin-sidebar__logo-badge">Admin</span>
+            </a>
         </div>
-
-        <nav class="sidebar-nav">
-            <!-- MAIN -->
-            <div class="nav-section">
-                <div class="nav-section-title">Main</div>
-
-                <a href="index.html" class="nav-link">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-                        <polyline points="9 22 9 12 15 12 15 22"/>
-                    </svg>
-                    Dashboard
-                </a>
-
-                <a href="properties.html" class="nav-link">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="3" y="3" width="7" height="9"/>
-                        <rect x="14" y="3" width="7" height="5"/>
-                        <rect x="14" y="12" width="7" height="9"/>
-                        <rect x="3" y="16" width="7" height="5"/>
-                    </svg>
-                    Properties
-                </a>
-
-                <a href="bookings.html" class="nav-link">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
-                        <rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
-                    </svg>
-                    Bookings
-                </a>
-
-                <a href="calendar.html" class="nav-link">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-                        <line x1="16" y1="2" x2="16" y2="6"/>
-                        <line x1="8" y1="2" x2="8" y2="6"/>
-                        <line x1="3" y1="10" x2="21" y2="10"/>
-                    </svg>
-                    Calendar
-                </a>
+        <nav class="admin-sidebar__nav">
+            <div class="admin-sidebar__section">
+                <span class="admin-sidebar__section-title">MAIN</span>
+                <ul class="admin-sidebar__menu">
+                    <li class="admin-sidebar__menu-item"><a href="index.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg><span>Dashboard</span></a></li>
+                    <li class="admin-sidebar__menu-item"><a href="properties.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>Properties</span></a></li>
+                    <li class="admin-sidebar__menu-item"><a href="bookings.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg><span>Bookings</span></a></li>
+                    <li class="admin-sidebar__menu-item"><a href="calendar.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>Calendar</span></a></li>
+                </ul>
             </div>
-
-            <!-- MANAGEMENT -->
-            <div class="nav-section">
-                <div class="nav-section-title">Management</div>
-
-                <a href="rates.html" class="nav-link">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="12" y1="1" x2="12" y2="23"/>
-                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-                    </svg>
-                    Rates &amp; Pricing
-                </a>
-
-                <a href="guests.html" class="nav-link">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                        <circle cx="9" cy="7" r="4"/>
-                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-                        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                    </svg>
-                    Guests
-                </a>
-
-                <a href="reviews.html" class="nav-link">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-                    </svg>
-                    Reviews
-                </a>
+            <div class="admin-sidebar__section">
+                <span class="admin-sidebar__section-title">MANAGEMENT</span>
+                <ul class="admin-sidebar__menu">
+                    <li class="admin-sidebar__menu-item"><a href="rates.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg><span>Rates &amp; Pricing</span></a></li>
+                    <li class="admin-sidebar__menu-item"><a href="guests.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Guests</span></a></li>
+                    <li class="admin-sidebar__menu-item"><a href="reviews.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><span>Reviews</span></a></li>
+                </ul>
             </div>
-
-            <!-- INTEGRATIONS -->
-            <div class="nav-section">
-                <div class="nav-section-title">Integrations</div>
-
-                <a href="ical-sync.html" class="nav-link">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <polyline points="23 4 23 10 17 10"/>
-                        <polyline points="1 20 1 14 7 14"/>
-                        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"/>
-                        <path d="M20.49 15a9 9 0 0 1-14.85 3.36L1 14"/>
-                    </svg>
-                    iCal Sync
-                </a>
-
-                <a href="stripe.html" class="nav-link">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
-                        <line x1="1" y1="10" x2="23" y2="10"/>
-                    </svg>
-                    Stripe Connect
-                </a>
+            <div class="admin-sidebar__section">
+                <span class="admin-sidebar__section-title">INTEGRATIONS</span>
+                <ul class="admin-sidebar__menu">
+                    <li class="admin-sidebar__menu-item"><a href="ical-sync.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg><span>iCal Sync</span></a></li>
+                    <li class="admin-sidebar__menu-item"><a href="stripe-connect.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg><span>Stripe Connect</span></a></li>
+                </ul>
             </div>
-
-            <!-- SYSTEM -->
-            <div class="nav-section">
-                <div class="nav-section-title">System</div>
-
-                <a href="settings.html" class="nav-link active">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="3"/>
-                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
-                    </svg>
-                    Settings
-                </a>
-
-                <a href="reports.html" class="nav-link">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="18" y1="20" x2="18" y2="10"/>
-                        <line x1="12" y1="20" x2="12" y2="4"/>
-                        <line x1="6" y1="20" x2="6" y2="14"/>
-                    </svg>
-                    Reports
-                </a>
+            <div class="admin-sidebar__section">
+                <span class="admin-sidebar__section-title">SYSTEM</span>
+                <ul class="admin-sidebar__menu">
+                    <li class="admin-sidebar__menu-item"><a href="settings.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span>Settings</span></a></li>
+                    <li class="admin-sidebar__menu-item"><a href="reports.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg><span>Reports</span></a></li>
+                </ul>
             </div>
         </nav>
     </aside>
 
-    <!-- ========== Main Wrapper ========== -->
-    <div class="main-wrapper">
+    <!-- Main Content -->
+    <main class="admin-main">
 
-        <!-- Topbar -->
-        <header class="topbar">
-            <div class="breadcrumb">
-                <a href="index.html">Dashboard</a>
-                <span class="separator">/</span>
-                <span class="current">Settings</span>
+        <header class="admin-topbar">
+            <div class="admin-topbar__breadcrumb">
+                <a href="index.html" class="admin-topbar__breadcrumb-link">Dashboard</a>
+                <span class="admin-topbar__breadcrumb-separator">&rsaquo;</span>
+                <span class="admin-topbar__breadcrumb-current">Settings</span>
+            </div>
+            <div class="admin-topbar__actions">
+                <div class="admin-topbar__user">
+                    <div class="admin-topbar__user-avatar">AD</div>
+                    <span class="admin-topbar__user-name">Admin</span>
+                </div>
             </div>
         </header>
 
         <!-- Content -->
-        <main class="content">
+        <div class="admin-content">
 
             <!-- Page Header -->
             <div class="page-header">
@@ -1475,5 +794,7 @@
             }, 800);
         });
     </script>
+    <script src="../js/admin-auth.js"></script>
+</div><!-- .admin-layout -->
 </body>
 </html>

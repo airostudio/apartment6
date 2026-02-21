@@ -146,7 +146,6 @@
       // const response = await fetch('/api/create-payment-intent', { ... });
       // const { clientSecret } = await response.json();
 
-      console.log('Payment would be processed with:', {
         amount: bookingData.amount,
         currency: this.config.currency,
         connectedAccountId: bookingData.propertyStripeAccount,
@@ -172,7 +171,6 @@
       // 2. Server calls Stripe to create an Account Link
       // 3. Redirect the property owner to Stripe's onboarding
 
-      console.log('Starting Stripe Connect onboarding...');
 
       // Simulated redirect URL
       const onboardingUrl = 'https://connect.stripe.com/setup/s/demo';
@@ -202,7 +200,6 @@
      * Create a refund
      */
     async createRefund(paymentIntentId, amount, reason) {
-      console.log('Refund would be processed:', {
         paymentIntentId,
         amount,
         reason
