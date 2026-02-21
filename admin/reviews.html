@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reviews - TrendAccom Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/admin.css">
+    <style>
+        /* Reviews-specific styles only — no design system overrides */
+
+        /* ── Stat cards ── */
+        .reviews-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-lg);
+            margin-bottom: var(--space-xl);
+        }
+
+        .reviews-stat-card {
+            background: var(--color-white);
+            border: 1px solid var(--color-light);
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg) var(--space-xl);
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            box-shadow: var(--shadow-md);
+        }
+
+        .reviews-stat-card__icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .reviews-stat-card__icon--total {
+            background: rgba(15, 39, 68, 0.1);
+            color: var(--color-primary);
+        }
+
+        .reviews-stat-card__icon--avg {
+            background: rgba(201, 168, 76, 0.15);
+            color: var(--color-gold);
+        }
+
+        .reviews-stat-card__icon--airbnb {
+            background: rgba(255, 90, 95, 0.12);
+            color: #ff5a5f;
+        }
+
+        .reviews-stat-card__icon--booking {
+            background: rgba(0, 53, 128, 0.1);
+            color: #003580;
+        }
+
+        .reviews-stat-card__label {
+            font-size: var(--font-size-xs);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-gray);
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            margin-bottom: 2px;
+        }
+
+        .reviews-stat-card__value {
+            font-size: var(--font-size-xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--color-dark);
+            line-height: 1;
+        }
+
+        .reviews-stat-card__sub {
+            font-size: var(--font-size-xs);
+            color: var(--color-gray);
+            margin-top: 2px;
+        }
+
+        /* ── Tabs ── */
+        .reviews-tabs {
+            display: flex;
+            gap: 0;
+            border-bottom: 2px solid var(--color-light);
+            margin-bottom: var(--space-xl);
+        }
+
+        .reviews-tab {
+            padding: var(--space-md) var(--space-xl);
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-gray);
+            cursor: pointer;
+            border: none;
+            background: none;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+            transition: color 0.2s, border-color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .reviews-tab:hover {
+            color: var(--color-dark);
+        }
+
+        .reviews-tab--active {
+            color: var(--color-primary);
+            border-bottom-color: var(--color-primary);
+        }
+
+        .reviews-tab__count {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 20px;
+            height: 20px;
+            padding: 0 6px;
+            border-radius: var(--radius-full);
+            font-size: var(--font-size-xs);
+            font-weight: var(--font-weight-semibold);
+            background: var(--color-light);
+            color: var(--color-gray);
+        }
+
+        .reviews-tab--active .reviews-tab__count {
+            background: var(--color-primary);
+            color: var(--color-white);
+        }
+
+        /* ── Tab panels ── */
+        .reviews-panel {
+            display: none;
+        }
+
+        .reviews-panel--active {
+            display: block;
+        }
+
+        /* ── Review grid ── */
+        .reviews-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: var(--space-lg);
+        }
+
+        /* ── Review card ── */
+        .review-card {
+            background: var(--color-white);
+            border: 1px solid var(--color-light);
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg);
+            box-shadow: var(--shadow-md);
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-md);
+            transition: box-shadow 0.2s;
+        }
+
+        .review-card:hover {
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Card header: avatar + name/meta + badge */
+        .review-card__header {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-md);
+        }
+
+        .review-card__avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: var(--radius-full);
+            background: var(--color-primary);
+            color: var(--color-white);
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-bold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            letter-spacing: 0.5px;
+        }
+
+        .review-card__avatar--airbnb {
+            background: #ff5a5f;
+        }
+
+        .review-card__avatar--booking {
+            background: #003580;
+        }
+
+        .review-card__meta {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .review-card__guest-name {
+            font-size: var(--font-size-base);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-dark);
+            margin: 0 0 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .review-card__date {
+            font-size: var(--font-size-xs);
+            color: var(--color-gray);
+        }
+
+        /* Platform badge */
+        .review-card__badge {
+            flex-shrink: 0;
+            padding: 3px 10px;
+            border-radius: var(--radius-full);
+            font-size: var(--font-size-xs);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-white);
+            letter-spacing: 0.3px;
+        }
+
+        .review-card__badge--airbnb {
+            background: #ff5a5f;
+        }
+
+        .review-card__badge--booking {
+            background: #003580;
+        }
+
+        /* Star rating row */
+        .review-card__stars {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .review-card__stars svg {
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+        }
+
+        .star--filled {
+            fill: var(--color-gold);
+            stroke: var(--color-gold);
+        }
+
+        .star--empty {
+            fill: none;
+            stroke: var(--color-muted, #b8b0a4);
+        }
+
+        /* Review text */
+        .review-card__text {
+            font-size: var(--font-size-sm);
+            color: var(--color-gray);
+            line-height: 1.65;
+            margin: 0;
+        }
+
+        /* Property name */
+        .review-card__property {
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+            font-size: var(--font-size-xs);
+            color: var(--color-gray);
+            font-weight: var(--font-weight-medium);
+        }
+
+        .review-card__property svg {
+            width: 13px;
+            height: 13px;
+            flex-shrink: 0;
+            color: var(--color-secondary);
+        }
+
+        /* Card footer */
+        .review-card__footer {
+            margin-top: auto;
+            padding-top: var(--space-md);
+            border-top: 1px solid var(--color-light);
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        /* Reply button — inherits .btn .btn--sm styling, with platform colour overrides */
+        .review-card__reply {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-xs);
+            padding: 6px 14px;
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-xs);
+            font-weight: var(--font-weight-semibold);
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: opacity 0.2s, transform 0.15s;
+            border: 2px solid transparent;
+            line-height: 1;
+        }
+
+        .review-card__reply:hover {
+            opacity: 0.85;
+            transform: translateY(-1px);
+        }
+
+        .review-card__reply svg {
+            width: 13px;
+            height: 13px;
+        }
+
+        .review-card__reply--airbnb {
+            background: #ff5a5f;
+            color: var(--color-white);
+            border-color: #ff5a5f;
+        }
+
+        .review-card__reply--booking {
+            background: #003580;
+            color: var(--color-white);
+            border-color: #003580;
+        }
+
+        /* ── Page header ── */
+        .reviews-page-header {
+            margin-bottom: var(--space-xl);
+        }
+
+        .reviews-page-header h1 {
+            font-size: var(--font-size-xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--color-dark);
+            margin: 0 0 var(--space-xs);
+        }
+
+        .reviews-page-header p {
+            font-size: var(--font-size-sm);
+            color: var(--color-gray);
+            margin: 0;
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 768px) {
+            .reviews-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .reviews-grid {
+                grid-template-columns: 1fr;
+            }
+            .reviews-tab {
+                padding: var(--space-md) var(--space-lg);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .reviews-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body class="admin-body">
+<div class="admin-layout">
+
+    <!-- ═══════════════════════════════════════════
+         SIDEBAR (canonical pattern — verbatim)
+         ═══════════════════════════════════════════ -->
+    <aside class="admin-sidebar">
+        <div class="admin-sidebar__header">
+            <a href="index.html" class="admin-sidebar__logo">
+                <span class="admin-sidebar__logo-text">TrendAccom</span>
+                <span class="admin-sidebar__logo-badge">Admin</span>
+            </a>
+        </div>
+        <nav class="admin-sidebar__nav">
+            <div class="admin-sidebar__section">
+                <span class="admin-sidebar__section-title">MAIN</span>
+                <ul class="admin-sidebar__menu">
+                    <li class="admin-sidebar__menu-item"><a href="index.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg><span>Dashboard</span></a></li>
+                    <li class="admin-sidebar__menu-item"><a href="properties.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>Properties</span></a></li>
+                    <li class="admin-sidebar__menu-item"><a href="bookings.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg><span>Bookings</span></a></li>
+                    <li class="admin-sidebar__menu-item"><a href="calendar.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>Calendar</span></a></li>
+                </ul>
+            </div>
+            <div class="admin-sidebar__section">
+                <span class="admin-sidebar__section-title">MANAGEMENT</span>
+                <ul class="admin-sidebar__menu">
+                    <li class="admin-sidebar__menu-item"><a href="rates.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg><span>Rates &amp; Pricing</span></a></li>
+                    <li class="admin-sidebar__menu-item"><a href="guests.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Guests</span></a></li>
+                    <li class="admin-sidebar__menu-item"><a href="reviews.html" class="admin-sidebar__menu-link admin-sidebar__menu-link--active"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><span>Reviews</span></a></li>
+                </ul>
+            </div>
+            <div class="admin-sidebar__section">
+                <span class="admin-sidebar__section-title">INTEGRATIONS</span>
+                <ul class="admin-sidebar__menu">
+                    <li class="admin-sidebar__menu-item"><a href="ical-sync.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg><span>iCal Sync</span></a></li>
+                    <li class="admin-sidebar__menu-item"><a href="stripe-connect.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg><span>Stripe Connect</span></a></li>
+                </ul>
+            </div>
+            <div class="admin-sidebar__section">
+                <span class="admin-sidebar__section-title">SYSTEM</span>
+                <ul class="admin-sidebar__menu">
+                    <li class="admin-sidebar__menu-item"><a href="settings.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span>Settings</span></a></li>
+                    <li class="admin-sidebar__menu-item"><a href="reports.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg><span>Reports</span></a></li>
+                </ul>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- ═══════════════════════════════════════════
+         MAIN CONTENT
+         ═══════════════════════════════════════════ -->
+    <main class="admin-main">
+
+        <!-- Topbar -->
+        <header class="admin-topbar">
+            <div class="admin-topbar__breadcrumb">
+                <a href="index.html" class="admin-topbar__breadcrumb-link">Dashboard</a>
+                <span class="admin-topbar__breadcrumb-separator">&rsaquo;</span>
+                <span class="admin-topbar__breadcrumb-current">Reviews</span>
+            </div>
+            <div class="admin-topbar__actions">
+                <div class="admin-topbar__user">
+                    <div class="admin-topbar__user-avatar">AD</div>
+                    <span class="admin-topbar__user-name">Admin</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="admin-content">
+
+            <!-- Page header -->
+            <div class="reviews-page-header admin-page-header">
+                <h1>Reviews</h1>
+                <p>Monitor and respond to guest reviews across Airbnb and Booking.com.</p>
+            </div>
+
+            <!-- ── Summary stats ── -->
+            <div class="reviews-stats">
+
+                <!-- Total reviews -->
+                <div class="reviews-stat-card">
+                    <div class="reviews-stat-card__icon reviews-stat-card__icon--total">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="reviews-stat-card__label">Total Reviews</div>
+                        <div class="reviews-stat-card__value">10</div>
+                        <div class="reviews-stat-card__sub">All platforms combined</div>
+                    </div>
+                </div>
+
+                <!-- Average rating -->
+                <div class="reviews-stat-card">
+                    <div class="reviews-stat-card__icon reviews-stat-card__icon--avg">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="reviews-stat-card__label">Average Rating</div>
+                        <div class="reviews-stat-card__value">4.9 / 5</div>
+                        <div class="reviews-stat-card__sub">Across all reviews</div>
+                    </div>
+                </div>
+
+                <!-- Airbnb rating -->
+                <div class="reviews-stat-card">
+                    <div class="reviews-stat-card__icon reviews-stat-card__icon--airbnb">
+                        <!-- Airbnb-style home icon -->
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                            <polyline points="9 22 9 12 15 12 15 22"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="reviews-stat-card__label">Airbnb Rating</div>
+                        <div class="reviews-stat-card__value">4.8 / 5</div>
+                        <div class="reviews-stat-card__sub">5 reviews on Airbnb</div>
+                    </div>
+                </div>
+
+                <!-- Booking.com rating -->
+                <div class="reviews-stat-card">
+                    <div class="reviews-stat-card__icon reviews-stat-card__icon--booking">
+                        <!-- Globe / world icon -->
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="2" y1="12" x2="22" y2="12"/>
+                            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="reviews-stat-card__label">Booking.com Rating</div>
+                        <div class="reviews-stat-card__value">9.4 / 10</div>
+                        <div class="reviews-stat-card__sub">5 reviews on Booking.com</div>
+                    </div>
+                </div>
+
+            </div><!-- /.reviews-stats -->
+
+            <!-- ── Tabs ── -->
+            <div class="reviews-tabs" role="tablist">
+                <button
+                    class="reviews-tab reviews-tab--active"
+                    role="tab"
+                    aria-selected="true"
+                    aria-controls="panel-airbnb"
+                    id="tab-airbnb"
+                    onclick="switchTab('airbnb')"
+                >
+                    <!-- Airbnb star icon -->
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true">
+                        <path d="M12 .3a12 12 0 1 0 0 24A12 12 0 0 0 12 .3zm0 22a10 10 0 1 1 0-20 10 10 0 0 1 0 20zm-1.7-7.9L8 15.5l1.5-4.6L6 8.7h4.2L12 4l1.8 4.7H18l-3.5 2.2 1.4 4.6-3.6-2.1z"/>
+                    </svg>
+                    Airbnb Reviews
+                    <span class="reviews-tab__count">5</span>
+                </button>
+                <button
+                    class="reviews-tab"
+                    role="tab"
+                    aria-selected="false"
+                    aria-controls="panel-booking"
+                    id="tab-booking"
+                    onclick="switchTab('booking')"
+                >
+                    <!-- Booking.com globe icon -->
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <circle cx="12" cy="12" r="10"/>
+                        <line x1="2" y1="12" x2="22" y2="12"/>
+                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                    </svg>
+                    Booking.com Reviews
+                    <span class="reviews-tab__count">5</span>
+                </button>
+            </div>
+
+            <!-- ═══════════════════════════
+                 AIRBNB PANEL
+                 ═══════════════════════════ -->
+            <div id="panel-airbnb" class="reviews-panel reviews-panel--active" role="tabpanel" aria-labelledby="tab-airbnb">
+                <div class="reviews-grid">
+
+                    <!-- Review 1: Sarah M — 5 stars -->
+                    <article class="review-card" aria-label="Review by Sarah M">
+                        <div class="review-card__header">
+                            <div class="review-card__avatar review-card__avatar--airbnb" aria-hidden="true">SM</div>
+                            <div class="review-card__meta">
+                                <h3 class="review-card__guest-name">Sarah M.</h3>
+                                <time class="review-card__date" datetime="2026-01">January 2026</time>
+                            </div>
+                            <span class="review-card__badge review-card__badge--airbnb">Airbnb</span>
+                        </div>
+                        <div class="review-card__stars" aria-label="5 out of 5 stars">
+                            <!-- 5 filled stars -->
+                            <svg class="star--filled" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg class="star--filled" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg class="star--filled" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg class="star--filled" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg class="star--filled" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                        </div>
+                        <p class="review-card__text">
+                            "Absolutely stunning apartment. The views are incredible and everything was spotless. Host was very responsive."
+                        </p>
+                        <div class="review-card__property">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                            Cascade 6 Apartment
+                        </div>
+                        <div class="review-card__footer">
+                            <a
+                                href="https://www.airbnb.com.au/hosting/reviews"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="review-card__reply review-card__reply--airbnb"
+                                aria-label="Reply to Sarah M's review on Airbnb"
+                            >
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 17 4 12 9 7"/><path d="M20 18v-2a4 4 0 0 0-4-4H4"/></svg>
+                                Reply on Airbnb
+                            </a>
+                        </div>
+                    </article>
+
+                    <!-- Review 2: James K — 5 stars -->
+                    <article class="review-card" aria-label="Review by James K">
+                        <div class="review-card__header">
+                            <div class="review-card__avatar review-card__avatar--airbnb" aria-hidden="true">JK</div>
+                            <div class="review-card__meta">
+                                <h3 class="review-card__guest-name">James K.</h3>
+                                <time class="review-card__date" datetime="2026-01">January 2026</time>
+                            </div>
+                            <span class="review-card__badge review-card__badge--airbnb">Airbnb</span>
+                        </div>
+                        <div class="review-card__stars" aria-label="5 out of 5 stars">
+                            <svg class="star--filled" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg class="star--filled" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg class="star--filled" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg class="star--filled" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg class="star--filled" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                        </div>
+                        <p class="review-card__text">
+                            "Perfect location, beautifully decorated. Exactly as described. Would book again without hesitation."
+                        </p>
+                        <div class="review-card__property">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                            Cascade 6 Apartment
+                        </div>
+                        <div class="review-card__footer">
+                            <a
+                                href="https://www.airbnb.com.au/hosting/reviews"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="review-card__reply review-card__reply--airbnb"
+                                aria-label="Reply to James K's review on Airbnb"
+                            >
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 17 4 12 9 7"/><path d="M20 18v-2a4 4 0 0 0-4-4H4"/></svg>
+                                Reply on Airbnb
+                            </a>
+                        </div>
+                    </article>
+
+                    <!-- Review 3: Emma L — 4 stars -->
+                    <article class="review-card" aria-label="Review by Emma L">
+                        <div class="review-card__header">
+                            <div class="review-card__avatar review-card__avatar--airbnb" aria-hidden="true">EL</div>
+                            <div class="review-card__meta">
+                                <h3 class="review-card__guest-name">Emma L.</h3>
+                                <time class="review-card__date" datetime="2025-12">December 2025</time>
+                            </div>
+                            <span class="review-card__badge review-card__badge--airbnb">Airbnb</span>
+                        </div>
+                        <div class="review-card__stars" aria-label="4 out of 5 stars">
+                            <svg class="star--filled" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg class="star--filled" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg class="star--filled" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg class="star--filled" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <!-- 5th star empty -->
+                            <svg class="star--empty" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" stroke-width="2"/></svg>
+                        </div>
+                        <p class="review-card__text">
+                            "Lovely place, great amenities. Minor issue with hot water on day 2 but host resolved it quickly."
+                        </p>
+                        <div class="review-card__property">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                            Cascade 6 Apartment
+                        </div>
+                        <div class="review-card__footer">
+                            <a
+                                href="https://www.airbnb.com.au/hosting/reviews"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="review-card__reply review-card__reply--airbnb"
+                                aria-label="Reply to Emma L's review on Airbnb"
+                            >
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 17 4 12 9 7"/><path d="M20 18v-2a4 4 0 0 0-4-4H4"/></svg>
+                                Reply on Airbnb
+                            </a>
+                        </div>
+                    </article>
+
+                    <!-- Review 4: Oliver P — 5 stars -->
+                    <article class="review-card" aria-label="Review by Oliver P">
+                        <div class="review-card__header">
+                            <div class="review-card__avatar review-card__avatar--airbnb" aria-hidden="true">OP</div>
+                            <div class="review-card__meta">
+                                <h3 class="review-card__guest-name">Oliver P.</h3>
+                                <time class="review-card__date" datetime="2025-12">December 2025</time>
+                            </div>
+                            <span class="review-card__badge review-card__badge--airbnb">Airbnb</span>
+                        </div>
+                        <div class="review-card__stars" aria-label="5 out of 5 stars">
+                            <svg class="star--filled" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg class="star--filled" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg class="star--filled" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg class="star--filled" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg class="star--filled" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                        </div>
+                        <p class="review-card__text">
+                            "Best Airbnb stay I've ever had. Immaculate, stylish, and in a perfect location."
+                        </p>
+                        <div class="review-card__property">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                            Cascade 6 Apartment
+                        </div>
+                        <div class="review-card__footer">
+                            <a
+                                href="https://www.airbnb.com.au/hosting/reviews"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="review-card__reply review-card__reply--airbnb"
+                                aria-label="Reply to Oliver P's review on Airbnb"
+                            >
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 17 4 12 9 7"/><path d="M20 18v-2a4 4 0 0 0-4-4H4"/></svg>
+                                Reply on Airbnb
+                            </a>
+                        </div>
+                    </article>
+
+                    <!-- Review 5: Mia C — 5 stars -->
+                    <article class="review-card" aria-label="Review by Mia C">
+                        <div class="review-card__header">
+                            <div class="review-card__avatar review-card__avatar--airbnb" aria-hidden="true">MC</div>
+                            <div class="review-card__meta">
+                                <h3 class="review-card__guest-name">Mia C.</h3>
+                                <time class="review-card__date" datetime="2025-11">November 2025</time>
+                            </div>
+                            <span class="review-card__badge review-card__badge--airbnb">Airbnb</span>
+                        </div>
+                        <div class="review-card__stars" aria-label="5 out of 5 stars">
+                            <svg class="star--filled" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg class="star--filled" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg class="star--filled" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg class="star--filled" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg class="star--filled" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                        </div>
+                        <p class="review-card__text">
+                            "Exceptional in every way. The apartment exceeded our expectations. Highly recommended."
+                        </p>
+                        <div class="review-card__property">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                            Cascade 6 Apartment
+                        </div>
+                        <div class="review-card__footer">
+                            <a
+                                href="https://www.airbnb.com.au/hosting/reviews"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="review-card__reply review-card__reply--airbnb"
+                                aria-label="Reply to Mia C's review on Airbnb"
+                            >
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 17 4 12 9 7"/><path d="M20 18v-2a4 4 0 0 0-4-4H4"/></svg>
+                                Reply on Airbnb
+                            </a>
+                        </div>
+                    </article>
+
+                </div><!-- /.reviews-grid -->
+            </div><!-- /#panel-airbnb -->
+
+            <!-- ═══════════════════════════
+                 BOOKING.COM PANEL
+                 ═══════════════════════════ -->
+            <div id="panel-booking" class="reviews-panel" role="tabpanel" aria-labelledby="tab-booking">
+                <div class="reviews-grid">
+
+                    <!-- Review 1: Thomas R — 9.8/10 → 5 stars -->
+                    <article class="review-card" aria-label="Review by Thomas R">
+                        <div class="review-card__header">
+                            <div class="review-card__avatar review-card__avatar--booking" aria-hidden="true">TR</div>
+                            <div class="review-card__meta">
+                                <h3 class="review-card__guest-name">Thomas R.</h3>
+                                <time class="review-card__date" datetime="2026-02">February 2026</time>
+                            </div>
+                            <span class="review-card__badge review-card__badge--booking">Booking.com</span>
+                        </div>
+                        <div class="review-card__stars" aria-label="5 out of 5 stars (9.8 / 10)">
+                            <svg class="star--filled" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg class="star--filled" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg class="star--filled" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg class="star--filled" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg class="star--filled" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                        </div>
+                        <p class="review-card__text">
+                            "Outstanding property. Superb cleanliness and fantastic amenities. Will definitely return."
+                            <br><small style="color: var(--color-gray); font-size: var(--font-size-xs);">Score: 9.8 / 10</small>
+                        </p>
+                        <div class="review-card__property">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                            Cascade 6 Apartment
+                        </div>
+                        <div class="review-card__footer">
+                            <a
+                                href="https://admin.booking.com"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="review-card__reply review-card__reply--booking"
+                                aria-label="Reply to Thomas R's review on Booking.com"
+                            >
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 17 4 12 9 7"/><path d="M20 18v-2a4 4 0 0 0-4-4H4"/></svg>
+                                Reply on Booking.com
+                            </a>
+                        </div>
+                    </article>
+
+                    <!-- Review 2: Sophie W — 9.6/10 → 5 stars -->
+                    <article class="review-card" aria-label="Review by Sophie W">
+                        <div class="review-card__header">
+                            <div class="review-card__avatar review-card__avatar--booking" aria-hidden="true">SW</div>
+                            <div class="review-card__meta">
+                                <h3 class="review-card__guest-name">Sophie W.</h3>
+                                <time class="review-card__date" datetime="2026-01">January 2026</time>
+                            </div>
+                            <span class="review-card__badge review-card__badge--booking">Booking.com</span>
+                        </div>
+                        <div class="review-card__stars" aria-label="5 out of 5 stars (9.6 / 10)">
+                            <svg class="star--filled" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg class="star--filled" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg class="star--filled" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg class="star--filled" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg class="star--filled" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                        </div>
+                        <p class="review-card__text">
+                            "Wonderful experience from check-in to check-out. The apartment is gorgeous."
+                            <br><small style="color: var(--color-gray); font-size: var(--font-size-xs);">Score: 9.6 / 10</small>
+                        </p>
+                        <div class="review-card__property">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                            Cascade 6 Apartment
+                        </div>
+                        <div class="review-card__footer">
+                            <a
+                                href="https://admin.booking.com"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="review-card__reply review-card__reply--booking"
+                                aria-label="Reply to Sophie W's review on Booking.com"
+                            >
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 17 4 12 9 7"/><path d="M20 18v-2a4 4 0 0 0-4-4H4"/></svg>
+                                Reply on Booking.com
+                            </a>
+                        </div>
+                    </article>
+
+                    <!-- Review 3: David H — 8.8/10 → 4 stars -->
+                    <article class="review-card" aria-label="Review by David H">
+                        <div class="review-card__header">
+                            <div class="review-card__avatar review-card__avatar--booking" aria-hidden="true">DH</div>
+                            <div class="review-card__meta">
+                                <h3 class="review-card__guest-name">David H.</h3>
+                                <time class="review-card__date" datetime="2026-01">January 2026</time>
+                            </div>
+                            <span class="review-card__badge review-card__badge--booking">Booking.com</span>
+                        </div>
+                        <div class="review-card__stars" aria-label="4 out of 5 stars (8.8 / 10)">
+                            <svg class="star--filled" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg class="star--filled" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg class="star--filled" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg class="star--filled" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <!-- 5th star empty -->
+                            <svg class="star--empty" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" stroke-width="2"/></svg>
+                        </div>
+                        <p class="review-card__text">
+                            "Very comfortable stay. Great location and well-equipped kitchen. Parking was a little tricky."
+                            <br><small style="color: var(--color-gray); font-size: var(--font-size-xs);">Score: 8.8 / 10</small>
+                        </p>
+                        <div class="review-card__property">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                            Cascade 6 Apartment
+                        </div>
+                        <div class="review-card__footer">
+                            <a
+                                href="https://admin.booking.com"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="review-card__reply review-card__reply--booking"
+                                aria-label="Reply to David H's review on Booking.com"
+                            >
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 17 4 12 9 7"/><path d="M20 18v-2a4 4 0 0 0-4-4H4"/></svg>
+                                Reply on Booking.com
+                            </a>
+                        </div>
+                    </article>
+
+                    <!-- Review 4: Lily N — 9.4/10 → 5 stars -->
+                    <article class="review-card" aria-label="Review by Lily N">
+                        <div class="review-card__header">
+                            <div class="review-card__avatar review-card__avatar--booking" aria-hidden="true">LN</div>
+                            <div class="review-card__meta">
+                                <h3 class="review-card__guest-name">Lily N.</h3>
+                                <time class="review-card__date" datetime="2025-12">December 2025</time>
+                            </div>
+                            <span class="review-card__badge review-card__badge--booking">Booking.com</span>
+                        </div>
+                        <div class="review-card__stars" aria-label="5 out of 5 stars (9.4 / 10)">
+                            <svg class="star--filled" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg class="star--filled" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg class="star--filled" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg class="star--filled" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg class="star--filled" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                        </div>
+                        <p class="review-card__text">
+                            "Exceptional value and quality. Highly recommended to anyone visiting the area."
+                            <br><small style="color: var(--color-gray); font-size: var(--font-size-xs);">Score: 9.4 / 10</small>
+                        </p>
+                        <div class="review-card__property">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                            Cascade 6 Apartment
+                        </div>
+                        <div class="review-card__footer">
+                            <a
+                                href="https://admin.booking.com"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="review-card__reply review-card__reply--booking"
+                                aria-label="Reply to Lily N's review on Booking.com"
+                            >
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 17 4 12 9 7"/><path d="M20 18v-2a4 4 0 0 0-4-4H4"/></svg>
+                                Reply on Booking.com
+                            </a>
+                        </div>
+                    </article>
+
+                    <!-- Review 5: Marcus B — 9.2/10 → 5 stars -->
+                    <article class="review-card" aria-label="Review by Marcus B">
+                        <div class="review-card__header">
+                            <div class="review-card__avatar review-card__avatar--booking" aria-hidden="true">MB</div>
+                            <div class="review-card__meta">
+                                <h3 class="review-card__guest-name">Marcus B.</h3>
+                                <time class="review-card__date" datetime="2025-12">December 2025</time>
+                            </div>
+                            <span class="review-card__badge review-card__badge--booking">Booking.com</span>
+                        </div>
+                        <div class="review-card__stars" aria-label="5 out of 5 stars (9.2 / 10)">
+                            <svg class="star--filled" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg class="star--filled" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg class="star--filled" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg class="star--filled" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg class="star--filled" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                        </div>
+                        <p class="review-card__text">
+                            "Beautiful property, very clean, and the host communication was excellent throughout."
+                            <br><small style="color: var(--color-gray); font-size: var(--font-size-xs);">Score: 9.2 / 10</small>
+                        </p>
+                        <div class="review-card__property">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                            Cascade 6 Apartment
+                        </div>
+                        <div class="review-card__footer">
+                            <a
+                                href="https://admin.booking.com"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="review-card__reply review-card__reply--booking"
+                                aria-label="Reply to Marcus B's review on Booking.com"
+                            >
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 17 4 12 9 7"/><path d="M20 18v-2a4 4 0 0 0-4-4H4"/></svg>
+                                Reply on Booking.com
+                            </a>
+                        </div>
+                    </article>
+
+                </div><!-- /.reviews-grid -->
+            </div><!-- /#panel-booking -->
+
+        </div><!-- /.admin-content -->
+    </main><!-- /.admin-main -->
+
+</div><!-- /.admin-layout -->
+
+<script src="../js/admin-auth.js"></script>
+<script>
+    /**
+     * Tab switching for the Reviews page.
+     * Manages aria-selected, --active modifier classes, and panel visibility.
+     */
+    function switchTab(platform) {
+        var tabs   = document.querySelectorAll('.reviews-tab');
+        var panels = document.querySelectorAll('.reviews-panel');
+
+        // Deactivate all tabs and hide all panels
+        tabs.forEach(function(tab) {
+            tab.classList.remove('reviews-tab--active');
+            tab.setAttribute('aria-selected', 'false');
+        });
+        panels.forEach(function(panel) {
+            panel.classList.remove('reviews-panel--active');
+        });
+
+        // Activate the selected tab and panel
+        var activeTab   = document.getElementById('tab-' + platform);
+        var activePanel = document.getElementById('panel-' + platform);
+
+        if (activeTab)   { activeTab.classList.add('reviews-tab--active'); activeTab.setAttribute('aria-selected', 'true'); }
+        if (activePanel) { activePanel.classList.add('reviews-panel--active'); }
+    }
+</script>
+</body>
+</html>

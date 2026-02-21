@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Not Found — TrendAccom</title>
+    <meta name="robots" content="noindex">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css">
+    <style>
+        .error-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-xl);
+            background: var(--color-off-white);
+        }
+        .error-card {
+            background: var(--color-white);
+            border-radius: var(--radius-2xl);
+            padding: var(--space-4xl) var(--space-3xl);
+            max-width: 540px;
+            width: 100%;
+            text-align: center;
+            box-shadow: var(--shadow-xl);
+        }
+        .error-number {
+            font-family: var(--font-heading);
+            font-size: 7rem;
+            font-weight: var(--font-weight-bold);
+            color: var(--color-light);
+            line-height: 1;
+            margin-bottom: var(--space-md);
+            letter-spacing: -4px;
+        }
+        .error-title {
+            font-size: var(--font-size-2xl);
+            color: var(--color-darker);
+            margin-bottom: var(--space-md);
+        }
+        .error-text {
+            font-size: var(--font-size-base);
+            color: var(--color-gray);
+            line-height: var(--line-height-relaxed);
+            margin-bottom: var(--space-2xl);
+        }
+        .error-actions {
+            display: flex;
+            gap: var(--space-md);
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="error-page">
+        <div class="error-card">
+            <div class="error-number">404</div>
+            <h1 class="error-title">Page not found</h1>
+            <p class="error-text">
+                The page you're looking for doesn't exist or may have been moved.
+                Let's get you back to finding your perfect stay.
+            </p>
+            <div class="error-actions">
+                <a href="index.html" class="btn btn--primary btn--lg">Go Home</a>
+                <a href="search.html" class="btn btn--outline btn--lg">Browse Properties</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

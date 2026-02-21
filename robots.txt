@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /data/
+Allow: /
+
+Sitemap: https://app.trendaccom.com/sitemap.xml
