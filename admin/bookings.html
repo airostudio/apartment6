@@ -1,529 +1,586 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bookings - TrendAccom Admin</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../css/main.css">
-    <link rel="stylesheet" href="../css/admin.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bookings — Cascade Apartment 6 Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/admin.css">
+  <style>
+    /* Filter button active state */
+    .filter-btn {
+      padding: 6px 16px;
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-medium);
+      border: 1px solid var(--color-light);
+      border-radius: var(--radius-md);
+      background: #fff;
+      color: var(--color-gray);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    .filter-btn:hover {
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+    }
+    .filter-btn.active {
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+      color: #fff;
+    }
+  </style>
 </head>
 <body class="admin-body">
+<div class="admin-layout">
 
-    <!-- Admin Sidebar -->
-    <aside class="admin-sidebar">
-        <div class="admin-sidebar__header">
-            <a href="dashboard.html" class="admin-sidebar__logo">
-                <span class="admin-sidebar__logo-text">TrendAccom</span>
-                <span class="admin-sidebar__logo-badge">Admin</span>
+  <!-- SIDEBAR -->
+  <aside class="admin-sidebar" id="adminSidebar">
+    <div class="sidebar-logo">
+      <a href="index.html" class="sidebar-logo-link">
+        <svg viewBox="0 0 40 32" fill="none" xmlns="http://www.w3.org/2000/svg" width="32" height="26">
+          <path d="M20 2L6 14h4v14h6v-8h8v8h6V14h4L20 2z" fill="#c9a84c"/>
+        </svg>
+        <div>
+          <span class="sidebar-logo-text">Cascade</span>
+          <span class="sidebar-logo-badge">Apt 6</span>
+        </div>
+      </a>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-nav-section">
+        <span class="sidebar-nav-section-title">Main</span>
+        <ul class="sidebar-nav-list">
+          <li class="sidebar-nav-item">
+            <a href="index.html" class="sidebar-nav-link">
+              <svg class="sidebar-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+              <span>Dashboard</span>
             </a>
-        </div>
+          </li>
+          <li class="sidebar-nav-item">
+            <a href="properties.html" class="sidebar-nav-link">
+              <svg class="sidebar-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+              <span>Property</span>
+            </a>
+          </li>
+          <li class="sidebar-nav-item active">
+            <a href="bookings.html" class="sidebar-nav-link">
+              <svg class="sidebar-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><line x1="9" y1="10" x2="15" y2="10"/><line x1="9" y1="14" x2="15" y2="14"/><line x1="9" y1="18" x2="12" y2="18"/></svg>
+              <span>Bookings</span>
+            </a>
+          </li>
+          <li class="sidebar-nav-item">
+            <a href="calendar.html" class="sidebar-nav-link">
+              <svg class="sidebar-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              <span>Calendar</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div class="sidebar-nav-section">
+        <span class="sidebar-nav-section-title">Management</span>
+        <ul class="sidebar-nav-list">
+          <li class="sidebar-nav-item">
+            <a href="rates.html" class="sidebar-nav-link">
+              <svg class="sidebar-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              <span>Rates &amp; Pricing</span>
+            </a>
+          </li>
+          <li class="sidebar-nav-item">
+            <a href="guests.html" class="sidebar-nav-link">
+              <svg class="sidebar-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              <span>Guests</span>
+            </a>
+          </li>
+          <li class="sidebar-nav-item">
+            <a href="reviews.html" class="sidebar-nav-link">
+              <svg class="sidebar-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <span>Reviews</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div class="sidebar-nav-section">
+        <span class="sidebar-nav-section-title">Integrations</span>
+        <ul class="sidebar-nav-list">
+          <li class="sidebar-nav-item">
+            <a href="ical-sync.html" class="sidebar-nav-link">
+              <svg class="sidebar-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"/><path d="M20.49 15a9 9 0 0 1-14.85 3.36L1 14"/></svg>
+              <span>iCal Sync</span>
+            </a>
+          </li>
+          <li class="sidebar-nav-item">
+            <a href="stripe-connect.html" class="sidebar-nav-link">
+              <svg class="sidebar-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+              <span>Stripe Connect</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div class="sidebar-nav-section">
+        <span class="sidebar-nav-section-title">System</span>
+        <ul class="sidebar-nav-list">
+          <li class="sidebar-nav-item">
+            <a href="settings.html" class="sidebar-nav-link">
+              <svg class="sidebar-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1.08-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1.08 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1.08 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.26.604.852.997 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1.08z"/></svg>
+              <span>Settings</span>
+            </a>
+          </li>
+          <li class="sidebar-nav-item">
+            <a href="reports.html" class="sidebar-nav-link">
+              <svg class="sidebar-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+              <span>Reports</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  </aside>
 
-        <nav class="admin-sidebar__nav">
-            <!-- MAIN Section -->
-            <div class="admin-sidebar__section">
-                <span class="admin-sidebar__section-title">MAIN</span>
-                <ul class="admin-sidebar__menu">
-                    <li class="admin-sidebar__menu-item">
-                        <a href="dashboard.html" class="admin-sidebar__menu-link">
-                            <svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-                            <span>Dashboard</span>
-                        </a>
-                    </li>
-                    <li class="admin-sidebar__menu-item">
-                        <a href="properties.html" class="admin-sidebar__menu-link">
-                            <svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-                            <span>Properties</span>
-                        </a>
-                    </li>
-                    <li class="admin-sidebar__menu-item">
-                        <a href="bookings.html" class="admin-sidebar__menu-link admin-sidebar__menu-link--active">
-                            <svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-                            <span>Bookings</span>
-                        </a>
-                    </li>
-                    <li class="admin-sidebar__menu-item">
-                        <a href="calendar.html" class="admin-sidebar__menu-link">
-                            <svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                            <span>Calendar</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
+  <!-- MAIN CONTENT -->
+  <div class="admin-main">
 
-            <!-- MANAGEMENT Section -->
-            <div class="admin-sidebar__section">
-                <span class="admin-sidebar__section-title">MANAGEMENT</span>
-                <ul class="admin-sidebar__menu">
-                    <li class="admin-sidebar__menu-item">
-                        <a href="rates.html" class="admin-sidebar__menu-link">
-                            <svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-                            <span>Rates &amp; Pricing</span>
-                        </a>
-                    </li>
-                    <li class="admin-sidebar__menu-item">
-                        <a href="guests.html" class="admin-sidebar__menu-link">
-                            <svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                            <span>Guests</span>
-                        </a>
-                    </li>
-                    <li class="admin-sidebar__menu-item">
-                        <a href="reviews.html" class="admin-sidebar__menu-link">
-                            <svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                            <span>Reviews</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-
-            <!-- INTEGRATIONS Section -->
-            <div class="admin-sidebar__section">
-                <span class="admin-sidebar__section-title">INTEGRATIONS</span>
-                <ul class="admin-sidebar__menu">
-                    <li class="admin-sidebar__menu-item">
-                        <a href="ical-sync.html" class="admin-sidebar__menu-link">
-                            <svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-                            <span>iCal Sync</span>
-                        </a>
-                    </li>
-                    <li class="admin-sidebar__menu-item">
-                        <a href="stripe-connect.html" class="admin-sidebar__menu-link">
-                            <svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-                            <span>Stripe Connect</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-
-            <!-- SYSTEM Section -->
-            <div class="admin-sidebar__section">
-                <span class="admin-sidebar__section-title">SYSTEM</span>
-                <ul class="admin-sidebar__menu">
-                    <li class="admin-sidebar__menu-item">
-                        <a href="settings.html" class="admin-sidebar__menu-link">
-                            <svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-                            <span>Settings</span>
-                        </a>
-                    </li>
-                    <li class="admin-sidebar__menu-item">
-                        <a href="reports.html" class="admin-sidebar__menu-link">
-                            <svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-                            <span>Reports</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
+    <!-- Top Bar -->
+    <header class="admin-topbar">
+      <div class="topbar-left">
+        <button class="topbar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+        <nav class="topbar-breadcrumb" aria-label="Breadcrumb">
+          <a href="index.html" class="breadcrumb-item">Dashboard</a>
+          <span class="breadcrumb-separator">/</span>
+          <span class="breadcrumb-item breadcrumb-current">Bookings</span>
         </nav>
-    </aside>
-
-    <!-- Main Content -->
-    <main class="admin-main">
-
-        <!-- Topbar -->
-        <header class="admin-topbar">
-            <div class="admin-topbar__breadcrumb">
-                <a href="dashboard.html" class="admin-topbar__breadcrumb-link">Dashboard</a>
-                <span class="admin-topbar__breadcrumb-separator">&rsaquo;</span>
-                <span class="admin-topbar__breadcrumb-current">Bookings</span>
-            </div>
-            <div class="admin-topbar__actions">
-                <button class="admin-topbar__notification-btn" aria-label="Notifications">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-                </button>
-                <div class="admin-topbar__user">
-                    <div class="admin-topbar__user-avatar">AD</div>
-                    <span class="admin-topbar__user-name">Admin</span>
-                </div>
-            </div>
-        </header>
-
-        <!-- Page Content -->
-        <div class="admin-content">
-
-            <!-- Page Header -->
-            <div class="admin-page-header">
-                <div class="admin-page-header__info">
-                    <h1 class="admin-page-header__title">Bookings</h1>
-                    <p class="admin-page-header__description">Manage all reservations</p>
-                </div>
-                <div class="admin-page-header__actions">
-                    <div class="admin-filter-buttons">
-                        <button class="admin-filter-btn admin-filter-btn--active">All</button>
-                        <button class="admin-filter-btn">Confirmed</button>
-                        <button class="admin-filter-btn">Pending</button>
-                        <button class="admin-filter-btn">Cancelled</button>
-                    </div>
-                    <button class="admin-btn admin-btn--primary">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                        Create Booking
-                    </button>
-                </div>
-            </div>
-
-            <!-- Stats Row -->
-            <div class="admin-stats-row">
-                <div class="admin-stat-card admin-stat-card--mini">
-                    <div class="admin-stat-card__content">
-                        <span class="admin-stat-card__label">Total</span>
-                        <span class="admin-stat-card__value">156</span>
-                    </div>
-                    <div class="admin-stat-card__icon admin-stat-card__icon--blue">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                    </div>
-                </div>
-                <div class="admin-stat-card admin-stat-card--mini">
-                    <div class="admin-stat-card__content">
-                        <span class="admin-stat-card__label">Confirmed</span>
-                        <span class="admin-stat-card__value">128</span>
-                    </div>
-                    <div class="admin-stat-card__icon admin-stat-card__icon--green">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><polyline points="20 6 9 17 4 12"/></svg>
-                    </div>
-                </div>
-                <div class="admin-stat-card admin-stat-card--mini">
-                    <div class="admin-stat-card__content">
-                        <span class="admin-stat-card__label">Pending</span>
-                        <span class="admin-stat-card__value">18</span>
-                    </div>
-                    <div class="admin-stat-card__icon admin-stat-card__icon--orange">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                    </div>
-                </div>
-                <div class="admin-stat-card admin-stat-card--mini">
-                    <div class="admin-stat-card__content">
-                        <span class="admin-stat-card__label">Cancelled</span>
-                        <span class="admin-stat-card__value">10</span>
-                    </div>
-                    <div class="admin-stat-card__icon admin-stat-card__icon--red">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Bookings Table -->
-            <div class="admin-card">
-                <div class="admin-card__header">
-                    <h2 class="admin-card__title">All Bookings</h2>
-                    <div class="admin-card__header-actions">
-                        <input type="text" class="admin-input admin-input--search" placeholder="Search bookings...">
-                    </div>
-                </div>
-                <div class="admin-card__body admin-card__body--no-padding">
-                    <div class="admin-table-wrapper">
-                        <table class="admin-table">
-                            <thead>
-                                <tr>
-                                    <th>Booking ID</th>
-                                    <th>Guest</th>
-                                    <th>Property</th>
-                                    <th>Dates</th>
-                                    <th>Guests</th>
-                                    <th>Status</th>
-                                    <th>Total</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><span class="admin-booking-id">#BK-1042</span></td>
-                                    <td>
-                                        <div class="admin-guest-cell">
-                                            <span class="admin-guest-cell__name">James Davidson</span>
-                                            <span class="admin-guest-cell__email">j.davidson@email.com</span>
-                                        </div>
-                                    </td>
-                                    <td>Oceanfront Villa Deluxe</td>
-                                    <td>
-                                        <div class="admin-dates-cell">
-                                            <span class="admin-dates-cell__checkin">Mar 1, 2026</span>
-                                            <span class="admin-dates-cell__separator">&rarr;</span>
-                                            <span class="admin-dates-cell__checkout">Mar 7, 2026</span>
-                                        </div>
-                                    </td>
-                                    <td>4</td>
-                                    <td><span class="admin-badge admin-badge--confirmed">Confirmed</span></td>
-                                    <td><strong>$2,340</strong></td>
-                                    <td>
-                                        <div class="admin-actions-cell">
-                                            <button class="admin-action-btn" title="View">
-                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                                            </button>
-                                            <button class="admin-action-btn" title="Edit">
-                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                                            </button>
-                                            <button class="admin-action-btn admin-action-btn--danger" title="Cancel">
-                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><span class="admin-booking-id">#BK-1041</span></td>
-                                    <td>
-                                        <div class="admin-guest-cell">
-                                            <span class="admin-guest-cell__name">Maria Torres</span>
-                                            <span class="admin-guest-cell__email">m.torres@email.com</span>
-                                        </div>
-                                    </td>
-                                    <td>Mountain Retreat Cabin</td>
-                                    <td>
-                                        <div class="admin-dates-cell">
-                                            <span class="admin-dates-cell__checkin">Feb 28, 2026</span>
-                                            <span class="admin-dates-cell__separator">&rarr;</span>
-                                            <span class="admin-dates-cell__checkout">Mar 3, 2026</span>
-                                        </div>
-                                    </td>
-                                    <td>2</td>
-                                    <td><span class="admin-badge admin-badge--pending">Pending</span></td>
-                                    <td><strong>$1,120</strong></td>
-                                    <td>
-                                        <div class="admin-actions-cell">
-                                            <button class="admin-action-btn" title="View">
-                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                                            </button>
-                                            <button class="admin-action-btn" title="Edit">
-                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                                            </button>
-                                            <button class="admin-action-btn admin-action-btn--danger" title="Cancel">
-                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><span class="admin-booking-id">#BK-1040</span></td>
-                                    <td>
-                                        <div class="admin-guest-cell">
-                                            <span class="admin-guest-cell__name">Robert Chen</span>
-                                            <span class="admin-guest-cell__email">r.chen@email.com</span>
-                                        </div>
-                                    </td>
-                                    <td>Downtown Luxury Apartment</td>
-                                    <td>
-                                        <div class="admin-dates-cell">
-                                            <span class="admin-dates-cell__checkin">Mar 5, 2026</span>
-                                            <span class="admin-dates-cell__separator">&rarr;</span>
-                                            <span class="admin-dates-cell__checkout">Mar 10, 2026</span>
-                                        </div>
-                                    </td>
-                                    <td>3</td>
-                                    <td><span class="admin-badge admin-badge--confirmed">Confirmed</span></td>
-                                    <td><strong>$1,875</strong></td>
-                                    <td>
-                                        <div class="admin-actions-cell">
-                                            <button class="admin-action-btn" title="View">
-                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                                            </button>
-                                            <button class="admin-action-btn" title="Edit">
-                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                                            </button>
-                                            <button class="admin-action-btn admin-action-btn--danger" title="Cancel">
-                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><span class="admin-booking-id">#BK-1039</span></td>
-                                    <td>
-                                        <div class="admin-guest-cell">
-                                            <span class="admin-guest-cell__name">Emily Watson</span>
-                                            <span class="admin-guest-cell__email">e.watson@email.com</span>
-                                        </div>
-                                    </td>
-                                    <td>Seaside Cottage</td>
-                                    <td>
-                                        <div class="admin-dates-cell">
-                                            <span class="admin-dates-cell__checkin">Feb 22, 2026</span>
-                                            <span class="admin-dates-cell__separator">&rarr;</span>
-                                            <span class="admin-dates-cell__checkout">Feb 26, 2026</span>
-                                        </div>
-                                    </td>
-                                    <td>2</td>
-                                    <td><span class="admin-badge admin-badge--cancelled">Cancelled</span></td>
-                                    <td><strong>$980</strong></td>
-                                    <td>
-                                        <div class="admin-actions-cell">
-                                            <button class="admin-action-btn" title="View">
-                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                                            </button>
-                                            <button class="admin-action-btn" title="Edit">
-                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                                            </button>
-                                            <button class="admin-action-btn admin-action-btn--danger" title="Cancel">
-                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><span class="admin-booking-id">#BK-1038</span></td>
-                                    <td>
-                                        <div class="admin-guest-cell">
-                                            <span class="admin-guest-cell__name">Sarah Mitchell</span>
-                                            <span class="admin-guest-cell__email">s.mitchell@email.com</span>
-                                        </div>
-                                    </td>
-                                    <td>Oceanfront Villa Deluxe</td>
-                                    <td>
-                                        <div class="admin-dates-cell">
-                                            <span class="admin-dates-cell__checkin">Mar 12, 2026</span>
-                                            <span class="admin-dates-cell__separator">&rarr;</span>
-                                            <span class="admin-dates-cell__checkout">Mar 18, 2026</span>
-                                        </div>
-                                    </td>
-                                    <td>6</td>
-                                    <td><span class="admin-badge admin-badge--confirmed">Confirmed</span></td>
-                                    <td><strong>$2,940</strong></td>
-                                    <td>
-                                        <div class="admin-actions-cell">
-                                            <button class="admin-action-btn" title="View">
-                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                                            </button>
-                                            <button class="admin-action-btn" title="Edit">
-                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                                            </button>
-                                            <button class="admin-action-btn admin-action-btn--danger" title="Cancel">
-                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><span class="admin-booking-id">#BK-1037</span></td>
-                                    <td>
-                                        <div class="admin-guest-cell">
-                                            <span class="admin-guest-cell__name">David Park</span>
-                                            <span class="admin-guest-cell__email">d.park@email.com</span>
-                                        </div>
-                                    </td>
-                                    <td>Mountain Retreat Cabin</td>
-                                    <td>
-                                        <div class="admin-dates-cell">
-                                            <span class="admin-dates-cell__checkin">Mar 8, 2026</span>
-                                            <span class="admin-dates-cell__separator">&rarr;</span>
-                                            <span class="admin-dates-cell__checkout">Mar 11, 2026</span>
-                                        </div>
-                                    </td>
-                                    <td>2</td>
-                                    <td><span class="admin-badge admin-badge--pending">Pending</span></td>
-                                    <td><strong>$840</strong></td>
-                                    <td>
-                                        <div class="admin-actions-cell">
-                                            <button class="admin-action-btn" title="View">
-                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                                            </button>
-                                            <button class="admin-action-btn" title="Edit">
-                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                                            </button>
-                                            <button class="admin-action-btn admin-action-btn--danger" title="Cancel">
-                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><span class="admin-booking-id">#BK-1036</span></td>
-                                    <td>
-                                        <div class="admin-guest-cell">
-                                            <span class="admin-guest-cell__name">Laura Hernandez</span>
-                                            <span class="admin-guest-cell__email">l.hernandez@email.com</span>
-                                        </div>
-                                    </td>
-                                    <td>Lakeside Bungalow</td>
-                                    <td>
-                                        <div class="admin-dates-cell">
-                                            <span class="admin-dates-cell__checkin">Feb 20, 2026</span>
-                                            <span class="admin-dates-cell__separator">&rarr;</span>
-                                            <span class="admin-dates-cell__checkout">Feb 25, 2026</span>
-                                        </div>
-                                    </td>
-                                    <td>5</td>
-                                    <td><span class="admin-badge admin-badge--confirmed">Confirmed</span></td>
-                                    <td><strong>$1,650</strong></td>
-                                    <td>
-                                        <div class="admin-actions-cell">
-                                            <button class="admin-action-btn" title="View">
-                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                                            </button>
-                                            <button class="admin-action-btn" title="Edit">
-                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                                            </button>
-                                            <button class="admin-action-btn admin-action-btn--danger" title="Cancel">
-                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><span class="admin-booking-id">#BK-1035</span></td>
-                                    <td>
-                                        <div class="admin-guest-cell">
-                                            <span class="admin-guest-cell__name">Kevin O'Brien</span>
-                                            <span class="admin-guest-cell__email">k.obrien@email.com</span>
-                                        </div>
-                                    </td>
-                                    <td>Downtown Luxury Apartment</td>
-                                    <td>
-                                        <div class="admin-dates-cell">
-                                            <span class="admin-dates-cell__checkin">Feb 18, 2026</span>
-                                            <span class="admin-dates-cell__separator">&rarr;</span>
-                                            <span class="admin-dates-cell__checkout">Feb 21, 2026</span>
-                                        </div>
-                                    </td>
-                                    <td>1</td>
-                                    <td><span class="admin-badge admin-badge--cancelled">Cancelled</span></td>
-                                    <td><strong>$1,125</strong></td>
-                                    <td>
-                                        <div class="admin-actions-cell">
-                                            <button class="admin-action-btn" title="View">
-                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                                            </button>
-                                            <button class="admin-action-btn" title="Edit">
-                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                                            </button>
-                                            <button class="admin-action-btn admin-action-btn--danger" title="Cancel">
-                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Pagination -->
-            <div class="admin-pagination">
-                <div class="admin-pagination__info">
-                    Showing <strong>1-8</strong> of <strong>156</strong> bookings
-                </div>
-                <div class="admin-pagination__controls">
-                    <button class="admin-pagination__btn admin-pagination__btn--disabled" disabled>
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polyline points="15 18 9 12 15 6"/></svg>
-                        Previous
-                    </button>
-                    <div class="admin-pagination__pages">
-                        <button class="admin-pagination__page admin-pagination__page--active">1</button>
-                        <button class="admin-pagination__page">2</button>
-                        <button class="admin-pagination__page">3</button>
-                        <span class="admin-pagination__ellipsis">...</span>
-                        <button class="admin-pagination__page">20</button>
-                    </div>
-                    <button class="admin-pagination__btn">
-                        Next
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polyline points="9 18 15 12 9 6"/></svg>
-                    </button>
-                </div>
-            </div>
-
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-search">
+          <svg class="topbar-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input type="text" class="topbar-search-input" placeholder="Search bookings...">
         </div>
-    </main>
+        <button class="topbar-notification" aria-label="Notifications">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+          </svg>
+          <span class="topbar-notification-dot"></span>
+        </button>
+        <div class="topbar-user">
+          <span class="topbar-user-avatar" id="userAvatar">C6</span>
+          <span class="topbar-user-name" id="userName">Admin</span>
+        </div>
+      </div>
+    </header>
 
-    <script src="../js/app.js"></script>
-    <script src="../js/admin.js"></script>
+    <main class="admin-content">
+
+      <!-- Page Header -->
+      <div class="admin-page-header">
+        <div class="admin-page-header-text">
+          <h1 class="admin-page-title">Bookings</h1>
+          <p class="admin-page-subtitle">Manage all reservations for Cascade Apartment 6</p>
+        </div>
+        <div style="display: flex; align-items: center; gap: var(--space-sm);">
+          <button class="filter-btn active" data-filter="all">All</button>
+          <button class="filter-btn" data-filter="confirmed">Confirmed</button>
+          <button class="filter-btn" data-filter="pending">Pending</button>
+          <button class="filter-btn" data-filter="cancelled">Cancelled</button>
+        </div>
+      </div>
+
+      <!-- Stats Row -->
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-lg); margin-bottom: var(--space-xl);">
+        <div class="admin-card" style="margin-bottom: 0;">
+          <div class="admin-card-body" style="display: flex; align-items: center; justify-content: space-between; padding: var(--space-lg);">
+            <div>
+              <p style="font-size: var(--font-size-xs); color: var(--color-gray); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.05em;">Total</p>
+              <p style="font-size: 1.75rem; font-weight: var(--font-weight-bold); color: var(--color-dark); line-height: 1;">8</p>
+            </div>
+            <div style="width: 42px; height: 42px; border-radius: var(--radius-md); background: rgba(59,130,246,0.1); display: flex; align-items: center; justify-content: center; color: #3b82f6;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
+            </div>
+          </div>
+        </div>
+        <div class="admin-card" style="margin-bottom: 0;">
+          <div class="admin-card-body" style="display: flex; align-items: center; justify-content: space-between; padding: var(--space-lg);">
+            <div>
+              <p style="font-size: var(--font-size-xs); color: var(--color-gray); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.05em;">Confirmed</p>
+              <p style="font-size: 1.75rem; font-weight: var(--font-weight-bold); color: var(--color-dark); line-height: 1;">5</p>
+            </div>
+            <div style="width: 42px; height: 42px; border-radius: var(--radius-md); background: rgba(34,197,94,0.1); display: flex; align-items: center; justify-content: center; color: #22c55e;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+          </div>
+        </div>
+        <div class="admin-card" style="margin-bottom: 0;">
+          <div class="admin-card-body" style="display: flex; align-items: center; justify-content: space-between; padding: var(--space-lg);">
+            <div>
+              <p style="font-size: var(--font-size-xs); color: var(--color-gray); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.05em;">Pending</p>
+              <p style="font-size: 1.75rem; font-weight: var(--font-weight-bold); color: var(--color-dark); line-height: 1;">2</p>
+            </div>
+            <div style="width: 42px; height: 42px; border-radius: var(--radius-md); background: rgba(249,115,22,0.1); display: flex; align-items: center; justify-content: center; color: #f97316;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+          </div>
+        </div>
+        <div class="admin-card" style="margin-bottom: 0;">
+          <div class="admin-card-body" style="display: flex; align-items: center; justify-content: space-between; padding: var(--space-lg);">
+            <div>
+              <p style="font-size: var(--font-size-xs); color: var(--color-gray); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.05em;">Cancelled</p>
+              <p style="font-size: 1.75rem; font-weight: var(--font-weight-bold); color: var(--color-dark); line-height: 1;">1</p>
+            </div>
+            <div style="width: 42px; height: 42px; border-radius: var(--radius-md); background: rgba(239,68,68,0.1); display: flex; align-items: center; justify-content: center; color: #ef4444;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bookings Table -->
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <h2 class="admin-card-title">All Bookings</h2>
+          <div>
+            <input type="text" class="form-input" id="tableSearch" placeholder="Search bookings..." style="width: 220px; font-size: var(--font-size-sm);">
+          </div>
+        </div>
+        <div class="admin-card-body" style="padding: 0;">
+          <div style="overflow-x: auto;">
+            <table class="admin-table" id="bookingsTable" style="width: 100%; border-collapse: collapse;">
+              <thead>
+                <tr>
+                  <th style="padding: var(--space-md) var(--space-lg); text-align: left; font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); color: var(--color-gray); text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--color-light); white-space: nowrap;">Booking ID</th>
+                  <th style="padding: var(--space-md) var(--space-lg); text-align: left; font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); color: var(--color-gray); text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--color-light);">Guest</th>
+                  <th style="padding: var(--space-md) var(--space-lg); text-align: left; font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); color: var(--color-gray); text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--color-light);">Property</th>
+                  <th style="padding: var(--space-md) var(--space-lg); text-align: left; font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); color: var(--color-gray); text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--color-light); white-space: nowrap;">Dates</th>
+                  <th style="padding: var(--space-md) var(--space-lg); text-align: left; font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); color: var(--color-gray); text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--color-light);">Guests</th>
+                  <th style="padding: var(--space-md) var(--space-lg); text-align: left; font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); color: var(--color-gray); text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--color-light);">Status</th>
+                  <th style="padding: var(--space-md) var(--space-lg); text-align: left; font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); color: var(--color-gray); text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--color-light);">Total</th>
+                  <th style="padding: var(--space-md) var(--space-lg); text-align: left; font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); color: var(--color-gray); text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--color-light);">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="bookingsBody">
+
+                <!-- BK-1042: Confirmed -->
+                <tr data-status="confirmed">
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light);"><span style="font-family: var(--font-mono); font-size: var(--font-size-xs); background: var(--color-off-white); padding: 2px 8px; border-radius: var(--radius-sm); border: 1px solid var(--color-light);">#BK-1042</span></td>
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light);">
+                    <div>
+                      <div style="font-weight: var(--font-weight-medium); font-size: var(--font-size-sm);">James Davidson</div>
+                      <div style="font-size: var(--font-size-xs); color: var(--color-gray);">j.davidson@email.com.au</div>
+                    </div>
+                  </td>
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light); font-size: var(--font-size-sm);">Cascade Apartment 6</td>
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light); white-space: nowrap;">
+                    <div style="font-size: var(--font-size-sm);">
+                      <span>14 Mar 2026</span>
+                      <span style="color: var(--color-muted); margin: 0 4px;">&rarr;</span>
+                      <span>21 Mar 2026</span>
+                    </div>
+                  </td>
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light); font-size: var(--font-size-sm);">4</td>
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light);"><span class="badge badge--success">Confirmed</span></td>
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light);"><strong style="font-size: var(--font-size-sm);">$1,960</strong></td>
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light);">
+                    <div style="display: flex; gap: var(--space-xs);">
+                      <button class="btn btn--sm btn--ghost" title="View" style="padding: 4px 8px;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                      </button>
+                      <button class="btn btn--sm btn--ghost" title="Edit" style="padding: 4px 8px;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                      </button>
+                      <button class="btn btn--sm btn--ghost" title="Cancel" style="padding: 4px 8px; color: var(--color-danger);">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- BK-1041: Confirmed -->
+                <tr data-status="confirmed">
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light);"><span style="font-family: var(--font-mono); font-size: var(--font-size-xs); background: var(--color-off-white); padding: 2px 8px; border-radius: var(--radius-sm); border: 1px solid var(--color-light);">#BK-1041</span></td>
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light);">
+                    <div>
+                      <div style="font-weight: var(--font-weight-medium); font-size: var(--font-size-sm);">Sophie Nguyen</div>
+                      <div style="font-size: var(--font-size-xs); color: var(--color-gray);">s.nguyen@email.com.au</div>
+                    </div>
+                  </td>
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light); font-size: var(--font-size-sm);">Cascade Apartment 6</td>
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light); white-space: nowrap;">
+                    <div style="font-size: var(--font-size-sm);">
+                      <span>5 Apr 2026</span>
+                      <span style="color: var(--color-muted); margin: 0 4px;">&rarr;</span>
+                      <span>10 Apr 2026</span>
+                    </div>
+                  </td>
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light); font-size: var(--font-size-sm);">2</td>
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light);"><span class="badge badge--success">Confirmed</span></td>
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light);"><strong style="font-size: var(--font-size-sm);">$1,400</strong></td>
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light);">
+                    <div style="display: flex; gap: var(--space-xs);">
+                      <button class="btn btn--sm btn--ghost" title="View" style="padding: 4px 8px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+                      <button class="btn btn--sm btn--ghost" title="Edit" style="padding: 4px 8px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                      <button class="btn btn--sm btn--ghost" title="Cancel" style="padding: 4px 8px; color: var(--color-danger);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></button>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- BK-1040: Pending -->
+                <tr data-status="pending">
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light);"><span style="font-family: var(--font-mono); font-size: var(--font-size-xs); background: var(--color-off-white); padding: 2px 8px; border-radius: var(--radius-sm); border: 1px solid var(--color-light);">#BK-1040</span></td>
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light);">
+                    <div>
+                      <div style="font-weight: var(--font-weight-medium); font-size: var(--font-size-sm);">Liam O'Brien</div>
+                      <div style="font-size: var(--font-size-xs); color: var(--color-gray);">l.obrien@email.com.au</div>
+                    </div>
+                  </td>
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light); font-size: var(--font-size-sm);">Cascade Apartment 6</td>
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light); white-space: nowrap;">
+                    <div style="font-size: var(--font-size-sm);">
+                      <span>18 Jun 2026</span>
+                      <span style="color: var(--color-muted); margin: 0 4px;">&rarr;</span>
+                      <span>25 Jun 2026</span>
+                    </div>
+                  </td>
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light); font-size: var(--font-size-sm);">5</td>
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light);"><span class="badge badge--warning">Pending</span></td>
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light);"><strong style="font-size: var(--font-size-sm);">$2,744</strong></td>
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light);">
+                    <div style="display: flex; gap: var(--space-xs);">
+                      <button class="btn btn--sm btn--ghost" title="View" style="padding: 4px 8px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+                      <button class="btn btn--sm btn--ghost" title="Edit" style="padding: 4px 8px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                      <button class="btn btn--sm btn--ghost" title="Cancel" style="padding: 4px 8px; color: var(--color-danger);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></button>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- BK-1039: Confirmed -->
+                <tr data-status="confirmed">
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light);"><span style="font-family: var(--font-mono); font-size: var(--font-size-xs); background: var(--color-off-white); padding: 2px 8px; border-radius: var(--radius-sm); border: 1px solid var(--color-light);">#BK-1039</span></td>
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light);">
+                    <div>
+                      <div style="font-weight: var(--font-weight-medium); font-size: var(--font-size-sm);">Emma Wilson</div>
+                      <div style="font-size: var(--font-size-xs); color: var(--color-gray);">e.wilson@email.com.au</div>
+                    </div>
+                  </td>
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light); font-size: var(--font-size-sm);">Cascade Apartment 6</td>
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light); white-space: nowrap;">
+                    <div style="font-size: var(--font-size-sm);">
+                      <span>11 Jul 2026</span>
+                      <span style="color: var(--color-muted); margin: 0 4px;">&rarr;</span>
+                      <span>18 Jul 2026</span>
+                    </div>
+                  </td>
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light); font-size: var(--font-size-sm);">6</td>
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light);"><span class="badge badge--success">Confirmed</span></td>
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light);"><strong style="font-size: var(--font-size-sm);">$3,136</strong></td>
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light);">
+                    <div style="display: flex; gap: var(--space-xs);">
+                      <button class="btn btn--sm btn--ghost" title="View" style="padding: 4px 8px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+                      <button class="btn btn--sm btn--ghost" title="Edit" style="padding: 4px 8px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                      <button class="btn btn--sm btn--ghost" title="Cancel" style="padding: 4px 8px; color: var(--color-danger);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></button>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- BK-1038: Cancelled -->
+                <tr data-status="cancelled">
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light);"><span style="font-family: var(--font-mono); font-size: var(--font-size-xs); background: var(--color-off-white); padding: 2px 8px; border-radius: var(--radius-sm); border: 1px solid var(--color-light);">#BK-1038</span></td>
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light);">
+                    <div>
+                      <div style="font-weight: var(--font-weight-medium); font-size: var(--font-size-sm);">Tom Fletcher</div>
+                      <div style="font-size: var(--font-size-xs); color: var(--color-gray);">t.fletcher@email.com.au</div>
+                    </div>
+                  </td>
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light); font-size: var(--font-size-sm);">Cascade Apartment 6</td>
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light); white-space: nowrap;">
+                    <div style="font-size: var(--font-size-sm);">
+                      <span>1 Aug 2026</span>
+                      <span style="color: var(--color-muted); margin: 0 4px;">&rarr;</span>
+                      <span>5 Aug 2026</span>
+                    </div>
+                  </td>
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light); font-size: var(--font-size-sm);">3</td>
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light);"><span class="badge badge--danger">Cancelled</span></td>
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light);"><strong style="font-size: var(--font-size-sm);">$1,568</strong></td>
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light);">
+                    <div style="display: flex; gap: var(--space-xs);">
+                      <button class="btn btn--sm btn--ghost" title="View" style="padding: 4px 8px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+                      <button class="btn btn--sm btn--ghost" title="Edit" style="padding: 4px 8px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                      <button class="btn btn--sm btn--ghost" title="Cancel" style="padding: 4px 8px; color: var(--color-danger);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></button>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- BK-1037: Confirmed -->
+                <tr data-status="confirmed">
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light);"><span style="font-family: var(--font-mono); font-size: var(--font-size-xs); background: var(--color-off-white); padding: 2px 8px; border-radius: var(--radius-sm); border: 1px solid var(--color-light);">#BK-1037</span></td>
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light);">
+                    <div>
+                      <div style="font-weight: var(--font-weight-medium); font-size: var(--font-size-sm);">Chloe Anderson</div>
+                      <div style="font-size: var(--font-size-xs); color: var(--color-gray);">c.anderson@email.com.au</div>
+                    </div>
+                  </td>
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light); font-size: var(--font-size-sm);">Cascade Apartment 6</td>
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light); white-space: nowrap;">
+                    <div style="font-size: var(--font-size-sm);">
+                      <span>12 Sep 2026</span>
+                      <span style="color: var(--color-muted); margin: 0 4px;">&rarr;</span>
+                      <span>19 Sep 2026</span>
+                    </div>
+                  </td>
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light); font-size: var(--font-size-sm);">4</td>
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light);"><span class="badge badge--success">Confirmed</span></td>
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light);"><strong style="font-size: var(--font-size-sm);">$2,744</strong></td>
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light);">
+                    <div style="display: flex; gap: var(--space-xs);">
+                      <button class="btn btn--sm btn--ghost" title="View" style="padding: 4px 8px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+                      <button class="btn btn--sm btn--ghost" title="Edit" style="padding: 4px 8px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                      <button class="btn btn--sm btn--ghost" title="Cancel" style="padding: 4px 8px; color: var(--color-danger);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></button>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- BK-1036: Pending -->
+                <tr data-status="pending">
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light);"><span style="font-family: var(--font-mono); font-size: var(--font-size-xs); background: var(--color-off-white); padding: 2px 8px; border-radius: var(--radius-sm); border: 1px solid var(--color-light);">#BK-1036</span></td>
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light);">
+                    <div>
+                      <div style="font-weight: var(--font-weight-medium); font-size: var(--font-size-sm);">Ethan Kowalski</div>
+                      <div style="font-size: var(--font-size-xs); color: var(--color-gray);">e.kowalski@email.com.au</div>
+                    </div>
+                  </td>
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light); font-size: var(--font-size-sm);">Cascade Apartment 6</td>
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light); white-space: nowrap;">
+                    <div style="font-size: var(--font-size-sm);">
+                      <span>17 Oct 2026</span>
+                      <span style="color: var(--color-muted); margin: 0 4px;">&rarr;</span>
+                      <span>21 Oct 2026</span>
+                    </div>
+                  </td>
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light); font-size: var(--font-size-sm);">2</td>
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light);"><span class="badge badge--warning">Pending</span></td>
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light);"><strong style="font-size: var(--font-size-sm);">$1,120</strong></td>
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light);">
+                    <div style="display: flex; gap: var(--space-xs);">
+                      <button class="btn btn--sm btn--ghost" title="View" style="padding: 4px 8px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+                      <button class="btn btn--sm btn--ghost" title="Edit" style="padding: 4px 8px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                      <button class="btn btn--sm btn--ghost" title="Cancel" style="padding: 4px 8px; color: var(--color-danger);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></button>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- BK-1035: Confirmed -->
+                <tr data-status="confirmed">
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light);"><span style="font-family: var(--font-mono); font-size: var(--font-size-xs); background: var(--color-off-white); padding: 2px 8px; border-radius: var(--radius-sm); border: 1px solid var(--color-light);">#BK-1035</span></td>
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light);">
+                    <div>
+                      <div style="font-weight: var(--font-weight-medium); font-size: var(--font-size-sm);">Olivia Pham</div>
+                      <div style="font-size: var(--font-size-xs); color: var(--color-gray);">o.pham@email.com.au</div>
+                    </div>
+                  </td>
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light); font-size: var(--font-size-sm);">Cascade Apartment 6</td>
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light); white-space: nowrap;">
+                    <div style="font-size: var(--font-size-sm);">
+                      <span>26 Dec 2026</span>
+                      <span style="color: var(--color-muted); margin: 0 4px;">&rarr;</span>
+                      <span>2 Jan 2027</span>
+                    </div>
+                  </td>
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light); font-size: var(--font-size-sm);">6</td>
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light);"><span class="badge badge--success">Confirmed</span></td>
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light);"><strong style="font-size: var(--font-size-sm);">$2,548</strong></td>
+                  <td style="padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-light);">
+                    <div style="display: flex; gap: var(--space-xs);">
+                      <button class="btn btn--sm btn--ghost" title="View" style="padding: 4px 8px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+                      <button class="btn btn--sm btn--ghost" title="Edit" style="padding: 4px 8px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                      <button class="btn btn--sm btn--ghost" title="Cancel" style="padding: 4px 8px; color: var(--color-danger);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></button>
+                    </div>
+                  </td>
+                </tr>
+
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pagination -->
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-top: var(--space-lg); font-size: var(--font-size-sm); color: var(--color-gray);">
+        <div>Showing <strong id="shownCount">1-8</strong> of <strong id="totalCount">8</strong> bookings</div>
+        <div style="display: flex; gap: var(--space-sm);">
+          <button class="btn btn--sm btn--outline" disabled>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="15 18 9 12 15 6"/></svg>
+            Previous
+          </button>
+          <button class="btn btn--sm btn--outline" style="background: var(--color-primary); color: #fff; border-color: var(--color-primary);">1</button>
+          <button class="btn btn--sm btn--outline" disabled>
+            Next
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script src="../js/app.js"></script>
+<script src="../js/admin.js"></script>
+<script src="js/auth-check.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+
+    // Sidebar toggle
+    document.getElementById('sidebarToggle').addEventListener('click', function () {
+      document.getElementById('adminSidebar').classList.toggle('open');
+    });
+
+    // Filter buttons
+    var filterBtns = document.querySelectorAll('.filter-btn');
+    var rows = document.querySelectorAll('#bookingsBody tr');
+
+    function applyFilter(filter) {
+      var shown = 0;
+      rows.forEach(function (row) {
+        var status = row.getAttribute('data-status');
+        if (filter === 'all' || status === filter) {
+          row.style.display = '';
+          shown++;
+        } else {
+          row.style.display = 'none';
+        }
+      });
+      document.getElementById('shownCount').textContent = shown > 0 ? '1-' + shown : '0';
+      document.getElementById('totalCount').textContent = shown;
+    }
+
+    filterBtns.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        filterBtns.forEach(function (b) { b.classList.remove('active'); });
+        this.classList.add('active');
+        applyFilter(this.getAttribute('data-filter'));
+      });
+    });
+
+    // Table search
+    document.getElementById('tableSearch').addEventListener('input', function () {
+      var query = this.value.toLowerCase().trim();
+      rows.forEach(function (row) {
+        var text = row.textContent.toLowerCase();
+        row.style.display = text.includes(query) ? '' : 'none';
+      });
+    });
+
+  });
+</script>
 </body>
 </html>
