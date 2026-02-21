@@ -1,0 +1,26 @@
+<svg viewBox="0 0 240 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Cascade Apartment 6">
+  <!-- Mountain peaks group -->
+  <g transform="translate(20, 8)">
+    <!-- Back peak (left) -->
+    <polygon points="30,62 54,22 78,62" fill="#1a3a5c" opacity="0.6"/>
+    <!-- Back peak (right) -->
+    <polygon points="62,62 90,10 118,62" fill="#1a3a5c" opacity="0.5"/>
+    <!-- Front peak (main, gold) -->
+    <polygon points="44,62 74,4 104,62" fill="#c9a84c"/>
+    <!-- Snow cap on main peak -->
+    <polygon points="64,14 74,4 84,14 78,20 70,18 64,14" fill="#ffffff" opacity="0.9"/>
+    <!-- Cascading water/snow lines on main peak -->
+    <line x1="74" y1="22" x2="68" y2="40" stroke="#ffffff" stroke-width="1.5" opacity="0.7"/>
+    <line x1="74" y1="22" x2="80" y2="38" stroke="#ffffff" stroke-width="1.5" opacity="0.7"/>
+    <!-- Base line / ground -->
+    <line x1="0" y1="62" x2="140" y2="62" stroke="#0f2744" stroke-width="1.5" opacity="0.4"/>
+  </g>
+  <!-- Text: CASCADE -->
+  <text x="120" y="44" font-family="'Playfair Display', Georgia, serif" font-size="28" font-weight="700" letter-spacing="4" fill="#0f2744" text-anchor="middle">CASCADE</text>
+  <!-- Decorative line -->
+  <line x1="60" y1="52" x2="180" y2="52" stroke="#c9a84c" stroke-width="1"/>
+  <!-- Text: APARTMENT 6 -->
+  <text x="120" y="68" font-family="'Inter', Arial, sans-serif" font-size="11" font-weight="500" letter-spacing="5" fill="#c9a84c" text-anchor="middle">APARTMENT  6</text>
+  <!-- Sub text: MT BAW BAW -->
+  <text x="120" y="82" font-family="'Inter', Arial, sans-serif" font-size="7.5" font-weight="400" letter-spacing="3" fill="#7f8c8d" text-anchor="middle">MT BAW BAW ALPINE RESORT</text>
+</svg>
