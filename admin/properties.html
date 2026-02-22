@@ -84,7 +84,7 @@
             <h1 class="admin-page-title">Properties</h1>
             <p class="admin-page-subtitle">Manage your accommodation listings</p>
           </div>
-          <a href="property-edit.html" class="btn btn-primary admin-page-action">
+          <a href="property-edit.html" class="btn btn-primary admin-page-action" id="addNewPropBtn" style="display:none;">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="btn-icon">
               <line x1="12" y1="5" x2="12" y2="19"></line>
               <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -175,15 +175,12 @@
                   <td style="font-weight: var(--font-weight-semibold);">$124,500</td>
                   <td>
                     <div style="display: flex; gap: var(--space-sm);">
-                      <a href="property-edit.html" class="btn btn--sm btn--ghost" title="Edit" style="padding: var(--space-xs);">
+                      <a href="property-edit.html" class="btn btn--sm btn--ghost" title="Edit property" style="padding: var(--space-xs);">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                       </a>
-                      <a href="../property.html" class="btn btn--sm btn--ghost" title="View" style="padding: var(--space-xs);">
+                      <a href="../property.html" target="_blank" class="btn btn--sm btn--ghost" title="View on website" style="padding: var(--space-xs);">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                       </a>
-                      <button class="btn btn--sm btn--ghost" title="Delete" style="padding: var(--space-xs); color: var(--color-danger);">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-                      </button>
                     </div>
                   </td>
                 </tr>
@@ -204,7 +201,23 @@
 
   <script src="../js/app.js"></script>
   <script src="../js/admin.js"></script>
-    <script src="../js/admin-auth.js"></script>
+  <script src="../js/admin-auth.js"></script>
+  <script>
+    // Show "Add New Property" only for the site owner
+    (function() {
+      function showOwnerBtn() {
+        if (window.TrendAccomAdmin && window.TrendAccomAdmin.isOwner) {
+          var btn = document.getElementById('addNewPropBtn');
+          if (btn) btn.style.display = '';
+        }
+      }
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', showOwnerBtn);
+      } else {
+        showOwnerBtn();
+      }
+    })();
+  </script>
 </div><!-- /.admin-layout -->
 </body>
 </html>

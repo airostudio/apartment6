@@ -4,18 +4,458 @@
     <meta charset="UTF-8">
     <base href="/admin/">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calendar - Cascade Apartment 6 Admin</title>
+    <title>Availability Calendar — Cascade Apartment 6 Admin</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/main.css">
     <link rel="stylesheet" href="../css/admin.css">
+    <style>
+    /* ── HBook-style availability timeline ─────────────────────────── */
+
+    /* Scroll container */
+    .cal-outer {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        border-radius: 0 0 12px 12px;
+        border-top: 1px solid #e2e8f0;
+    }
+
+    /* Shared: fixed-width left label pad */
+    .cal-lpad {
+        flex: 0 0 190px;
+        min-width: 190px;
+        border-right: 2px solid #e2e8f0;
+        box-sizing: border-box;
+    }
+
+    /* Row 1: month name strip */
+    .cal-month-strip {
+        display: flex;
+        background: #f8fafc;
+        border-bottom: 1px solid #e2e8f0;
+        min-width: max-content;
+    }
+    .cal-month-strip .cal-lpad {
+        display: flex;
+        align-items: center;
+        padding: 0 14px;
+        font-size: 0.6875rem;
+        font-weight: 600;
+        color: #94a3b8;
+        text-transform: uppercase;
+        letter-spacing: 0.07em;
+    }
+    .cal-month-chunk {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px 0;
+        font-size: 0.8125rem;
+        font-weight: 700;
+        color: #0f2744;
+        letter-spacing: 0.02em;
+        border-right: 2px solid #e2e8f0;
+        flex-shrink: 0;
+    }
+
+    /* Row 2: day header strip */
+    .cal-day-strip {
+        display: flex;
+        border-bottom: 2px solid #0f2744;
+        background: #fff;
+        min-width: max-content;
+    }
+    .cal-day-strip .cal-lpad { background: #f8fafc; }
+    .cal-dh {
+        flex: 0 0 38px;
+        min-width: 38px;
+        padding: 5px 0 4px;
+        text-align: center;
+        border-right: 1px solid #f1f5f9;
+        box-sizing: border-box;
+    }
+    .cal-dh .dow {
+        display: block;
+        font-size: 0.5625rem;
+        color: #94a3b8;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        line-height: 1;
+    }
+    .cal-dh .dn {
+        display: block;
+        font-size: 0.8125rem;
+        font-weight: 600;
+        color: #334155;
+        line-height: 1.9;
+    }
+    .cal-dh.weekend { background: #f8fafc; }
+    .cal-dh.is-today { background: rgba(201,168,76,0.12); }
+    .cal-dh.is-today .dn {
+        background: #c9a84c;
+        color: #fff;
+        border-radius: 50%;
+        width: 24px;
+        height: 24px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.75rem;
+        margin: 0 auto;
+    }
+    .cal-dh.is-past .dn, .cal-dh.is-past .dow { opacity: 0.4; }
+    .cal-dh.month-start { border-left: 2px solid #cbd5e1; }
+
+    /* Row 3: booking row */
+    .cal-brow {
+        display: flex;
+        border-bottom: 1px solid #f1f5f9;
+        min-width: max-content;
+    }
+    .cal-row-lbl {
+        flex: 0 0 190px;
+        min-width: 190px;
+        min-height: 64px;
+        padding: 0 14px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        font-size: 0.8125rem;
+        font-weight: 600;
+        color: #0f2744;
+        background: #f8fafc;
+        border-right: 2px solid #e2e8f0;
+        position: sticky;
+        left: 0;
+        z-index: 10;
+        box-shadow: 4px 0 8px rgba(0,0,0,0.05);
+        box-sizing: border-box;
+    }
+    .cal-row-lbl small {
+        display: block;
+        font-size: 0.6875rem;
+        font-weight: 400;
+        color: #94a3b8;
+        margin-top: 2px;
+    }
+
+    /* Cells wrapper — contains bg cells + overlaid bars */
+    .cal-cells-wrap {
+        position: relative;
+        display: flex;
+        flex: 1;
+        min-height: 64px;
+    }
+    .cal-cell {
+        flex: 0 0 38px;
+        min-width: 38px;
+        min-height: 64px;
+        border-right: 1px solid #f1f5f9;
+        box-sizing: border-box;
+    }
+    .cal-cell.weekend { background: rgba(248,250,252,0.9); }
+    .cal-cell.is-today {
+        background: rgba(201,168,76,0.05);
+        border-right-color: rgba(201,168,76,0.3);
+    }
+    .cal-cell.month-start { border-left: 2px solid #cbd5e1; }
+
+    /* Today vertical marker */
+    .cal-today-mark {
+        position: absolute;
+        top: 0; bottom: 0;
+        width: 2px;
+        background: #c9a84c;
+        z-index: 7;
+        pointer-events: none;
+    }
+    .cal-today-mark::after {
+        content: '';
+        position: absolute;
+        top: 0; left: 50%;
+        transform: translateX(-50%);
+        border-left: 5px solid transparent;
+        border-right: 5px solid transparent;
+        border-top: 6px solid #c9a84c;
+    }
+
+    /* Booking bars */
+    .cal-bar {
+        position: absolute;
+        height: 34px;
+        top: 50%;
+        transform: translateY(-50%);
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        padding: 0 10px;
+        font-size: 0.6875rem;
+        font-weight: 600;
+        color: #fff;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        cursor: pointer;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        transition: filter 0.12s, box-shadow 0.12s;
+        z-index: 5;
+        user-select: none;
+    }
+    .cal-bar:hover {
+        filter: brightness(1.1);
+        box-shadow: 0 4px 14px rgba(0,0,0,0.28);
+        z-index: 6;
+    }
+    .cal-bar--confirmed { background: linear-gradient(90deg,#0f2744,#1e4070); }
+    .cal-bar--pending   { background: linear-gradient(90deg,#a07820,#c9a84c); }
+    .cal-bar--cancelled { background: linear-gradient(90deg,#a93226,#e74c3c); }
+    .cal-bar--blocked {
+        background: repeating-linear-gradient(
+            45deg,
+            #7f8c9a 0px, #7f8c9a 5px,
+            #9aabb8 5px, #9aabb8 12px
+        );
+        color: #2d3748;
+    }
+    .cal-bar-icon { width: 11px; height: 11px; flex-shrink: 0; opacity: 0.8; }
+
+    /* Tooltip */
+    .cal-tooltip {
+        position: fixed;
+        z-index: 9999;
+        background: #1e293b;
+        color: #f8fafc;
+        border-radius: 10px;
+        padding: 12px 15px;
+        font-size: 0.8125rem;
+        line-height: 1.55;
+        box-shadow: 0 8px 28px rgba(0,0,0,0.35);
+        pointer-events: none;
+        max-width: 240px;
+        display: none;
+    }
+    .cal-tooltip .t-name {
+        font-weight: 700;
+        font-size: 0.875rem;
+        margin-bottom: 6px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid rgba(255,255,255,0.12);
+    }
+    .cal-tooltip .t-row { color: #94a3b8; font-size: 0.75rem; }
+    .cal-tooltip .t-row span { color: #f8fafc; font-weight: 500; }
+    .cal-tooltip .t-status {
+        display: inline-block;
+        margin-top: 5px;
+        padding: 2px 8px;
+        border-radius: 20px;
+        font-size: 0.6875rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+    }
+    .cal-tooltip .t-status--confirmed { background: rgba(39,174,96,0.25); color: #5dde8f; }
+    .cal-tooltip .t-status--pending   { background: rgba(201,168,76,0.25); color: #e8c56a; }
+    .cal-tooltip .t-status--blocked   { background: rgba(148,163,184,0.2); color: #cbd5e1; }
+    .cal-tooltip .t-status--cancelled { background: rgba(231,76,60,0.25); color: #fc8a7f; }
+
+    /* Nav controls */
+    .cal-controls {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+    .cal-nav-btn {
+        width: 34px; height: 34px;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 8px;
+        background: #fff;
+        color: #64748b;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.14s;
+        flex-shrink: 0;
+        font-family: inherit;
+        font-size: 1rem;
+    }
+    .cal-nav-btn:hover { background: #0f2744; color: #fff; border-color: #0f2744; }
+    .cal-period-label {
+        font-weight: 600;
+        font-size: 0.9375rem;
+        color: #0f2744;
+        min-width: 230px;
+        text-align: center;
+    }
+    .cal-jump-today {
+        padding: 7px 14px;
+        border-radius: 8px;
+        border: 1.5px solid #e2e8f0;
+        background: #fff;
+        font-size: 0.8125rem;
+        font-weight: 500;
+        color: #64748b;
+        cursor: pointer;
+        transition: all 0.14s;
+        font-family: inherit;
+    }
+    .cal-jump-today:hover { border-color: #0f2744; color: #0f2744; background: #f8fafc; }
+
+    /* Legend */
+    .cal-legend {
+        display: flex;
+        gap: 18px;
+        flex-wrap: wrap;
+        align-items: center;
+        padding: 12px 20px;
+        background: #f8fafc;
+        border-top: 1px solid #e2e8f0;
+        border-radius: 0 0 12px 12px;
+    }
+    .cal-legend-item {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        font-size: 0.8125rem;
+        color: #64748b;
+    }
+    .cal-legend-sw {
+        width: 30px; height: 13px;
+        border-radius: 4px;
+        flex-shrink: 0;
+    }
+    .cal-legend-sw--avail { background: #f1f5f9; border: 1px solid #e2e8f0; }
+    .cal-legend-sw--confirmed { background: linear-gradient(90deg,#0f2744,#1e4070); }
+    .cal-legend-sw--pending { background: linear-gradient(90deg,#a07820,#c9a84c); }
+    .cal-legend-sw--blocked {
+        background: repeating-linear-gradient(
+            45deg, #7f8c9a 0, #7f8c9a 3px, #9aabb8 3px, #9aabb8 7px
+        );
+    }
+    .cal-legend-sw--today {
+        background: #c9a84c;
+        width: 3px;
+        border-radius: 2px;
+        height: 13px;
+    }
+
+    /* Block dates modal */
+    .bm-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(15,23,42,0.55);
+        z-index: 990;
+        align-items: center;
+        justify-content: center;
+    }
+    .bm-overlay.open { display: flex; }
+    .bm-box {
+        background: #fff;
+        border-radius: 16px;
+        padding: 28px;
+        width: 420px;
+        max-width: calc(100vw - 32px);
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    .bm-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 22px;
+    }
+    .bm-head h3 { font-size: 1.0625rem; font-weight: 700; color: #0f2744; }
+    .bm-x {
+        background: none; border: none; cursor: pointer;
+        color: #94a3b8; width: 30px; height: 30px;
+        border-radius: 8px; display: flex; align-items: center; justify-content: center;
+        font-size: 1.25rem; line-height: 1; transition: all 0.14s; padding: 0;
+    }
+    .bm-x:hover { background: #f1f5f9; color: #475569; }
+    .bm-row-pair { display: flex; gap: 12px; }
+    .bm-field { margin-bottom: 14px; flex: 1; }
+    .bm-field label {
+        display: block;
+        font-size: 0.8125rem;
+        font-weight: 500;
+        color: #475569;
+        margin-bottom: 5px;
+    }
+    .bm-field input, .bm-field textarea {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 9px 12px;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 8px;
+        font-size: 0.875rem;
+        font-family: inherit;
+        color: #334155;
+        transition: border-color 0.14s;
+    }
+    .bm-field input:focus, .bm-field textarea:focus {
+        outline: none;
+        border-color: #0f2744;
+        box-shadow: 0 0 0 3px rgba(15,39,68,0.1);
+    }
+    .bm-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 6px; }
+    .bm-cancel {
+        padding: 9px 18px; border-radius: 8px;
+        border: 1.5px solid #e2e8f0; background: #fff;
+        font-size: 0.875rem; font-family: inherit; color: #64748b; cursor: pointer;
+        transition: all 0.14s;
+    }
+    .bm-cancel:hover { border-color: #cbd5e1; background: #f8fafc; }
+    .bm-save {
+        padding: 9px 20px; border-radius: 8px;
+        border: none; background: #7f8c9a;
+        font-size: 0.875rem; font-family: inherit;
+        font-weight: 600; color: #fff; cursor: pointer;
+        transition: background 0.14s;
+    }
+    .bm-save:hover { background: #5d6d7e; }
+
+    /* Upcoming stays list */
+    .upcoming-item {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 12px 0;
+        border-bottom: 1px solid #f1f5f9;
+    }
+    .upcoming-item:last-child { border-bottom: none; }
+    .upcoming-datebox {
+        flex: 0 0 46px;
+        height: 46px;
+        background: #0f2744;
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        flex-shrink: 0;
+    }
+    .upcoming-datebox.is-today { background: #c9a84c; }
+    .upcoming-datebox .ud-d { font-size: 1.0625rem; font-weight: 700; line-height: 1; }
+    .upcoming-datebox .ud-m { font-size: 0.5625rem; text-transform: uppercase; letter-spacing: 0.06em; opacity: 0.85; }
+    .upcoming-info { flex: 1; min-width: 0; }
+    .upcoming-name { font-weight: 600; font-size: 0.875rem; color: #0f172a; }
+    .upcoming-sub { font-size: 0.75rem; color: #94a3b8; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .upcoming-nights {
+        font-size: 0.75rem; font-weight: 600; color: #0f2744;
+        background: rgba(15,39,68,0.07); border-radius: 6px;
+        padding: 3px 9px; flex-shrink: 0;
+    }
+    </style>
 </head>
 <body class="admin-body">
 
 <div class="admin-layout">
 
-    <!-- Admin Sidebar -->
+    <!-- ============ SIDEBAR ============ -->
     <aside class="admin-sidebar">
         <div class="admin-sidebar__header">
             <a href="index.html" class="admin-sidebar__logo">
@@ -30,7 +470,7 @@
                     <li class="admin-sidebar__menu-item"><a href="index.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg><span>Dashboard</span></a></li>
                     <li class="admin-sidebar__menu-item"><a href="properties.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>Properties</span></a></li>
                     <li class="admin-sidebar__menu-item"><a href="bookings.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg><span>Bookings</span></a></li>
-                    <li class="admin-sidebar__menu-item"><a href="calendar.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>Calendar</span></a></li>
+                    <li class="admin-sidebar__menu-item admin-sidebar__menu-item--active"><a href="calendar.html" class="admin-sidebar__menu-link admin-sidebar__menu-link--active"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>Calendar</span></a></li>
                 </ul>
             </div>
             <div class="admin-sidebar__section">
@@ -58,347 +498,589 @@
         </nav>
     </aside>
 
-    <!-- Main Content -->
-    <main class="admin-main">
+    <!-- ============ MAIN CONTENT ============ -->
+    <div class="admin-main">
 
-        <!-- Topbar -->
+        <!-- Top Bar -->
         <header class="admin-topbar">
             <div class="admin-topbar__breadcrumb">
                 <a href="index.html" class="admin-topbar__breadcrumb-link">Dashboard</a>
                 <span class="admin-topbar__breadcrumb-separator">&rsaquo;</span>
-                <span class="admin-topbar__breadcrumb-current">Calendar</span>
+                <span class="admin-topbar__breadcrumb-current">Availability Calendar</span>
             </div>
             <div class="admin-topbar__actions">
-                <button class="admin-topbar__notification-btn" aria-label="Notifications">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-                </button>
                 <div class="admin-topbar__user">
-                    <div class="admin-topbar__user-avatar">AD</div>
-                    <span class="admin-topbar__user-name">Admin</span>
+                    <div class="admin-topbar__user-avatar" id="userAvatar">AD</div>
+                    <span class="admin-topbar__user-name" id="userName">Admin</span>
                 </div>
             </div>
         </header>
 
         <!-- Page Content -->
-        <div class="admin-content">
+        <main class="admin-content">
 
             <!-- Page Header -->
             <div class="admin-page-header">
-                <div class="admin-page-header__info">
-                    <h1 class="admin-page-header__title">Availability Calendar</h1>
-                    <p class="admin-page-header__description">Manage availability across all properties</p>
+                <div>
+                    <h1 class="admin-page-title">Availability Calendar</h1>
+                    <p class="admin-page-subtitle">Cascade Apartment 6 — live availability from your bookings</p>
                 </div>
-                <div class="admin-page-header__actions">
-                    <div class="admin-select-wrapper">
-                        <select class="admin-select" id="propertySelector">
-                            <option value="all">All Properties</option>
-                            <option value="oceanfront">Oceanfront Villa Deluxe</option>
-                            <option value="mountain">Mountain Retreat Cabin</option>
-                            <option value="downtown">Downtown Luxury Apartment</option>
-                            <option value="seaside">Seaside Cottage</option>
-                            <option value="lakeside">Lakeside Bungalow</option>
-                        </select>
-                    </div>
-                    <div class="admin-btn-group">
-                        <button class="admin-btn admin-btn--outline admin-btn--sm">Today</button>
-                        <button class="admin-btn admin-btn--primary admin-btn--sm">Month</button>
-                        <button class="admin-btn admin-btn--outline admin-btn--sm">Week</button>
-                    </div>
+                <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+                    <button class="btn-primary" id="blockDatesBtn" style="display:inline-flex;align-items:center;gap:7px;padding:9px 16px;font-size:0.8125rem;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M10 14h4M12 12v4"/></svg>
+                        Block Dates
+                    </button>
+                    <a href="bookings.html" class="btn-primary" style="display:inline-flex;align-items:center;gap:7px;padding:9px 16px;font-size:0.8125rem;text-decoration:none;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        New Booking
+                    </a>
                 </div>
             </div>
 
-            <!-- Calendar -->
-            <div class="admin-card">
-                <div class="admin-calendar">
+            <!-- Calendar Card -->
+            <div class="admin-card" style="overflow:hidden;padding:0;">
 
-                    <!-- Calendar Header -->
-                    <div class="admin-calendar__header">
-                        <button class="admin-calendar__nav-btn" aria-label="Previous month">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><polyline points="15 18 9 12 15 6"/></svg>
+                <!-- Nav Bar -->
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid #e2e8f0;flex-wrap:wrap;gap:10px;">
+                    <div class="cal-controls">
+                        <button class="cal-nav-btn" id="calPrev" aria-label="Previous period">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16"><polyline points="15 18 9 12 15 6"/></svg>
                         </button>
-                        <h2 class="admin-calendar__month-year">March 2026</h2>
-                        <button class="admin-calendar__nav-btn" aria-label="Next month">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><polyline points="9 18 15 12 9 6"/></svg>
+                        <span class="cal-period-label" id="calNavLabel">Loading…</span>
+                        <button class="cal-nav-btn" id="calNext" aria-label="Next period">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16"><polyline points="9 18 15 12 9 6"/></svg>
                         </button>
+                        <button class="cal-jump-today" id="calTodayBtn">Today</button>
                     </div>
-
-                    <!-- Weekday Headers -->
-                    <div class="admin-calendar__weekdays">
-                        <div class="admin-calendar__weekday">Mon</div>
-                        <div class="admin-calendar__weekday">Tue</div>
-                        <div class="admin-calendar__weekday">Wed</div>
-                        <div class="admin-calendar__weekday">Thu</div>
-                        <div class="admin-calendar__weekday">Fri</div>
-                        <div class="admin-calendar__weekday">Sat</div>
-                        <div class="admin-calendar__weekday">Sun</div>
+                    <div style="font-size:0.8125rem;color:#94a3b8;display:flex;align-items:center;gap:6px;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+                        Showing 3 months · Scroll to navigate
                     </div>
+                </div>
 
-                    <!-- Calendar Grid (March 2026 starts on Sunday, so Mon Feb 23 is first cell) -->
-                    <div class="admin-calendar__grid">
-                        <!-- Week 1: Feb 23 - Mar 1 -->
-                        <div class="admin-calendar__day admin-calendar__day--other-month">
-                            <span class="admin-calendar__day-number">23</span>
+                <!-- Timeline -->
+                <div id="calOuter" class="cal-outer">
+                    <!-- Month strip -->
+                    <div class="cal-month-strip" id="calMonthStrip"></div>
+                    <!-- Day header strip -->
+                    <div class="cal-day-strip" id="calDayStrip"></div>
+                    <!-- Booking row -->
+                    <div class="cal-brow">
+                        <div class="cal-row-lbl">
+                            Cascade Apartment 6
+                            <small>Mt Baw Baw Alpine Resort</small>
                         </div>
-                        <div class="admin-calendar__day admin-calendar__day--other-month">
-                            <span class="admin-calendar__day-number">24</span>
-                        </div>
-                        <div class="admin-calendar__day admin-calendar__day--other-month">
-                            <span class="admin-calendar__day-number">25</span>
-                        </div>
-                        <div class="admin-calendar__day admin-calendar__day--other-month">
-                            <span class="admin-calendar__day-number">26</span>
-                        </div>
-                        <div class="admin-calendar__day admin-calendar__day--other-month">
-                            <span class="admin-calendar__day-number">27</span>
-                            <div class="day-booking day-booking--pending">M. Torres</div>
-                        </div>
-                        <div class="admin-calendar__day admin-calendar__day--other-month">
-                            <span class="admin-calendar__day-number">28</span>
-                            <div class="day-booking day-booking--pending">M. Torres</div>
-                        </div>
-                        <div class="admin-calendar__day">
-                            <span class="admin-calendar__day-number">1</span>
-                            <div class="day-booking day-booking--confirmed">J. Davidson</div>
-                        </div>
+                        <div class="cal-cells-wrap" id="calCells"></div>
+                    </div>
+                </div>
 
-                        <!-- Week 2: Mar 2 - Mar 8 -->
-                        <div class="admin-calendar__day">
-                            <span class="admin-calendar__day-number">2</span>
-                            <div class="day-booking day-booking--confirmed">J. Davidson</div>
-                        </div>
-                        <div class="admin-calendar__day">
-                            <span class="admin-calendar__day-number">3</span>
-                            <div class="day-booking day-booking--confirmed">J. Davidson</div>
-                        </div>
-                        <div class="admin-calendar__day">
-                            <span class="admin-calendar__day-number">4</span>
-                            <div class="day-booking day-booking--confirmed">J. Davidson</div>
-                        </div>
-                        <div class="admin-calendar__day">
-                            <span class="admin-calendar__day-number">5</span>
-                            <div class="day-booking day-booking--confirmed">J. Davidson</div>
-                        </div>
-                        <div class="admin-calendar__day">
-                            <span class="admin-calendar__day-number">6</span>
-                            <div class="day-booking day-booking--confirmed">J. Davidson</div>
-                        </div>
-                        <div class="admin-calendar__day">
-                            <span class="admin-calendar__day-number">7</span>
-                            <div class="day-booking day-booking--confirmed">J. Davidson</div>
-                        </div>
-                        <div class="admin-calendar__day">
-                            <span class="admin-calendar__day-number">8</span>
-                            <div class="day-booking day-booking--pending">D. Park</div>
-                        </div>
-
-                        <!-- Week 3: Mar 9 - Mar 15 -->
-                        <div class="admin-calendar__day">
-                            <span class="admin-calendar__day-number">9</span>
-                            <div class="day-booking day-booking--pending">D. Park</div>
-                        </div>
-                        <div class="admin-calendar__day">
-                            <span class="admin-calendar__day-number">10</span>
-                            <div class="day-booking day-booking--pending">D. Park</div>
-                        </div>
-                        <div class="admin-calendar__day">
-                            <span class="admin-calendar__day-number">11</span>
-                            <div class="day-booking day-booking--blocked">Blocked</div>
-                        </div>
-                        <div class="admin-calendar__day">
-                            <span class="admin-calendar__day-number">12</span>
-                            <div class="day-booking day-booking--confirmed">S. Mitchell</div>
-                        </div>
-                        <div class="admin-calendar__day">
-                            <span class="admin-calendar__day-number">13</span>
-                            <div class="day-booking day-booking--confirmed">S. Mitchell</div>
-                        </div>
-                        <div class="admin-calendar__day">
-                            <span class="admin-calendar__day-number">14</span>
-                            <div class="day-booking day-booking--confirmed">S. Mitchell</div>
-                        </div>
-                        <div class="admin-calendar__day">
-                            <span class="admin-calendar__day-number">15</span>
-                            <div class="day-booking day-booking--confirmed">S. Mitchell</div>
-                        </div>
-
-                        <!-- Week 4: Mar 16 - Mar 22 -->
-                        <div class="admin-calendar__day">
-                            <span class="admin-calendar__day-number">16</span>
-                            <div class="day-booking day-booking--confirmed">S. Mitchell</div>
-                        </div>
-                        <div class="admin-calendar__day">
-                            <span class="admin-calendar__day-number">17</span>
-                            <div class="day-booking day-booking--confirmed">S. Mitchell</div>
-                        </div>
-                        <div class="admin-calendar__day">
-                            <span class="admin-calendar__day-number">18</span>
-                            <div class="day-booking day-booking--blocked">Blocked</div>
-                        </div>
-                        <div class="admin-calendar__day">
-                            <span class="admin-calendar__day-number">19</span>
-                            <div class="day-booking day-booking--blocked">Blocked</div>
-                        </div>
-                        <div class="admin-calendar__day">
-                            <span class="admin-calendar__day-number">20</span>
-                        </div>
-                        <div class="admin-calendar__day">
-                            <span class="admin-calendar__day-number">21</span>
-                        </div>
-                        <div class="admin-calendar__day">
-                            <span class="admin-calendar__day-number">22</span>
-                        </div>
-
-                        <!-- Week 5: Mar 23 - Mar 29 -->
-                        <div class="admin-calendar__day">
-                            <span class="admin-calendar__day-number">23</span>
-                        </div>
-                        <div class="admin-calendar__day">
-                            <span class="admin-calendar__day-number">24</span>
-                            <div class="day-booking day-booking--pending">M. Torres</div>
-                        </div>
-                        <div class="admin-calendar__day">
-                            <span class="admin-calendar__day-number">25</span>
-                            <div class="day-booking day-booking--pending">M. Torres</div>
-                        </div>
-                        <div class="admin-calendar__day">
-                            <span class="admin-calendar__day-number">26</span>
-                            <div class="day-booking day-booking--pending">M. Torres</div>
-                        </div>
-                        <div class="admin-calendar__day">
-                            <span class="admin-calendar__day-number">27</span>
-                            <div class="day-booking day-booking--pending">M. Torres</div>
-                        </div>
-                        <div class="admin-calendar__day">
-                            <span class="admin-calendar__day-number">28</span>
-                        </div>
-                        <div class="admin-calendar__day">
-                            <span class="admin-calendar__day-number">29</span>
-                        </div>
-
-                        <!-- Week 6: Mar 30 - Apr 5 -->
-                        <div class="admin-calendar__day">
-                            <span class="admin-calendar__day-number">30</span>
-                        </div>
-                        <div class="admin-calendar__day">
-                            <span class="admin-calendar__day-number">31</span>
-                            <div class="day-booking day-booking--blocked">Blocked</div>
-                        </div>
-                        <div class="admin-calendar__day admin-calendar__day--other-month">
-                            <span class="admin-calendar__day-number">1</span>
-                        </div>
-                        <div class="admin-calendar__day admin-calendar__day--other-month">
-                            <span class="admin-calendar__day-number">2</span>
-                        </div>
-                        <div class="admin-calendar__day admin-calendar__day--other-month">
-                            <span class="admin-calendar__day-number">3</span>
-                        </div>
-                        <div class="admin-calendar__day admin-calendar__day--other-month">
-                            <span class="admin-calendar__day-number">4</span>
-                        </div>
-                        <div class="admin-calendar__day admin-calendar__day--other-month">
-                            <span class="admin-calendar__day-number">5</span>
-                        </div>
+                <!-- Legend -->
+                <div class="cal-legend">
+                    <div class="cal-legend-item">
+                        <div class="cal-legend-sw cal-legend-sw--avail"></div>
+                        Available
+                    </div>
+                    <div class="cal-legend-item">
+                        <div class="cal-legend-sw cal-legend-sw--confirmed"></div>
+                        Confirmed booking
+                    </div>
+                    <div class="cal-legend-item">
+                        <div class="cal-legend-sw cal-legend-sw--pending"></div>
+                        Pending booking
+                    </div>
+                    <div class="cal-legend-item">
+                        <div class="cal-legend-sw cal-legend-sw--blocked"></div>
+                        Blocked / unavailable
+                    </div>
+                    <div class="cal-legend-item">
+                        <div class="cal-legend-sw cal-legend-sw--today"></div>
+                        Today
                     </div>
                 </div>
             </div>
 
-            <!-- Calendar Legend -->
-            <div class="admin-calendar-legend">
-                <div class="admin-calendar-legend__item">
-                    <span class="admin-calendar-legend__color admin-calendar-legend__color--available"></span>
-                    <span class="admin-calendar-legend__label">Available</span>
+            <!-- Upcoming Stays -->
+            <div class="admin-card" style="margin-top:20px;">
+                <div class="admin-card-header" style="display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid #f1f5f9;">
+                    <h2 class="admin-card-title" style="display:flex;align-items:center;gap:8px;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="17" height="17" style="color:#0f2744;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                        Upcoming Stays
+                    </h2>
+                    <a href="bookings.html" style="font-size:0.8125rem;font-weight:500;color:#0f2744;text-decoration:none;">View all bookings →</a>
                 </div>
-                <div class="admin-calendar-legend__item">
-                    <span class="admin-calendar-legend__color admin-calendar-legend__color--booked"></span>
-                    <span class="admin-calendar-legend__label">Booked</span>
-                </div>
-                <div class="admin-calendar-legend__item">
-                    <span class="admin-calendar-legend__color admin-calendar-legend__color--pending"></span>
-                    <span class="admin-calendar-legend__label">Pending</span>
-                </div>
-                <div class="admin-calendar-legend__item">
-                    <span class="admin-calendar-legend__color admin-calendar-legend__color--blocked"></span>
-                    <span class="admin-calendar-legend__label">Blocked</span>
+                <div class="admin-card-body" style="padding:0 20px;">
+                    <div id="upcomingList"></div>
                 </div>
             </div>
 
-            <!-- Upcoming Check-ins -->
-            <div class="admin-card">
-                <div class="admin-card__header">
-                    <h2 class="admin-card__title">Upcoming Check-ins</h2>
-                </div>
-                <div class="admin-card__body">
-                    <div class="admin-checkin-list">
-                        <div class="admin-checkin-item">
-                            <div class="admin-checkin-item__date">
-                                <span class="admin-checkin-item__date-day">01</span>
-                                <span class="admin-checkin-item__date-month">Mar</span>
-                            </div>
-                            <div class="admin-checkin-item__details">
-                                <span class="admin-checkin-item__guest">James Davidson</span>
-                                <span class="admin-checkin-item__property">Oceanfront Villa Deluxe</span>
-                            </div>
-                            <div class="admin-checkin-item__stay">
-                                <span class="admin-checkin-item__nights">6 nights</span>
-                                <span class="admin-checkin-item__checkout">Check-out: Mar 7</span>
-                            </div>
-                            <div class="admin-checkin-item__status">
-                                <span class="admin-badge admin-badge--confirmed">Confirmed</span>
-                            </div>
-                            <div class="admin-checkin-item__actions">
-                                <button class="admin-btn admin-btn--outline admin-btn--sm">View Details</button>
-                            </div>
-                        </div>
-                        <div class="admin-checkin-item">
-                            <div class="admin-checkin-item__date">
-                                <span class="admin-checkin-item__date-day">05</span>
-                                <span class="admin-checkin-item__date-month">Mar</span>
-                            </div>
-                            <div class="admin-checkin-item__details">
-                                <span class="admin-checkin-item__guest">Robert Chen</span>
-                                <span class="admin-checkin-item__property">Downtown Luxury Apartment</span>
-                            </div>
-                            <div class="admin-checkin-item__stay">
-                                <span class="admin-checkin-item__nights">5 nights</span>
-                                <span class="admin-checkin-item__checkout">Check-out: Mar 10</span>
-                            </div>
-                            <div class="admin-checkin-item__status">
-                                <span class="admin-badge admin-badge--confirmed">Confirmed</span>
-                            </div>
-                            <div class="admin-checkin-item__actions">
-                                <button class="admin-btn admin-btn--outline admin-btn--sm">View Details</button>
-                            </div>
-                        </div>
-                        <div class="admin-checkin-item">
-                            <div class="admin-checkin-item__date">
-                                <span class="admin-checkin-item__date-day">08</span>
-                                <span class="admin-checkin-item__date-month">Mar</span>
-                            </div>
-                            <div class="admin-checkin-item__details">
-                                <span class="admin-checkin-item__guest">David Park</span>
-                                <span class="admin-checkin-item__property">Mountain Retreat Cabin</span>
-                            </div>
-                            <div class="admin-checkin-item__stay">
-                                <span class="admin-checkin-item__nights">3 nights</span>
-                                <span class="admin-checkin-item__checkout">Check-out: Mar 11</span>
-                            </div>
-                            <div class="admin-checkin-item__status">
-                                <span class="admin-badge admin-badge--pending">Pending</span>
-                            </div>
-                            <div class="admin-checkin-item__actions">
-                                <button class="admin-btn admin-btn--outline admin-btn--sm">View Details</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        </main>
+    </div><!-- /.admin-main -->
 
-        </div>
-    </main>
-
-    <script src="../js/app.js"></script>
-    <script src="../js/admin.js"></script>
-    <script src="../js/admin-auth.js"></script>
 </div><!-- /.admin-layout -->
+
+<!-- Block Dates Modal -->
+<div class="bm-overlay" id="bmOverlay">
+    <div class="bm-box">
+        <div class="bm-head">
+            <h3>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" style="vertical-align:-3px;margin-right:6px;color:#7f8c9a;"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                Block Dates
+            </h3>
+            <button class="bm-x" id="bmClose" aria-label="Close">&times;</button>
+        </div>
+        <p style="font-size:0.8125rem;color:#64748b;margin-bottom:20px;margin-top:-10px;">
+            Mark dates as unavailable to prevent bookings (e.g. maintenance, personal use, iCal blocks).
+        </p>
+        <div class="bm-row-pair">
+            <div class="bm-field">
+                <label for="bmFrom">From (check-in)</label>
+                <input type="date" id="bmFrom">
+            </div>
+            <div class="bm-field">
+                <label for="bmTo">To (check-out)</label>
+                <input type="date" id="bmTo">
+            </div>
+        </div>
+        <div class="bm-field">
+            <label for="bmReason">Reason (optional)</label>
+            <input type="text" id="bmReason" placeholder="e.g. Maintenance, Owner stay, iCal block…">
+        </div>
+        <div class="bm-actions">
+            <button class="bm-cancel" id="bmCancel">Cancel</button>
+            <button class="bm-save" id="bmSave">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" style="vertical-align:-2px;margin-right:4px;"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                Block Dates
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Hover Tooltip -->
+<div class="cal-tooltip" id="calTooltip"></div>
+
+<script src="../js/app.js"></script>
+<script src="../js/admin.js"></script>
+<script src="../js/admin-auth.js"></script>
+<script>
+(function () {
+    'use strict';
+
+    // ── Constants ──────────────────────────────────────────────────────────────
+    var CELL_W       = 38;    // px per day column — must match CSS .cal-dh width
+    var MONTHS_SHOWN = 3;
+    var MONTH_NAMES  = ['January','February','March','April','May','June',
+                        'July','August','September','October','November','December'];
+    var SHORT_MON    = ['Jan','Feb','Mar','Apr','May','Jun',
+                        'Jul','Aug','Sep','Oct','Nov','Dec'];
+    var DOW_ABR      = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+
+    // ── Today (normalised to midnight) ─────────────────────────────────────────
+    var today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    // ── Date helpers ───────────────────────────────────────────────────────────
+    function ymd(d) {
+        return d.getFullYear() + '-'
+            + String(d.getMonth() + 1).padStart(2, '0') + '-'
+            + String(d.getDate()).padStart(2, '0');
+    }
+
+    function parseYMD(s) {
+        if (!s) return null;
+        var p = String(s).split(/[-\/]/);
+        if (p.length < 3) return null;
+        var d = new Date(+p[0], +p[1] - 1, +p[2], 0, 0, 0, 0);
+        return isNaN(d.getTime()) ? null : d;
+    }
+
+    function daysDiff(a, b) {
+        return Math.round((b.getTime() - a.getTime()) / 86400000);
+    }
+
+    function daysInMonth(yr, mo) {
+        return new Date(yr, mo + 1, 0).getDate();
+    }
+
+    function fmtDate(d) {
+        return d.getDate() + ' ' + SHORT_MON[d.getMonth()] + ' ' + d.getFullYear();
+    }
+
+    function esc(s) {
+        return String(s)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+    }
+
+    // ── Load / save bookings ───────────────────────────────────────────────────
+    function loadBookings() {
+        try {
+            var raw = JSON.parse(localStorage.getItem('cascade6_bookings') || '[]');
+            return raw.map(function (b) {
+                return {
+                    id:       b.id       || ('bk-' + Math.random().toString(36).slice(2)),
+                    name:     b.name     || b.guestName || b.guest || 'Guest',
+                    email:    b.email    || '',
+                    phone:    b.phone    || '',
+                    checkin:  b.checkin  || b.checkIn  || b.check_in  || '',
+                    checkout: b.checkout || b.checkOut || b.check_out || '',
+                    nights:   b.nights   || 0,
+                    total:    b.total    || '',
+                    status:   (b.status  || 'confirmed').toLowerCase()
+                };
+            }).filter(function (b) { return b.checkin && b.checkout; });
+        } catch (e) { return []; }
+    }
+
+    function saveBookings(arr) {
+        try { localStorage.setItem('cascade6_bookings', JSON.stringify(arr)); } catch (e) {}
+    }
+
+    var bookings = loadBookings();
+
+    // ── View state ─────────────────────────────────────────────────────────────
+    var viewStart = new Date(today.getFullYear(), today.getMonth(), 1);
+
+    // ── Build date list for current view ──────────────────────────────────────
+    function getViewDays() {
+        var days = [];
+        for (var m = 0; m < MONTHS_SHOWN; m++) {
+            var mo = (viewStart.getMonth() + m) % 12;
+            var yr = viewStart.getFullYear() + Math.floor((viewStart.getMonth() + m) / 12);
+            var dim = daysInMonth(yr, mo);
+            for (var d = 1; d <= dim; d++) {
+                days.push(new Date(yr, mo, d));
+            }
+        }
+        return days;
+    }
+
+    // ── Main render ────────────────────────────────────────────────────────────
+    function render(scrollTodayFlag) {
+        var days    = getViewDays();
+        var nDays   = days.length;
+        var todayStr = ymd(today);
+
+        // 1. Nav label
+        var veMonthRaw = viewStart.getMonth() + MONTHS_SHOWN - 1;
+        var veMonth    = veMonthRaw % 12;
+        var veYear     = viewStart.getFullYear() + Math.floor(veMonthRaw / 12);
+        document.getElementById('calNavLabel').textContent =
+            MONTH_NAMES[viewStart.getMonth()] + ' ' + viewStart.getFullYear() +
+            ' – ' +
+            MONTH_NAMES[veMonth] + ' ' + veYear;
+
+        // 2. Month strip
+        var msEl = document.getElementById('calMonthStrip');
+        msEl.innerHTML = '<div class="cal-lpad" style="background:#f8fafc;"><span style="font-size:0.6875rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.07em;padding-left:14px;">Property</span></div>';
+
+        var mGroups = [], cur = null;
+        days.forEach(function (d) {
+            var key = d.getFullYear() + '-' + d.getMonth();
+            if (!cur || cur.key !== key) {
+                cur = { key: key, month: d.getMonth(), year: d.getFullYear(), count: 0 };
+                mGroups.push(cur);
+            }
+            cur.count++;
+        });
+        mGroups.forEach(function (g) {
+            var el = document.createElement('div');
+            el.className = 'cal-month-chunk';
+            el.style.cssText = 'width:' + (g.count * CELL_W) + 'px;';
+            el.textContent = MONTH_NAMES[g.month].slice(0, 3).toUpperCase() + ' ' + g.year;
+            msEl.appendChild(el);
+        });
+
+        // 3. Day header strip
+        var dsEl = document.getElementById('calDayStrip');
+        dsEl.innerHTML = '<div class="cal-lpad" style="background:#f8fafc;"></div>';
+        days.forEach(function (d, i) {
+            var dow = d.getDay();
+            var dk  = ymd(d);
+            var cls = ['cal-dh'];
+            if (dow === 0 || dow === 6) cls.push('weekend');
+            if (dk === todayStr)        cls.push('is-today');
+            if (d < today)             cls.push('is-past');
+            if (d.getDate() === 1 && i > 0) cls.push('month-start');
+            var el = document.createElement('div');
+            el.className = cls.join(' ');
+            el.innerHTML = '<span class="dow">' + DOW_ABR[dow] + '</span>'
+                         + '<span class="dn">' + d.getDate() + '</span>';
+            dsEl.appendChild(el);
+        });
+
+        // 4. Cells background (day columns)
+        var cellsEl = document.getElementById('calCells');
+        cellsEl.innerHTML = '';
+
+        days.forEach(function (d, i) {
+            var dow = d.getDay();
+            var dk  = ymd(d);
+            var cls = ['cal-cell'];
+            if (dow === 0 || dow === 6) cls.push('weekend');
+            if (dk === todayStr)        cls.push('is-today');
+            if (d.getDate() === 1 && i > 0) cls.push('month-start');
+            var el = document.createElement('div');
+            el.className = cls.join(' ');
+            cellsEl.appendChild(el);
+        });
+
+        // 5. Today vertical marker
+        var todayIdx = daysDiff(viewStart, today);
+        if (todayIdx >= 0 && todayIdx < nDays) {
+            var tMark = document.createElement('div');
+            tMark.className = 'cal-today-mark';
+            tMark.style.left = (todayIdx * CELL_W + Math.round(CELL_W / 2)) + 'px';
+            cellsEl.appendChild(tMark);
+        }
+
+        // 6. Booking bars
+        var viewEnd = days[nDays - 1];
+        bookings.forEach(function (b) {
+            var ci = parseYMD(b.checkin);
+            var co = parseYMD(b.checkout);
+            if (!ci || !co || co <= viewStart || ci > viewEnd) return;
+
+            var si = Math.max(0, daysDiff(viewStart, ci));
+            var ei = Math.min(nDays, daysDiff(viewStart, co));
+            if (ei <= si) return;
+
+            // Border-radius: square on clipped edges, rounded on natural start/end
+            var rl = (si === daysDiff(viewStart, ci)) ? '6px' : '0';
+            var rr = (ei === daysDiff(viewStart, co)) ? '6px' : '0';
+
+            var bar = document.createElement('div');
+            bar.className = 'cal-bar cal-bar--' + b.status;
+            bar.style.left         = (si * CELL_W + 2) + 'px';
+            bar.style.width        = ((ei - si) * CELL_W - 4) + 'px';
+            bar.style.borderRadius = rl + ' ' + rr + ' ' + rr + ' ' + rl;
+
+            if (b.status !== 'blocked') {
+                bar.innerHTML =
+                    '<svg class="cal-bar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">'
+                    + '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>'
+                    + '<circle cx="12" cy="7" r="4"/></svg>'
+                    + esc(b.name);
+            } else {
+                bar.textContent = b.name || 'Blocked';
+            }
+
+            // Tooltip data attributes
+            bar.dataset.name   = b.name;
+            bar.dataset.ci     = b.checkin;
+            bar.dataset.co     = b.checkout;
+            bar.dataset.nights = b.nights || daysDiff(ci, co);
+            bar.dataset.status = b.status;
+            bar.dataset.total  = b.total || '';
+            bar.dataset.bid    = b.id;
+
+            cellsEl.appendChild(bar);
+        });
+
+        // 7. Scroll today into view
+        if (scrollTodayFlag !== false) {
+            var tIdx = daysDiff(viewStart, today);
+            if (tIdx >= 0 && tIdx < nDays) {
+                var outer = document.getElementById('calOuter');
+                setTimeout(function () {
+                    var labelW = 190;
+                    var target = labelW + tIdx * CELL_W - (outer.offsetWidth - labelW) / 2;
+                    outer.scrollLeft = Math.max(0, target);
+                }, 40);
+            }
+        }
+
+        // 8. Upcoming stays
+        renderUpcoming();
+    }
+
+    // ── Upcoming stays ─────────────────────────────────────────────────────────
+    function renderUpcoming() {
+        var now = new Date(today);
+        var upcoming = bookings
+            .filter(function (b) {
+                var co = parseYMD(b.checkout);
+                return co && co >= now && b.status !== 'blocked';
+            })
+            .sort(function (a, b) {
+                return parseYMD(a.checkin).getTime() - parseYMD(b.checkin).getTime();
+            })
+            .slice(0, 6);
+
+        var list = document.getElementById('upcomingList');
+
+        if (upcoming.length === 0) {
+            list.innerHTML =
+                '<div style="padding:28px 0;text-align:center;color:#94a3b8;font-size:0.875rem;">'
+                + 'No upcoming stays. '
+                + '<a href="bookings.html" style="color:#0f2744;font-weight:600;">Create a booking</a>'
+                + '</div>';
+            return;
+        }
+
+        list.innerHTML = '';
+        upcoming.forEach(function (b) {
+            var ci  = parseYMD(b.checkin);
+            var co  = parseYMD(b.checkout);
+            var nts = parseInt(b.nights) || daysDiff(ci, co);
+            var isToday = ymd(ci) === ymd(today);
+
+            var stClass = {
+                confirmed: 'admin-badge--confirmed',
+                pending:   'admin-badge--pending',
+                cancelled: 'admin-badge--cancelled'
+            }[b.status] || 'admin-badge--primary';
+            var stLabel = b.status.charAt(0).toUpperCase() + b.status.slice(1);
+
+            var item = document.createElement('div');
+            item.className = 'upcoming-item';
+            item.innerHTML =
+                '<div class="upcoming-datebox' + (isToday ? ' is-today' : '') + '">'
+                    + '<span class="ud-d">' + String(ci.getDate()).padStart(2, '0') + '</span>'
+                    + '<span class="ud-m">' + SHORT_MON[ci.getMonth()] + '</span>'
+                + '</div>'
+                + '<div class="upcoming-info">'
+                    + '<div class="upcoming-name">' + esc(b.name) + '</div>'
+                    + '<div class="upcoming-sub">Check-in ' + fmtDate(ci) + ' &rsaquo; Check-out ' + fmtDate(co) + '</div>'
+                + '</div>'
+                + '<span class="upcoming-nights">' + nts + ' night' + (nts !== 1 ? 's' : '') + '</span>'
+                + '<span class="admin-badge ' + stClass + '">' + stLabel + '</span>';
+
+            list.appendChild(item);
+        });
+    }
+
+    // ── Navigation ─────────────────────────────────────────────────────────────
+    document.getElementById('calPrev').addEventListener('click', function () {
+        var m = viewStart.getMonth() - MONTHS_SHOWN;
+        var y = viewStart.getFullYear() + Math.floor(m / 12);
+        m = ((m % 12) + 12) % 12;
+        viewStart = new Date(y, m, 1);
+        render(false);
+    });
+
+    document.getElementById('calNext').addEventListener('click', function () {
+        var m = viewStart.getMonth() + MONTHS_SHOWN;
+        var y = viewStart.getFullYear() + Math.floor(m / 12);
+        m = m % 12;
+        viewStart = new Date(y, m, 1);
+        render(false);
+    });
+
+    document.getElementById('calTodayBtn').addEventListener('click', function () {
+        viewStart = new Date(today.getFullYear(), today.getMonth(), 1);
+        render(true);
+    });
+
+    // ── Tooltip ────────────────────────────────────────────────────────────────
+    var tooltip = document.getElementById('calTooltip');
+
+    document.getElementById('calCells').addEventListener('mouseover', function (e) {
+        var bar = e.target.closest('.cal-bar');
+        if (!bar || !bar.dataset.ci) return;
+
+        var ci  = parseYMD(bar.dataset.ci);
+        var co  = parseYMD(bar.dataset.co);
+        var st  = bar.dataset.status || 'confirmed';
+        var nts = parseInt(bar.dataset.nights) || 0;
+        var tot = bar.dataset.total;
+
+        tooltip.innerHTML =
+            '<div class="t-name">' + esc(bar.dataset.name) + '</div>'
+            + '<div class="t-row">Check-in:&nbsp;&nbsp;<span>' + fmtDate(ci) + '</span></div>'
+            + '<div class="t-row">Check-out: <span>' + fmtDate(co) + '</span></div>'
+            + '<div class="t-row">Nights:&nbsp;&nbsp;&nbsp;&nbsp;<span>' + nts + '</span></div>'
+            + (tot ? '<div class="t-row">Total:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>$' + esc(tot) + '</span></div>' : '')
+            + '<div><span class="t-status t-status--' + st + '">' + st + '</span></div>';
+
+        tooltip.style.display = 'block';
+        posTooltip(e);
+    });
+
+    document.getElementById('calCells').addEventListener('mousemove', function (e) {
+        if (tooltip.style.display === 'block') posTooltip(e);
+    });
+
+    document.getElementById('calCells').addEventListener('mouseleave', function () {
+        tooltip.style.display = 'none';
+    });
+
+    document.getElementById('calCells').addEventListener('mouseout', function (e) {
+        if (!e.relatedTarget || !e.relatedTarget.closest || !e.relatedTarget.closest('.cal-bar')) {
+            tooltip.style.display = 'none';
+        }
+    });
+
+    function posTooltip(e) {
+        var x = e.clientX + 16;
+        var y = e.clientY - 12;
+        if (x + 250 > window.innerWidth)  x = e.clientX - 254;
+        if (y + 150 > window.innerHeight) y = window.innerHeight - 155;
+        tooltip.style.left = x + 'px';
+        tooltip.style.top  = y + 'px';
+    }
+
+    // ── Block Dates Modal ──────────────────────────────────────────────────────
+    var bmOverlay = document.getElementById('bmOverlay');
+
+    document.getElementById('blockDatesBtn').addEventListener('click', function () {
+        var tmr = new Date(today);
+        tmr.setDate(tmr.getDate() + 1);
+        document.getElementById('bmFrom').value   = ymd(today);
+        document.getElementById('bmTo').value     = ymd(tmr);
+        document.getElementById('bmReason').value = '';
+        document.getElementById('bmFrom').min     = ymd(today);
+        bmOverlay.classList.add('open');
+    });
+
+    function closeBm() { bmOverlay.classList.remove('open'); }
+    document.getElementById('bmClose').addEventListener('click', closeBm);
+    document.getElementById('bmCancel').addEventListener('click', closeBm);
+    bmOverlay.addEventListener('click', function (e) { if (e.target === bmOverlay) closeBm(); });
+
+    document.getElementById('bmFrom').addEventListener('change', function () {
+        var toEl = document.getElementById('bmTo');
+        if (!toEl.value || toEl.value <= this.value) {
+            var next = new Date(parseYMD(this.value));
+            next.setDate(next.getDate() + 1);
+            toEl.value = ymd(next);
+        }
+        toEl.min = this.value;
+    });
+
+    document.getElementById('bmSave').addEventListener('click', function () {
+        var from   = document.getElementById('bmFrom').value;
+        var to     = document.getElementById('bmTo').value;
+        var reason = document.getElementById('bmReason').value.trim() || 'Blocked';
+
+        if (!from || !to || from >= to) {
+            alert('Please choose a valid date range — check-out must be after check-in.');
+            return;
+        }
+
+        var block = {
+            id:       'blk-' + Date.now(),
+            name:     reason,
+            email:    '',
+            phone:    '',
+            checkin:  from,
+            checkout: to,
+            nights:   daysDiff(parseYMD(from), parseYMD(to)),
+            total:    '',
+            status:   'blocked'
+        };
+        bookings.push(block);
+        saveBookings(bookings);
+        closeBm();
+        render(false);
+    });
+
+    // ── Initial render ─────────────────────────────────────────────────────────
+    render(true);
+
+})();
+</script>
+
 </body>
 </html>
