@@ -51,6 +51,8 @@
     { "source": "/admin/payments", "destination": "/admin/payments.html" }
   ],
   "redirects": [
-    { "source": "/home", "destination": "/", "permanent": true }
+    { "source": "/home", "destination": "/", "permanent": true },
+    { "source": "/admin.html", "destination": "/admin/login", "permanent": true },
+    { "source": "/login", "destination": "/admin/login", "permanent": false }
   ]
 }
