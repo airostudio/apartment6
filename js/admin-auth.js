@@ -37,8 +37,11 @@
     }
 
     function redirectToLogin() {
-        const current = encodeURIComponent(window.location.pathname.split('/').pop() || '');
-        window.location.replace(LOGIN_PAGE + (current ? '?redirect=' + current : ''));
+        let current = window.location.pathname.split('/').pop() || '';
+        // Ensure .html extension — Vercel cleanUrls strips it, which breaks redirects on other servers
+        if (current && !current.includes('.')) current += '.html';
+        const encoded = encodeURIComponent(current);
+        window.location.replace(LOGIN_PAGE + (encoded ? '?redirect=' + encoded : ''));
     }
 
     const session = getSession();

@@ -35,7 +35,20 @@
     }
   ],
   "rewrites": [
-    { "source": "/admin", "destination": "/admin/index.html" }
+    { "source": "/admin", "destination": "/admin/index.html" },
+    { "source": "/admin/bookings", "destination": "/admin/bookings.html" },
+    { "source": "/admin/calendar", "destination": "/admin/calendar.html" },
+    { "source": "/admin/guests", "destination": "/admin/guests.html" },
+    { "source": "/admin/rates", "destination": "/admin/rates.html" },
+    { "source": "/admin/reviews", "destination": "/admin/reviews.html" },
+    { "source": "/admin/ical-sync", "destination": "/admin/ical-sync.html" },
+    { "source": "/admin/stripe-connect", "destination": "/admin/stripe-connect.html" },
+    { "source": "/admin/settings", "destination": "/admin/settings.html" },
+    { "source": "/admin/reports", "destination": "/admin/reports.html" },
+    { "source": "/admin/properties", "destination": "/admin/properties.html" },
+    { "source": "/admin/property-edit", "destination": "/admin/property-edit.html" },
+    { "source": "/admin/login", "destination": "/admin/login.html" },
+    { "source": "/admin/payments", "destination": "/admin/payments.html" }
   ],
   "redirects": [
     { "source": "/home", "destination": "/", "permanent": true }
