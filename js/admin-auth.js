@@ -37,10 +37,11 @@
     }
 
     function redirectToLogin() {
-        let current = window.location.pathname.split('/').pop() || '';
-        // Ensure .html extension — Vercel cleanUrls strips it, which breaks redirects on other servers
-        if (current && !current.includes('.')) current += '.html';
-        const encoded = encodeURIComponent(current);
+        // Use the full pathname so redirect works correctly regardless of where login is hosted
+        let target = window.location.pathname; // e.g. /admin/bookings or /admin/bookings.html
+        // Ensure .html extension — Vercel cleanUrls strips it from pathnames
+        if (target && !target.split('/').pop().includes('.')) target += '.html';
+        const encoded = encodeURIComponent(target);
         window.location.replace(LOGIN_PAGE + (encoded ? '?redirect=' + encoded : ''));
     }
 
