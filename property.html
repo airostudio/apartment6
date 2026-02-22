@@ -13,11 +13,11 @@
   <meta property="og:site_name" content="Cascade Apartment 6">
   <meta property="og:title" content="Cascade Apartment 6 — Mt Baw Baw Alpine Resort">
   <meta property="og:description" content="Ground floor, self-contained apartment. Queen bed, bunk beds, gas log fire, sleeps 5. From $220/night.">
-  <meta property="og:image" content="public/cascade6-1.jpg">
+  <meta property="og:image" content="/public/cascade6-1.jpg">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Cascade Apartment 6 — Mt Baw Baw Alpine Resort">
   <meta name="twitter:description" content="Ground floor, self-contained apartment. Queen bed, bunk beds, gas log fire, sleeps 5. From $220/night.">
-  <meta name="twitter:image" content="public/cascade6-1.jpg">
+  <meta name="twitter:image" content="/public/cascade6-1.jpg">
   <style>
     /* Gallery */
     .gallery {
@@ -561,19 +561,19 @@
   <div class="container">
     <div class="gallery" id="galleryGrid">
       <div class="gallery-item" data-gallery-index="0" role="button" tabindex="0" aria-label="Open photo 1 of 8">
-        <img src="public/cascade6-1.jpg" alt="Cascade Apartment 6 — living area with gas log fire" loading="eager">
+        <img src="/public/cascade6-1.jpg" alt="Cascade Apartment 6 — living area with gas log fire" loading="eager">
       </div>
       <div class="gallery-item" data-gallery-index="1" role="button" tabindex="0" aria-label="Open photo 2 of 8">
-        <img src="public/cascade6-2.jpg" alt="Cascade Apartment 6 — lounge and dining area" loading="lazy">
+        <img src="/public/cascade6-2.jpg" alt="Cascade Apartment 6 — lounge and dining area" loading="lazy">
       </div>
       <div class="gallery-item" data-gallery-index="2" role="button" tabindex="0" aria-label="Open photo 3 of 8">
-        <img src="public/cascade6-3.jpg" alt="Cascade Apartment 6 — bedroom with queen bed" loading="lazy">
+        <img src="/public/cascade6-3.jpg" alt="Cascade Apartment 6 — bedroom with queen bed" loading="lazy">
       </div>
       <div class="gallery-item" data-gallery-index="3" role="button" tabindex="0" aria-label="Open photo 4 of 8">
-        <img src="public/cascade6-4.jpg" alt="Cascade Apartment 6 — fully equipped kitchen" loading="lazy">
+        <img src="/public/cascade6-4.jpg" alt="Cascade Apartment 6 — fully equipped kitchen" loading="lazy">
       </div>
       <div class="gallery-item" data-gallery-index="4" role="button" tabindex="0" aria-label="Open photo 5 of 8 — show all">
-        <img src="public/cascade6-5.jpg" alt="Cascade Apartment 6 — bathroom" loading="lazy">
+        <img src="/public/cascade6-5.jpg" alt="Cascade Apartment 6 — bathroom" loading="lazy">
         <button class="gallery-btn" id="showAllPhotos">
           <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
           Show all 8 photos
@@ -630,7 +630,7 @@
         <div class="tab-content active" id="tab-overview">
           <div class="property-description">
             <p>Welcome to Cascade Apartment 6, a fully self-contained mountain retreat at Mt Baw Baw Alpine Resort &mdash; Victoria's closest ski resort to Melbourne, just 2.5 hours from the city. Situated conveniently on the ground floor, the apartment is approximately 50 metres from the main day car park, making it ideal when you're loaded up with ski gear or mountain bikes.</p>
-            <p>The bedroom features a queen size bed with two single overhead bunk beds, while the spacious living area has two sofa beds &mdash; meaning the apartment comfortably accommodates up to five guests. Gather around the gas log fire after a day on the snow, enjoy a home-cooked meal in the fully equipped kitchen, and unwind with a movie on the TV.</p>
+            <p>The bedroom features a queen size bed with two single overhead bunk beds and a small TV, while the spacious living area has two sofa beds &mdash; meaning the apartment comfortably accommodates up to five guests. Gather around the gas log fire after a day on the snow, enjoy a home-cooked meal in the fully equipped kitchen, and unwind with a movie on the TV in the lounge.</p>
             <p>Whether you're visiting in winter for the snow and skiing, or in summer for the hiking, mountain biking and wildflower trails, Cascade Apartment 6 is your perfect alpine base. Note: pillows and quilts are provided for the bedroom; please BYO linen and towels or pre-book a linen hire pack from Guest Services.</p>
           </div>
 
@@ -663,10 +663,6 @@
         <div class="tab-content" id="tab-amenities">
           <h3 style="font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:600;color:#1a1a2e;margin-bottom:20px;">What this place offers</h3>
           <div class="amenities-grid">
-            <div class="amenity-item">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
-              Free Wi-Fi
-            </div>
             <div class="amenity-item">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
               Fully Equipped Kitchen
@@ -722,25 +718,25 @@
             <div class="rate-card featured">
               <div class="rate-season">Peak Season</div>
               <div class="rate-dates">Jun &ndash; Aug (Ski Season)</div>
-              <div class="rate-price">$280 <span>/ night</span></div>
+              <div class="rate-price" id="dispPeak">$280 <span>/ night</span></div>
               <div class="rate-note">Minimum 2 nights on weekends</div>
             </div>
             <div class="rate-card">
               <div class="rate-season">Shoulder Season</div>
               <div class="rate-dates">Sep &ndash; Nov &amp; Apr &ndash; May</div>
-              <div class="rate-price">$220 <span>/ night</span></div>
+              <div class="rate-price" id="dispShoulder">$220 <span>/ night</span></div>
               <div class="rate-note">Minimum 1 night</div>
             </div>
             <div class="rate-card">
               <div class="rate-season">Summer Season</div>
               <div class="rate-dates">Dec &ndash; Mar</div>
-              <div class="rate-price">$200 <span>/ night</span></div>
+              <div class="rate-price" id="dispSummer">$200 <span>/ night</span></div>
               <div class="rate-note">Minimum 1 night</div>
             </div>
             <div class="rate-card">
               <div class="rate-season">Midweek Special</div>
               <div class="rate-dates">Mon &ndash; Thu (all year)</div>
-              <div class="rate-price">$180 <span>/ night</span></div>
+              <div class="rate-price" id="dispMidweek">$180 <span>/ night</span></div>
               <div class="rate-note">Minimum 1 night</div>
             </div>
           </div>
@@ -832,11 +828,8 @@
         <!-- Location Tab -->
         <div class="tab-content" id="tab-location">
           <h3 style="font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:600;color:#1a1a2e;margin-bottom:20px;">Where you'll be</h3>
-          <div class="location-map-placeholder">
-            <div class="map-pin">
-              <svg viewBox="0 0 24 24" fill="#2d6a4f" stroke="#fff" stroke-width="1"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3" fill="#fff"/></svg>
-              <span style="font-weight:600;">Mt Baw Baw Alpine Resort, Victoria</span>
-            </div>
+          <div style="width:100%;border-radius:12px;overflow:hidden;margin-bottom:24px;">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d5778.687445151124!2d146.2617551095409!3d-37.840356671917135!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6b28f9bb256c424b%3A0x5315d9cd132fa4b8!2sCascade%20Apartments!5e0!3m2!1sen!2sau!4v1771751504197!5m2!1sen!2sau" width="100%" height="400" style="border:0;display:block;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
           </div>
           <div class="location-details">
             <div class="location-detail-card">
@@ -865,7 +858,7 @@
       <!-- Booking Sidebar -->
       <aside class="booking-sidebar">
         <div class="booking-price-header">
-          <span class="price">From $220</span>
+          <span class="price" id="sidebarFromPrice">From $180</span>
           <span class="per-night">/ night</span>
         </div>
 
@@ -895,22 +888,22 @@
         <button class="btn-book" id="bookNowBtn">Check Availability</button>
         <p class="booking-note">You won't be charged yet</p>
 
-        <div class="price-breakdown" id="priceBreakdown">
+        <div class="price-breakdown" id="priceBreakdown" style="display:none;">
           <div class="price-row">
-            <span class="label" title="Nightly rate x number of nights">$220 x 2 nights</span>
-            <span>$440</span>
+            <span class="label" id="sbNightsLabel">$220 x 2 nights</span>
+            <span id="sbAccomTotal">$440</span>
           </div>
           <div class="price-row">
             <span class="label" title="One-time cleaning fee">Cleaning fee</span>
-            <span>$60</span>
+            <span id="sbCleanFee">$60</span>
           </div>
           <div class="price-row">
             <span class="label" title="Service charge">Service fee</span>
-            <span>$30</span>
+            <span id="sbServiceFee">$44</span>
           </div>
           <div class="price-row total">
-            <span>Total</span>
-            <span>$530</span>
+            <span>Estimated Total</span>
+            <span id="sbTotal">$544</span>
           </div>
         </div>
 
@@ -920,7 +913,7 @@
         </div>
         <div class="linen-note">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-          <span><strong>BYO linen &amp; towels</strong> for the sofa beds. Linen hire packs available from Guest Services (pre-book recommended).</span>
+          <span><strong>BYO linen &amp; towels</strong> for all beds. Pillows &amp; doonas supplied. Linen hire packs available from Guest Services (pre-book recommended).</span>
         </div>
       </aside>
     </div>
@@ -1027,14 +1020,14 @@
 
     // ── Photo Gallery Lightbox ─────────────────────────────────────
     var GALLERY = [
-      { src: 'public/cascade6-1.jpg', alt: 'Living area with gas log fire' },
-      { src: 'public/cascade6-2.jpg', alt: 'Lounge and dining area' },
-      { src: 'public/cascade6-3.jpg', alt: 'Bedroom with queen bed and bunk beds' },
-      { src: 'public/cascade6-4.jpg', alt: 'Fully equipped kitchen' },
-      { src: 'public/cascade6-5.jpg', alt: 'Bathroom with shower and bath base' },
-      { src: 'public/cascade6-6.jpg', alt: 'Bunk beds — sleeps up to 2 extra guests' },
-      { src: 'public/cascade6-7.jpg', alt: 'Dining table and living space' },
-      { src: 'public/cascade6-8.jpg', alt: 'Mt Baw Baw Alpine Resort exterior' }
+      { src: '/public/cascade6-1.jpg', alt: 'Living area with gas log fire' },
+      { src: '/public/cascade6-2.jpg', alt: 'Lounge and dining area' },
+      { src: '/public/cascade6-3.jpg', alt: 'Bedroom with queen bed and bunk beds' },
+      { src: '/public/cascade6-4.jpg', alt: 'Fully equipped kitchen' },
+      { src: '/public/cascade6-5.jpg', alt: 'Bathroom with shower and bath base' },
+      { src: '/public/cascade6-6.jpg', alt: 'Bunk beds — sleeps up to 2 extra guests' },
+      { src: '/public/cascade6-7.jpg', alt: 'Dining table and living space' },
+      { src: '/public/cascade6-8.jpg', alt: 'Mt Baw Baw Alpine Resort exterior' }
     ];
 
     var lightbox   = document.getElementById('lightbox');
@@ -1133,6 +1126,78 @@
       var dx = e.changedTouches[0].clientX - touchStartX;
       if (Math.abs(dx) > 50) dx < 0 ? goTo(currentIdx + 1) : goTo(currentIdx - 1);
     }, { passive: true });
+
+    // ── Rates from localStorage + live sidebar pricing ─────────────
+    (function() {
+      var _r = (function() {
+        try { return JSON.parse(localStorage.getItem('cascade6_rates') || 'null'); } catch(e) { return null; }
+      })() || {};
+      var PEAK     = _r.peak        || 280;
+      var SHOULDER = _r.shoulder    || 220;
+      var SUMMER   = _r.summer      || 200;
+      var MIDWEEK  = _r.midweek     || 180;
+      var CLEAN    = _r.cleaningFee || 60;
+      var SVC_PCT  = (_r.serviceRate || 10) / 100;
+
+      // Update rates tab display
+      function setPriceEl(id, val) {
+        var el = document.getElementById(id);
+        if (el) el.innerHTML = '$' + val + ' <span>/ night</span>';
+      }
+      setPriceEl('dispPeak',     PEAK);
+      setPriceEl('dispShoulder', SHOULDER);
+      setPriceEl('dispSummer',   SUMMER);
+      setPriceEl('dispMidweek',  MIDWEEK);
+
+      // Update "From" label in sidebar to lowest rate
+      var lowestRate = Math.min(PEAK, SHOULDER, SUMMER, MIDWEEK);
+      var fromEl = document.getElementById('sidebarFromPrice');
+      if (fromEl) fromEl.textContent = 'From $' + lowestRate;
+
+      function getNightlyRate(date) {
+        var m   = date.getMonth() + 1;
+        var dow = date.getDay();
+        if (dow >= 1 && dow <= 4) return MIDWEEK;
+        if (m >= 6 && m <= 8) return PEAK;
+        if ([4,5,9,10,11].indexOf(m) !== -1) return SHOULDER;
+        return SUMMER;
+      }
+
+      function updateSidebarPrice() {
+        var checkinVal  = document.getElementById('checkin').value;
+        var checkoutVal = document.getElementById('checkout').value;
+        var bd = document.getElementById('priceBreakdown');
+        if (!checkinVal || !checkoutVal) { bd.style.display = 'none'; return; }
+        var ci = new Date(checkinVal + 'T00:00:00');
+        var co = new Date(checkoutVal + 'T00:00:00');
+        if (co <= ci) { bd.style.display = 'none'; return; }
+
+        var nights = 0, accom = 0;
+        var cur = new Date(ci);
+        while (cur < co) {
+          accom += getNightlyRate(cur);
+          nights++;
+          cur.setDate(cur.getDate() + 1);
+        }
+        var svc   = Math.round(accom * SVC_PCT);
+        var total = accom + CLEAN + svc;
+
+        document.getElementById('sbNightsLabel').textContent = '$' + Math.round(accom / nights) + ' avg x ' + nights + ' night' + (nights !== 1 ? 's' : '');
+        document.getElementById('sbAccomTotal').textContent  = '$' + accom;
+        document.getElementById('sbCleanFee').textContent    = '$' + CLEAN;
+        document.getElementById('sbServiceFee').textContent  = '$' + svc;
+        document.getElementById('sbTotal').textContent       = '$' + total;
+        bd.style.display = 'block';
+      }
+
+      document.getElementById('checkin').addEventListener('change', function() {
+        var co = document.getElementById('checkout');
+        if (co.value && co.value <= this.value) co.value = '';
+        co.min = this.value;
+        updateSidebarPrice();
+      });
+      document.getElementById('checkout').addEventListener('change', updateSidebarPrice);
+    })();
   </script>
 </body>
 </html>

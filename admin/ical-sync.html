@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <base href="/admin/">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>iCal Sync - Cascade Apartment 6 Admin</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -125,18 +126,16 @@
                     <p>Share your Cascade Apartment 6 availability calendar with external booking platforms. Copy the iCal export URL below and paste it into the external platform's calendar import settings to keep availability synchronised.</p>
 
                     <div class="form-group">
-                        <label for="export-property">Select Property</label>
+                        <label for="export-property">Property</label>
                         <select id="export-property" class="form-select" style="max-width: 400px;">
-                            <option value="property-1">Cascade Apartment 6 — Mt Baw Baw</option>
-                            <option value="property-2">Bondi Beach Apartment - Sydney</option>
-                            <option value="property-3">Blue Mountains Cabin - Katoomba</option>
+                            <option value="cascade-apt6">Cascade Apartment 6 — Mt Baw Baw</option>
                         </select>
                     </div>
 
                     <div class="form-group">
                         <label>Export URL</label>
                         <div class="export-url-wrapper">
-                            <div class="export-url-display" id="export-url">https://app.trendaccom.com/ical/export/property-1.ics</div>
+                            <div class="export-url-display" id="export-url">https://app.trendaccom.com/ical/export/cascade-apt6.ics</div>
                             <button class="btn-copy" onclick="copyExportUrl()">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
@@ -181,10 +180,7 @@
                             <div class="form-group">
                                 <label for="import-property">Property to Sync With</label>
                                 <select id="import-property" class="form-select">
-                                    <option value="">Select property...</option>
-                                    <option value="property-1">Cascade Apartment 6 — Mt Baw Baw</option>
-                                    <option value="property-2">Bondi Beach Apartment - Sydney</option>
-                                    <option value="property-3">Blue Mountains Cabin - Katoomba</option>
+                                    <option value="cascade-apt6">Cascade Apartment 6 — Mt Baw Baw</option>
                                 </select>
                             </div>
                             <div class="form-group full-width">
@@ -314,97 +310,6 @@
                         </div>
                     </div>
 
-                    <!-- Connection 3: Airbnb - Bondi Beach Apartment (Error) -->
-                    <div class="ical-connection">
-                        <div class="ical-platform-icon airbnb">
-                            <svg viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M12 2C7.6 2 4.4 5.4 3.2 8.2c-1.2 2.8-1 5.8.6 8 .8 1.2 2 2 3.2 2.4.6.2 1.2.2 1.8 0 .4-.2.8-.4 1.2-.8.4-.4.8-1 1.2-1.6.4.6.8 1.2 1.2 1.6.4.4.8.6 1.2.8.6.2 1.2.2 1.8 0 1.2-.4 2.4-1.2 3.2-2.4 1.6-2.2 1.8-5.2.6-8C18.6 5.4 16.4 2 12 2z"/>
-                            </svg>
-                        </div>
-                        <div class="ical-connection-info">
-                            <div class="ical-connection-name">Airbnb - Bondi Beach Apartment</div>
-                            <div class="ical-connection-meta">
-                                <span class="ical-status error">
-                                    <span class="status-dot red"></span>
-                                    Error
-                                </span>
-                                <span class="ical-last-sync">Failed 2 hours ago</span>
-                            </div>
-                            <div class="ical-error-msg">Connection failed: Unable to fetch iCal feed. The remote server returned a 403 Forbidden error. Please verify the iCal URL is still valid.</div>
-                        </div>
-                        <div class="ical-connection-actions">
-                            <button class="btn-action btn-sync">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <polyline points="23 4 23 10 17 10"></polyline>
-                                    <path d="M20.49 15a9 9 0 01-17.02-2"></path>
-                                    <polyline points="1 20 1 14 7 14"></polyline>
-                                    <path d="M3.51 9a9 9 0 0117.02 2"></path>
-                                </svg>
-                                Sync Now
-                            </button>
-                            <button class="btn-action btn-edit">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"></path>
-                                    <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                                </svg>
-                                Edit
-                            </button>
-                            <button class="btn-action btn-remove">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <polyline points="3 6 5 6 21 6"></polyline>
-                                    <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"></path>
-                                </svg>
-                                Remove
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Connection 4: Google Calendar - Blue Mountains Cabin -->
-                    <div class="ical-connection">
-                        <div class="ical-platform-icon google">
-                            <svg viewBox="0 0 24 24" fill="currentColor">
-                                <rect x="3" y="4" width="18" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="2"/>
-                                <line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="2"/>
-                                <line x1="8" y1="2" x2="8" y2="6" stroke="currentColor" stroke-width="2"/>
-                                <line x1="16" y1="2" x2="16" y2="6" stroke="currentColor" stroke-width="2"/>
-                            </svg>
-                        </div>
-                        <div class="ical-connection-info">
-                            <div class="ical-connection-name">Google Cal - Blue Mountains Cabin</div>
-                            <div class="ical-connection-meta">
-                                <span class="ical-status active">
-                                    <span class="status-dot green"></span>
-                                    Active
-                                </span>
-                                <span class="ical-last-sync">Last synced: 1 hour ago</span>
-                            </div>
-                        </div>
-                        <div class="ical-connection-actions">
-                            <button class="btn-action btn-sync">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <polyline points="23 4 23 10 17 10"></polyline>
-                                    <path d="M20.49 15a9 9 0 01-17.02-2"></path>
-                                    <polyline points="1 20 1 14 7 14"></polyline>
-                                    <path d="M3.51 9a9 9 0 0117.02 2"></path>
-                                </svg>
-                                Sync Now
-                            </button>
-                            <button class="btn-action btn-edit">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"></path>
-                                    <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                                </svg>
-                                Edit
-                            </button>
-                            <button class="btn-action btn-remove">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <polyline points="3 6 5 6 21 6"></polyline>
-                                    <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"></path>
-                                </svg>
-                                Remove
-                            </button>
-                        </div>
-                    </div>
 
                 </div>
             </div>
@@ -459,30 +364,6 @@
                                 <td><span class="direction-badge export">&#8593; Export</span></td>
                                 <td><span class="status-badge success"><span class="status-dot green"></span> Success</span></td>
                                 <td><span class="events-count">7</span></td>
-                            </tr>
-                            <tr>
-                                <td>Today, 13:45</td>
-                                <td>Google Calendar</td>
-                                <td>Blue Mountains Cabin</td>
-                                <td><span class="direction-badge import">&#8595; Import</span></td>
-                                <td><span class="status-badge success"><span class="status-dot green"></span> Success</span></td>
-                                <td><span class="events-count">2</span></td>
-                            </tr>
-                            <tr>
-                                <td>Today, 12:32</td>
-                                <td>Airbnb</td>
-                                <td>Bondi Beach Apartment</td>
-                                <td><span class="direction-badge import">&#8595; Import</span></td>
-                                <td><span class="status-badge failed"><span class="status-dot red"></span> Failed</span></td>
-                                <td><span class="events-count">0</span></td>
-                            </tr>
-                            <tr>
-                                <td>Today, 12:00</td>
-                                <td>Cascade Apartment 6</td>
-                                <td>Bondi Beach Apartment</td>
-                                <td><span class="direction-badge export">&#8593; Export</span></td>
-                                <td><span class="status-badge success"><span class="status-dot green"></span> Success</span></td>
-                                <td><span class="events-count">4</span></td>
                             </tr>
                             <tr>
                                 <td>Today, 11:30</td>

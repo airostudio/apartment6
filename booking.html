@@ -425,7 +425,7 @@
                   <input type="checkbox" id="earlyCheckin" name="earlyCheckin" value="30" data-addon-label="Early check-in">
                   <div>
                     <div class="addon-option__label">Early Check-in</div>
-                    <div class="addon-option__desc">Arrive from 10:00 AM instead of the standard 2:00 PM</div>
+                    <div class="addon-option__desc">Arrive from 10:00 AM instead of the standard 3:00 PM</div>
                   </div>
                 </div>
                 <span class="addon-option__price">+ $30</span>
@@ -436,7 +436,7 @@
                   <input type="checkbox" id="lateCheckout" name="lateCheckout" value="30" data-addon-label="Late checkout">
                   <div>
                     <div class="addon-option__label">Late Checkout</div>
-                    <div class="addon-option__desc">Depart by 12:00 PM instead of the standard 10:00 AM</div>
+                    <div class="addon-option__desc">Depart by 12:00 PM instead of the standard 11:00 AM</div>
                   </div>
                 </div>
                 <span class="addon-option__price">+ $30</span>
@@ -593,13 +593,16 @@
   <script>
   // ── Live Pricing Engine ────────────────────────────────────────────────────
   (function() {
-    // Seasonal nightly rates (AUD)
-    var RATE_PEAK     = 280;  // Jun, Jul, Aug (ski season)
-    var RATE_SHOULDER = 220;  // Apr, May, Sep, Oct, Nov
-    var RATE_SUMMER   = 200;  // Dec, Jan, Feb, Mar
-    var RATE_MIDWEEK  = 180;  // Mon–Thu any season
-    var CLEANING_FEE  = 60;
-    var SERVICE_RATE  = 0.10; // 10% of accommodation subtotal
+    // Load rates from admin localStorage, fall back to defaults
+    var _r = (function() {
+      try { return JSON.parse(localStorage.getItem('cascade6_rates') || 'null'); } catch(e) { return null; }
+    })() || {};
+    var RATE_PEAK     = _r.peak        || 280;  // Jun, Jul, Aug (ski season)
+    var RATE_SHOULDER = _r.shoulder    || 220;  // Apr, May, Sep, Oct, Nov
+    var RATE_SUMMER   = _r.summer      || 200;  // Dec, Jan, Feb, Mar
+    var RATE_MIDWEEK  = _r.midweek     || 180;  // Mon–Thu any season
+    var CLEANING_FEE  = _r.cleaningFee || 60;
+    var SERVICE_RATE  = (_r.serviceRate || 10) / 100; // e.g. 10 → 0.10
     var TAX_RATE      = 0.10; // 10% GST on total
 
     var DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];

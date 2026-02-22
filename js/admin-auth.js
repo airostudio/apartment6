@@ -37,8 +37,12 @@
     }
 
     function redirectToLogin() {
-        const current = encodeURIComponent(window.location.pathname.split('/').pop() || '');
-        window.location.replace(LOGIN_PAGE + (current ? '?redirect=' + current : ''));
+        // Use the full pathname so redirect works correctly regardless of where login is hosted
+        let target = window.location.pathname; // e.g. /admin/bookings or /admin/bookings.html
+        // Ensure .html extension — Vercel cleanUrls strips it from pathnames
+        if (target && !target.split('/').pop().includes('.')) target += '.html';
+        const encoded = encodeURIComponent(target);
+        window.location.replace(LOGIN_PAGE + (encoded ? '?redirect=' + encoded : ''));
     }
 
     const session = getSession();
@@ -158,12 +162,15 @@
     // ─── 6. Highlight active sidebar link ────────────────────────────────────
 
     function highlightActiveLink() {
-        const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+        // Strip .html from both sides so comparison works with Vercel cleanUrls
+        // (URL pathname has no extension, but hrefs do)
+        const currentBase = (window.location.pathname.split('/').pop() || 'index').replace(/\.html$/, '');
         document.querySelectorAll(
             '.admin-sidebar__menu-link, .sidebar-link, .nav-link'
         ).forEach(link => {
             const href = link.getAttribute('href') || '';
-            const isActive = href === currentPage || href.endsWith('/' + currentPage);
+            const hrefBase = href.split('/').pop().replace(/\.html$/, '');
+            const isActive = hrefBase === currentBase;
             link.classList.toggle('admin-sidebar__menu-link--active', isActive);
             link.classList.toggle('active', isActive);
         });

@@ -231,7 +231,10 @@
             };
             localStorage.setItem('trendaccom_admin_auth', JSON.stringify(session));
 
-            const redirect = new URLSearchParams(window.location.search).get('redirect') || 'index.html';
+            let redirect = new URLSearchParams(window.location.search).get('redirect') || '';
+            // Redirect must be an absolute /admin/ path — anything else (e.g. bare "admin.html"
+            // from external auth systems) falls back to the dashboard
+            if (!redirect || !redirect.startsWith('/admin/')) redirect = '/admin/index.html';
             window.location.href = redirect;
         } else {
             errorEl.classList.add('visible');
