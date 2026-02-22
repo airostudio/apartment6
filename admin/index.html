@@ -28,7 +28,7 @@
             <div class="admin-sidebar__section">
                 <span class="admin-sidebar__section-title">MAIN</span>
                 <ul class="admin-sidebar__menu">
-                    <li class="admin-sidebar__menu-item"><a href="index.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg><span>Dashboard</span></a></li>
+                    <li class="admin-sidebar__menu-item admin-sidebar__menu-item--active"><a href="index.html" class="admin-sidebar__menu-link admin-sidebar__menu-link--active"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg><span>Dashboard</span></a></li>
                     <li class="admin-sidebar__menu-item"><a href="properties.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>Properties</span></a></li>
                     <li class="admin-sidebar__menu-item"><a href="bookings.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg><span>Bookings</span></a></li>
                     <li class="admin-sidebar__menu-item"><a href="calendar.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>Calendar</span></a></li>
@@ -74,8 +74,8 @@
             </div>
             <div class="admin-topbar__actions">
                 <div class="admin-topbar__user">
-                    <div class="admin-topbar__user-avatar">AD</div>
-                    <span class="admin-topbar__user-name">Admin</span>
+                    <div class="admin-topbar__user-avatar" id="userAvatar">AD</div>
+                    <span class="admin-topbar__user-name" id="userName">Admin</span>
                 </div>
             </div>
         </header>
@@ -87,14 +87,14 @@
             <div class="admin-page-header">
                 <div class="admin-page-header-text">
                     <h1 class="admin-page-title">Dashboard</h1>
-                    <p class="admin-page-subtitle">Welcome back! Here's what's happening with your properties.</p>
+                    <p class="admin-page-subtitle" id="dashboardSubtitle">Welcome back! Here's what's happening with Cascade Apartment 6.</p>
                 </div>
-                <a href="properties.html#add" class="btn btn-primary admin-page-action">
+                <a href="bookings.html" class="btn btn-primary admin-page-action" id="headerAction">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="btn-icon">
                         <line x1="12" y1="5" x2="12" y2="19"></line>
                         <line x1="5" y1="12" x2="19" y2="12"></line>
                     </svg>
-                    Add Property
+                    New Booking
                 </a>
             </div>
 
@@ -110,20 +110,15 @@
                             </svg>
                         </span>
                     </div>
-                    <div class="stat-card-value">1,247</div>
-                    <div class="stat-card-change stat-card-change--up">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
-                            <polyline points="17 6 23 6 23 12"></polyline>
-                        </svg>
-                        +12%
-                        <span class="stat-card-change-period">vs last month</span>
+                    <div class="stat-card-value" id="statTotal">0</div>
+                    <div class="stat-card-change stat-card-change--neutral">
+                        <span class="stat-card-change-period">All time bookings</span>
                     </div>
                 </div>
 
                 <div class="stat-card">
                     <div class="stat-card-header">
-                        <span class="stat-card-label">Revenue</span>
+                        <span class="stat-card-label">Total Revenue</span>
                         <span class="stat-card-icon stat-card-icon--revenue">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <line x1="12" y1="1" x2="12" y2="23"></line>
@@ -131,50 +126,43 @@
                             </svg>
                         </span>
                     </div>
-                    <div class="stat-card-value">$89,432</div>
-                    <div class="stat-card-change stat-card-change--up">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
-                            <polyline points="17 6 23 6 23 12"></polyline>
-                        </svg>
-                        +8%
-                        <span class="stat-card-change-period">vs last month</span>
+                    <div class="stat-card-value" id="statRevenue">$0</div>
+                    <div class="stat-card-change stat-card-change--neutral">
+                        <span class="stat-card-change-period">Confirmed bookings only</span>
                     </div>
                 </div>
 
                 <div class="stat-card">
                     <div class="stat-card-header">
-                        <span class="stat-card-label">Occupancy Rate</span>
+                        <span class="stat-card-label">Upcoming Stays</span>
                         <span class="stat-card-icon stat-card-icon--occupancy">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
                             </svg>
                         </span>
                     </div>
-                    <div class="stat-card-value">78%</div>
-                    <div class="stat-card-change stat-card-change--up">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
-                            <polyline points="17 6 23 6 23 12"></polyline>
-                        </svg>
-                        +5%
-                        <span class="stat-card-change-period">vs last month</span>
+                    <div class="stat-card-value" id="statUpcoming">0</div>
+                    <div class="stat-card-change stat-card-change--neutral">
+                        <span class="stat-card-change-period">Future confirmed stays</span>
                     </div>
                 </div>
 
                 <div class="stat-card">
                     <div class="stat-card-header">
-                        <span class="stat-card-label">Active Properties</span>
+                        <span class="stat-card-label">Pending Review</span>
                         <span class="stat-card-icon stat-card-icon--properties">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
                             </svg>
                         </span>
                     </div>
-                    <div class="stat-card-value">24</div>
+                    <div class="stat-card-value" id="statPending">0</div>
                     <div class="stat-card-change stat-card-change--neutral">
-                        <span class="stat-card-change-period">Total active listings</span>
+                        <span class="stat-card-change-period">Awaiting confirmation</span>
                     </div>
                 </div>
             </div>
@@ -185,84 +173,33 @@
                 <!-- Left Column: Recent Bookings -->
                 <div class="dashboard-grid-left">
                     <div class="admin-card">
-                        <div class="admin-card-header">
-                            <h2 class="admin-card-title">Recent Bookings</h2>
+                        <div class="admin-card__header">
+                            <h2 class="admin-card__title">Recent Bookings</h2>
                         </div>
-                        <div class="admin-card-body admin-card-body--table">
+                        <div class="admin-card__body admin-card__body--no-padding">
                             <table class="admin-table">
                                 <thead>
                                     <tr>
                                         <th>Guest</th>
-                                        <th>Property</th>
                                         <th>Check-in</th>
                                         <th>Check-out</th>
                                         <th>Status</th>
                                         <th>Amount</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <tr>
-                                        <td class="admin-table-guest">
-                                            <span class="guest-avatar">JD</span>
-                                            <span>John Doe</span>
+                                <tbody id="recentBookingsBody">
+                                    <tr id="noBookingsRow">
+                                        <td colspan="5" style="text-align:center;padding:2rem;color:#94a3b8;">
+                                            No bookings yet. <a href="bookings.html" style="color:#0f2744;font-weight:500;">Create the first booking</a>
                                         </td>
-                                        <td>Ocean View Villa</td>
-                                        <td>Feb 20, 2026</td>
-                                        <td>Feb 25, 2026</td>
-                                        <td><span class="badge badge--confirmed">Confirmed</span></td>
-                                        <td class="admin-table-amount">$1,250</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="admin-table-guest">
-                                            <span class="guest-avatar">SM</span>
-                                            <span>Sarah Miller</span>
-                                        </td>
-                                        <td>Mountain Retreat</td>
-                                        <td>Feb 22, 2026</td>
-                                        <td>Feb 28, 2026</td>
-                                        <td><span class="badge badge--pending">Pending</span></td>
-                                        <td class="admin-table-amount">$980</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="admin-table-guest">
-                                            <span class="guest-avatar">RJ</span>
-                                            <span>Robert Johnson</span>
-                                        </td>
-                                        <td>Downtown Loft</td>
-                                        <td>Feb 18, 2026</td>
-                                        <td>Feb 21, 2026</td>
-                                        <td><span class="badge badge--checked-in">Checked In</span></td>
-                                        <td class="admin-table-amount">$540</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="admin-table-guest">
-                                            <span class="guest-avatar">EW</span>
-                                            <span>Emily Watson</span>
-                                        </td>
-                                        <td>Lakeside Cabin</td>
-                                        <td>Mar 1, 2026</td>
-                                        <td>Mar 5, 2026</td>
-                                        <td><span class="badge badge--confirmed">Confirmed</span></td>
-                                        <td class="admin-table-amount">$720</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="admin-table-guest">
-                                            <span class="guest-avatar">MC</span>
-                                            <span>Michael Chen</span>
-                                        </td>
-                                        <td>City Penthouse</td>
-                                        <td>Feb 15, 2026</td>
-                                        <td>Feb 18, 2026</td>
-                                        <td><span class="badge badge--completed">Completed</span></td>
-                                        <td class="admin-table-amount">$1,890</td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
-                        <div class="admin-card-footer">
-                            <a href="bookings.html" class="admin-card-footer-link">
+                        <div class="admin-card__footer">
+                            <a href="bookings.html" class="admin-card__footer-link">
                                 View All Bookings
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="admin-card-footer-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="admin-card__footer-icon">
                                     <line x1="5" y1="12" x2="19" y2="12"></line>
                                     <polyline points="12 5 19 12 12 19"></polyline>
                                 </svg>
@@ -276,27 +213,19 @@
 
                     <!-- Quick Actions -->
                     <div class="admin-card">
-                        <div class="admin-card-header">
-                            <h2 class="admin-card-title">Quick Actions</h2>
+                        <div class="admin-card__header">
+                            <h2 class="admin-card__title">Quick Actions</h2>
                         </div>
-                        <div class="admin-card-body">
+                        <div class="admin-card__body">
                             <div class="quick-actions">
-                                <a href="properties.html#add" class="quick-action-btn">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                                        <line x1="12" y1="9" x2="12" y2="17"></line>
-                                        <line x1="8" y1="13" x2="16" y2="13"></line>
-                                    </svg>
-                                    <span>Add Property</span>
-                                </a>
-                                <a href="bookings.html#create" class="quick-action-btn">
+                                <a href="bookings.html" class="quick-action-btn">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
                                         <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
                                         <line x1="12" y1="11" x2="12" y2="17"></line>
                                         <line x1="9" y1="14" x2="15" y2="14"></line>
                                     </svg>
-                                    <span>Create Booking</span>
+                                    <span>New Booking</span>
                                 </a>
                                 <a href="calendar.html" class="quick-action-btn">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -307,6 +236,13 @@
                                     </svg>
                                     <span>View Calendar</span>
                                 </a>
+                                <a href="rates.html" class="quick-action-btn">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="12" y1="1" x2="12" y2="23"></line>
+                                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                                    </svg>
+                                    <span>Edit Rates</span>
+                                </a>
                                 <a href="ical-sync.html" class="quick-action-btn">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                         <polyline points="23 4 23 10 17 10"></polyline>
@@ -314,58 +250,54 @@
                                         <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"></path>
                                         <path d="M20.49 15a9 9 0 0 1-14.85 3.36L1 14"></path>
                                     </svg>
-                                    <span>Sync iCal</span>
+                                    <span>iCal Sync</span>
                                 </a>
-                                <a href="reports.html#export" class="quick-action-btn">
+                                <a href="guests.html" class="quick-action-btn">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                                        <polyline points="7 10 12 15 17 10"></polyline>
-                                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                        <circle cx="9" cy="7" r="4"></circle>
+                                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                                     </svg>
-                                    <span>Export Report</span>
+                                    <span>Guests</span>
                                 </a>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Properties Overview -->
+                    <!-- Apartment Info -->
                     <div class="admin-card">
-                        <div class="admin-card-header">
-                            <h2 class="admin-card-title">Properties Overview</h2>
+                        <div class="admin-card__header">
+                            <h2 class="admin-card__title">Cascade Apartment 6</h2>
                         </div>
-                        <div class="admin-card-body">
-                            <ul class="property-mini-list">
-                                <li class="property-mini-item">
-                                    <div class="property-mini-thumb" aria-label="Ocean View Villa thumbnail"></div>
-                                    <div class="property-mini-info">
-                                        <span class="property-mini-name">Ocean View Villa</span>
-                                        <span class="property-mini-occupancy">92% occupancy</span>
-                                    </div>
-                                    <div class="property-mini-bar">
-                                        <div class="property-mini-bar-fill" style="width: 92%;"></div>
-                                    </div>
-                                </li>
-                                <li class="property-mini-item">
-                                    <div class="property-mini-thumb" aria-label="Mountain Retreat thumbnail"></div>
-                                    <div class="property-mini-info">
-                                        <span class="property-mini-name">Mountain Retreat</span>
-                                        <span class="property-mini-occupancy">76% occupancy</span>
-                                    </div>
-                                    <div class="property-mini-bar">
-                                        <div class="property-mini-bar-fill" style="width: 76%;"></div>
-                                    </div>
-                                </li>
-                                <li class="property-mini-item">
-                                    <div class="property-mini-thumb" aria-label="Downtown Loft thumbnail"></div>
-                                    <div class="property-mini-info">
-                                        <span class="property-mini-name">Downtown Loft</span>
-                                        <span class="property-mini-occupancy">64% occupancy</span>
-                                    </div>
-                                    <div class="property-mini-bar">
-                                        <div class="property-mini-bar-fill" style="width: 64%;"></div>
-                                    </div>
-                                </li>
-                            </ul>
+                        <div class="admin-card__body">
+                            <div style="display:flex;flex-direction:column;gap:0.75rem;">
+                                <div style="display:flex;justify-content:space-between;align-items:center;padding:0.5rem 0;border-bottom:1px solid #f1f5f9;">
+                                    <span style="font-size:0.875rem;color:#64748b;">Location</span>
+                                    <span style="font-size:0.875rem;font-weight:500;color:#0f172a;">Mt Baw Baw Alpine Resort, VIC</span>
+                                </div>
+                                <div style="display:flex;justify-content:space-between;align-items:center;padding:0.5rem 0;border-bottom:1px solid #f1f5f9;">
+                                    <span style="font-size:0.875rem;color:#64748b;">Capacity</span>
+                                    <span style="font-size:0.875rem;font-weight:500;color:#0f172a;">Up to 6 guests</span>
+                                </div>
+                                <div style="display:flex;justify-content:space-between;align-items:center;padding:0.5rem 0;border-bottom:1px solid #f1f5f9;">
+                                    <span style="font-size:0.875rem;color:#64748b;">Check-in</span>
+                                    <span style="font-size:0.875rem;font-weight:500;color:#0f172a;">3:00 PM</span>
+                                </div>
+                                <div style="display:flex;justify-content:space-between;align-items:center;padding:0.5rem 0;border-bottom:1px solid #f1f5f9;">
+                                    <span style="font-size:0.875rem;color:#64748b;">Check-out</span>
+                                    <span style="font-size:0.875rem;font-weight:500;color:#0f172a;">11:00 AM</span>
+                                </div>
+                                <div style="display:flex;justify-content:space-between;align-items:center;padding:0.5rem 0;">
+                                    <span style="font-size:0.875rem;color:#64748b;">Status</span>
+                                    <span class="admin-badge admin-badge--confirmed" style="font-size:0.75rem;">Active</span>
+                                </div>
+                            </div>
+                            <div style="margin-top:1rem;">
+                                <a href="property-edit.html" class="btn btn-secondary" style="width:100%;text-align:center;display:block;">
+                                    Edit Property Details
+                                </a>
+                            </div>
                         </div>
                     </div>
 
@@ -378,6 +310,97 @@
     <script src="../js/app.js"></script>
     <script src="../js/admin.js"></script>
     <script src="../js/admin-auth.js"></script>
+    <script>
+    (function() {
+        'use strict';
+
+        // Update user display from session
+        var session = JSON.parse(localStorage.getItem('trendaccom_admin_auth') || '{}');
+        if (session.name) {
+            var initials = session.name.split(' ').map(function(w){ return w[0]; }).join('').toUpperCase().slice(0, 2);
+            document.getElementById('userAvatar').textContent = initials || session.name.slice(0,2).toUpperCase();
+            document.getElementById('userName').textContent = session.name;
+        }
+
+        // Load bookings from localStorage
+        var bookings = JSON.parse(localStorage.getItem('cascade6_bookings') || '[]');
+
+        // Calculate stats
+        var total = bookings.length;
+        var revenue = 0;
+        var pending = 0;
+        var upcoming = 0;
+        var today = new Date();
+        today.setHours(0,0,0,0);
+
+        bookings.forEach(function(b) {
+            if (b.status === 'confirmed' || b.status === 'completed') {
+                revenue += parseFloat(b.total) || 0;
+            }
+            if (b.status === 'pending') {
+                pending++;
+            }
+            if ((b.status === 'confirmed') && b.checkin) {
+                var checkinDate = new Date(b.checkin);
+                checkinDate.setHours(0,0,0,0);
+                if (checkinDate >= today) {
+                    upcoming++;
+                }
+            }
+        });
+
+        // Update stat cards
+        document.getElementById('statTotal').textContent = total;
+        document.getElementById('statRevenue').textContent = '$' + revenue.toLocaleString('en-AU', {minimumFractionDigits: 0, maximumFractionDigits: 0});
+        document.getElementById('statUpcoming').textContent = upcoming;
+        document.getElementById('statPending').textContent = pending;
+
+        // Render recent bookings table (last 5)
+        var tbody = document.getElementById('recentBookingsBody');
+        var noRow = document.getElementById('noBookingsRow');
+
+        // Sort by createdAt desc, take last 5
+        var sorted = bookings.slice().sort(function(a,b){
+            return (b.createdAt || 0) - (a.createdAt || 0);
+        }).slice(0, 5);
+
+        if (sorted.length > 0) {
+            tbody.innerHTML = '';
+            sorted.forEach(function(b) {
+                var statusClass = {
+                    confirmed: 'admin-badge--confirmed',
+                    pending:   'admin-badge--pending',
+                    cancelled: 'admin-badge--cancelled',
+                    completed: 'admin-badge--completed'
+                }[b.status] || 'admin-badge--pending';
+
+                var statusLabel = b.status ? (b.status.charAt(0).toUpperCase() + b.status.slice(1)) : 'Pending';
+
+                var initials = (b.name || 'Guest').split(' ').map(function(w){ return w[0]; }).join('').toUpperCase().slice(0,2);
+
+                var checkinFmt = b.checkin ? new Date(b.checkin + 'T12:00:00').toLocaleDateString('en-AU', {day:'2-digit',month:'short',year:'numeric'}) : '—';
+                var checkoutFmt = b.checkout ? new Date(b.checkout + 'T12:00:00').toLocaleDateString('en-AU', {day:'2-digit',month:'short',year:'numeric'}) : '—';
+
+                var tr = document.createElement('tr');
+                tr.innerHTML =
+                    '<td>' +
+                        '<div style="display:flex;align-items:center;gap:0.5rem;">' +
+                            '<div class="guest-avatar" style="width:32px;height:32px;border-radius:50%;background:#0f2744;color:#fff;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:600;flex-shrink:0;">' + initials + '</div>' +
+                            '<div>' +
+                                '<div style="font-weight:500;font-size:0.875rem;color:#0f172a;">' + (b.name || '—') + '</div>' +
+                                '<div style="font-size:0.75rem;color:#94a3b8;">' + b.id + '</div>' +
+                            '</div>' +
+                        '</div>' +
+                    '</td>' +
+                    '<td style="font-size:0.875rem;">' + checkinFmt + '</td>' +
+                    '<td style="font-size:0.875rem;">' + checkoutFmt + '</td>' +
+                    '<td><span class="admin-badge ' + statusClass + '">' + statusLabel + '</span></td>' +
+                    '<td style="font-weight:600;font-size:0.875rem;">$' + (parseFloat(b.total || 0).toLocaleString('en-AU', {minimumFractionDigits:0,maximumFractionDigits:0})) + '</td>';
+                tbody.appendChild(tr);
+            });
+        }
+    })();
+    </script>
 </div><!-- /.admin-layout -->
 </body>
 </html>
