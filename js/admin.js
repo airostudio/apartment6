@@ -49,13 +49,16 @@
      * Highlight active sidebar link based on current page
      */
     highlightActiveSidebarLink() {
-      const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+      const currentBase = (window.location.pathname.split('/').pop() || 'index').replace(/\.html$/, '');
 
       document.querySelectorAll('.sidebar-link').forEach(link => {
         link.classList.remove('active');
         const href = link.getAttribute('href');
-        if (href && href.includes(currentPage)) {
-          link.classList.add('active');
+        if (href) {
+          const hrefBase = href.split('/').pop().replace(/\.html$/, '');
+          if (hrefBase === currentBase) {
+            link.classList.add('active');
+          }
         }
       });
     },

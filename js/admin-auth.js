@@ -162,12 +162,15 @@
     // ─── 6. Highlight active sidebar link ────────────────────────────────────
 
     function highlightActiveLink() {
-        const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+        // Strip .html from both sides so comparison works with Vercel cleanUrls
+        // (URL pathname has no extension, but hrefs do)
+        const currentBase = (window.location.pathname.split('/').pop() || 'index').replace(/\.html$/, '');
         document.querySelectorAll(
             '.admin-sidebar__menu-link, .sidebar-link, .nav-link'
         ).forEach(link => {
             const href = link.getAttribute('href') || '';
-            const isActive = href === currentPage || href.endsWith('/' + currentPage);
+            const hrefBase = href.split('/').pop().replace(/\.html$/, '');
+            const isActive = hrefBase === currentBase;
             link.classList.toggle('admin-sidebar__menu-link--active', isActive);
             link.classList.toggle('active', isActive);
         });
