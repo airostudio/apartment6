@@ -591,6 +591,75 @@
 
   <script src="js/app.js"></script>
   <script>
+  // ── Form validation with scroll-to + red border ────────────────────────────
+  (function() {
+    var REQUIRED = [
+      { id: 'firstName',    label: 'First Name' },
+      { id: 'lastName',     label: 'Last Name' },
+      { id: 'email',        label: 'Email Address' },
+      { id: 'phone',        label: 'Phone Number' },
+      { id: 'checkinDate',  label: 'Check-in Date' },
+      { id: 'checkoutDate', label: 'Check-out Date' }
+    ];
+
+    function markError(el) {
+      el.style.borderColor  = '#c0392b';
+      el.style.boxShadow    = '0 0 0 3px rgba(192,57,43,0.18)';
+      el.style.outline      = 'none';
+    }
+    function clearError(el) {
+      el.style.borderColor = '';
+      el.style.boxShadow   = '';
+    }
+
+    // Wire clear-on-input for each required field
+    REQUIRED.forEach(function(f) {
+      var el = document.getElementById(f.id);
+      if (el) {
+        el.addEventListener('input',  function() { clearError(this); });
+        el.addEventListener('change', function() { clearError(this); });
+        el.addEventListener('focus',  function() { clearError(this); });
+      }
+    });
+
+    function validateAndSubmit() {
+      var firstBad = null;
+      REQUIRED.forEach(function(f) {
+        var el = document.getElementById(f.id);
+        if (!el) return;
+        var val = el.value.trim();
+        var bad = !val;
+        // Extra: basic email check
+        if (!bad && f.id === 'email') bad = !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
+        if (bad) {
+          markError(el);
+          if (!firstBad) firstBad = el;
+        } else {
+          clearError(el);
+        }
+      });
+
+      if (firstBad) {
+        firstBad.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        firstBad.focus({ preventScroll: true });
+        return false;
+      }
+      return true;
+    }
+
+    // Hook the Continue to Payment button (capture phase fires before onclick)
+    var btn = document.getElementById('continueToPayment');
+    if (btn) {
+      btn.addEventListener('click', function(e) {
+        if (!validateAndSubmit()) {
+          e.preventDefault();
+          e.stopImmediatePropagation();
+        }
+        // If validation passes, do nothing — let the pricing engine's onclick fire normally
+      }, true);
+    }
+  })();
+
   // ── Live Pricing Engine ────────────────────────────────────────────────────
   (function() {
     // Load rates from admin localStorage, fall back to defaults

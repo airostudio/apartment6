@@ -886,7 +886,8 @@
         </div>
 
         <button class="btn-book" id="bookNowBtn">Check Availability</button>
-        <p class="booking-note">You won't be charged yet</p>
+        <p class="booking-note" id="bookingNote">Select dates to see pricing</p>
+        <p id="bookingError" style="display:none;color:#c0392b;font-size:0.82rem;margin:-8px 0 8px;padding:8px 12px;background:#fdf2f2;border-left:3px solid #c0392b;border-radius:4px;"></p>
 
         <div class="price-breakdown" id="priceBreakdown" style="display:none;">
           <div class="price-row">
@@ -1009,12 +1010,43 @@
     }
 
     // ── Book button ────────────────────────────────────────────────
-    document.getElementById('bookNowBtn').addEventListener('click', function() {
-      var checkin = document.getElementById('checkin').value;
+    function updateBookBtn() {
+      var checkin  = document.getElementById('checkin').value;
       var checkout = document.getElementById('checkout').value;
-      var guests = document.getElementById('guests').value;
-      if (!checkin || !checkout) { alert('Please select your check-in and check-out dates.'); return; }
-      var p = new URLSearchParams({ checkin: checkin, checkout: checkout, guests: guests, propertyId: 'cascade-apt-6' });
+      var btn  = document.getElementById('bookNowBtn');
+      var note = document.getElementById('bookingNote');
+      if (checkin && checkout) {
+        btn.textContent = 'Book Now →';
+        btn.style.background = '#c9a84c';
+        note.textContent = "You won't be charged yet";
+      } else {
+        btn.textContent = 'Check Availability';
+        btn.style.background = '';
+        note.textContent = 'Select dates to see pricing';
+      }
+    }
+    ['checkin','checkout','guests'].forEach(function(id) {
+      document.getElementById(id).addEventListener('change', updateBookBtn);
+    });
+    updateBookBtn();
+
+    document.getElementById('bookNowBtn').addEventListener('click', function() {
+      var checkin  = document.getElementById('checkin').value;
+      var checkout = document.getElementById('checkout').value;
+      var guestsRaw = document.getElementById('guests').value;
+      var err = document.getElementById('bookingError');
+      if (!checkin || !checkout) {
+        err.textContent = !checkin
+          ? 'Please select a check-in date.'
+          : 'Please select a check-out date.';
+        err.style.display = 'block';
+        setTimeout(function() { err.style.display = 'none'; }, 4000);
+        document.getElementById(!checkin ? 'checkin' : 'checkout').focus();
+        return;
+      }
+      err.style.display = 'none';
+      var guests = parseInt(guestsRaw) || 2;
+      var p = new URLSearchParams({ checkin: checkin, checkout: checkout, guests: guests });
       window.location.href = 'booking.html?' + p.toString();
     });
 
@@ -1195,8 +1227,19 @@
         if (co.value && co.value <= this.value) co.value = '';
         co.min = this.value;
         updateSidebarPrice();
+        updateBookBtn();
       });
-      document.getElementById('checkout').addEventListener('change', updateSidebarPrice);
+      document.getElementById('checkout').addEventListener('change', function() {
+        updateSidebarPrice();
+        updateBookBtn();
+      });
+      document.getElementById('guests').addEventListener('change', updateSidebarPrice);
+
+      // Pre-fill from URL and run initial price update
+      var today = new Date().toISOString().split('T')[0];
+      document.getElementById('checkin').min  = today;
+      document.getElementById('checkout').min = today;
+      updateSidebarPrice();
     })();
   </script>
 </body>

@@ -636,17 +636,94 @@
 
   <script src="js/app.js"></script>
   <script>
-    // Hero search → property page with params
+    // Set min dates
+    (function() {
+      var today = new Date().toISOString().split('T')[0];
+      var ci = document.getElementById('searchCheckin');
+      var co = document.getElementById('searchCheckout');
+      ci.min = today;
+      co.min = today;
+      ci.addEventListener('change', function() {
+        if (co.value && co.value <= this.value) co.value = '';
+        co.min = this.value;
+      });
+    })();
+
+    // Hero search — check availability then navigate
     document.getElementById('heroSearchBtn').addEventListener('click', function() {
-      var checkin = document.getElementById('searchCheckin').value;
+      var checkin  = document.getElementById('searchCheckin').value;
       var checkout = document.getElementById('searchCheckout').value;
-      var guests = document.getElementById('searchGuests').value;
-      var params = new URLSearchParams();
-      if (checkin) params.set('checkin', checkin);
-      if (checkout) params.set('checkout', checkout);
-      if (guests) params.set('guests', guests);
-      window.location.href = 'property.html' + (params.toString() ? '?' + params.toString() : '');
+      var guests   = document.getElementById('searchGuests').value;
+
+      // Remove any previous result banner
+      var old = document.getElementById('availResult');
+      if (old) old.remove();
+
+      if (!checkin || !checkout) {
+        showAvailResult('error', 'Please select both a check-in and check-out date.');
+        return;
+      }
+      if (checkout <= checkin) {
+        showAvailResult('error', 'Check-out must be after check-in.');
+        return;
+      }
+
+      // Check against stored bookings in localStorage
+      var available = true;
+      var unavailMsg = '';
+      try {
+        var bookings = JSON.parse(localStorage.getItem('cascade6_bookings') || '[]');
+        var ci = new Date(checkin + 'T00:00:00');
+        var co = new Date(checkout + 'T00:00:00');
+        for (var i = 0; i < bookings.length; i++) {
+          var b = bookings[i];
+          if (b.status === 'cancelled') continue;
+          var bs = new Date((b.checkin || b.checkIn || b.check_in) + 'T00:00:00');
+          var be = new Date((b.checkout || b.checkOut || b.check_out) + 'T00:00:00');
+          // Overlap: requested start < booked end AND requested end > booked start
+          if (ci < be && co > bs) {
+            available = false;
+            unavailMsg = 'Sorry, those dates are not available. Please try different dates.';
+            break;
+          }
+        }
+      } catch(e) { /* localStorage unavailable — assume available */ }
+
+      if (!available) {
+        showAvailResult('error', unavailMsg);
+        return;
+      }
+
+      // Dates are available — show success then navigate
+      var nights = Math.round((new Date(checkout) - new Date(checkin)) / 86400000);
+      showAvailResult('success',
+        '&#10003; Available for ' + nights + ' night' + (nights !== 1 ? 's' : '') + '! Redirecting to booking…',
+        function() {
+          var params = new URLSearchParams({ checkin: checkin, checkout: checkout, guests: guests });
+          window.location.href = 'property.html?' + params.toString();
+        }, 1400
+      );
     });
+
+    function showAvailResult(type, msg, cb, delay) {
+      var bar = document.createElement('div');
+      bar.id = 'availResult';
+      bar.style.cssText = [
+        'margin-top:12px',
+        'padding:12px 18px',
+        'border-radius:8px',
+        'font-size:0.9rem',
+        'font-weight:500',
+        'text-align:center',
+        'transition:opacity 0.4s',
+        type === 'success'
+          ? 'background:#e6f9ee;color:#166534;border:1px solid #bbf7d0;'
+          : 'background:#fef2f2;color:#991b1b;border:1px solid #fecaca;'
+      ].join(';');
+      bar.innerHTML = msg;
+      document.getElementById('mainSearchBar').after(bar);
+      if (cb) setTimeout(cb, delay || 1200);
+    }
 
     // Smooth scroll for anchor links
     document.querySelectorAll('a[href^="#"]').forEach(function(a) {
