@@ -22,7 +22,7 @@
 
     // Configuration (would be set from server/environment)
     config: {
-      publishableKey: 'pk_test_your_stripe_publishable_key',
+      publishableKey: 'pk_test_51R90aVH4Fz8ujmcvLLzSFR1gbn30oN9qpk140e282tN6sPe4fr7HWFd7OBI1MYFhlx2CkvKQtJuzqotd6w5lFuVr00yPKpDnMG',
       locale: 'en-AU',
       currency: 'aud',
       appearance: {
