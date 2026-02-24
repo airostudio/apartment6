@@ -694,35 +694,37 @@
         return;
       }
 
-      // Dates are available — show success then navigate
+      // Dates are available — show result with Book Now button
       var nights = Math.round((new Date(checkout) - new Date(checkin)) / 86400000);
-      showAvailResult('success',
-        '&#10003; Available for ' + nights + ' night' + (nights !== 1 ? 's' : '') + '! Redirecting to booking…',
-        function() {
-          var params = new URLSearchParams({ checkin: checkin, checkout: checkout, guests: guests });
-          window.location.href = 'property.html?' + params.toString();
-        }, 1400
-      );
+      var bookHref = 'booking.html?' + new URLSearchParams({ checkin: checkin, checkout: checkout, guests: guests }).toString();
+      showAvailSuccess(nights, bookHref);
     });
 
-    function showAvailResult(type, msg, cb, delay) {
+    function showAvailResult(type, msg) {
       var bar = document.createElement('div');
       bar.id = 'availResult';
-      bar.style.cssText = [
-        'margin-top:12px',
-        'padding:12px 18px',
-        'border-radius:8px',
-        'font-size:0.9rem',
-        'font-weight:500',
-        'text-align:center',
-        'transition:opacity 0.4s',
-        type === 'success'
-          ? 'background:#e6f9ee;color:#166534;border:1px solid #bbf7d0;'
-          : 'background:#fef2f2;color:#991b1b;border:1px solid #fecaca;'
-      ].join(';');
+      bar.style.cssText = 'margin-top:12px;padding:12px 18px;border-radius:8px;font-size:0.9rem;font-weight:500;text-align:center;background:#fef2f2;color:#991b1b;border:1px solid #fecaca;';
       bar.innerHTML = msg;
       document.getElementById('mainSearchBar').after(bar);
-      if (cb) setTimeout(cb, delay || 1200);
+    }
+
+    function showAvailSuccess(nights, href) {
+      var bar = document.createElement('div');
+      bar.id = 'availResult';
+      bar.style.cssText = 'margin-top:14px;padding:16px 20px;border-radius:12px;background:#ecfdf5;border:1px solid #6ee7b7;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;';
+      bar.innerHTML =
+        '<span style="color:#065f46;font-weight:600;font-size:0.9375rem;display:flex;align-items:center;gap:9px;">'
+          + '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>'
+          + 'Available for <strong style="margin-left:3px;">' + nights + '&nbsp;night' + (nights !== 1 ? 's' : '') + '</strong>'
+        + '</span>'
+        + '<a href="' + href + '" '
+          + 'style="display:inline-flex;align-items:center;gap:7px;padding:11px 24px;background:#0f2744;color:#fff;border-radius:8px;font-size:0.9rem;font-weight:700;text-decoration:none;letter-spacing:0.01em;white-space:nowrap;"'
+          + ' onmouseover="this.style.background=\'#1a3a5c\'" onmouseout="this.style.background=\'#0f2744\'">'
+          + '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>'
+          + 'Book Now'
+          + '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>'
+        + '</a>';
+      document.getElementById('mainSearchBar').after(bar);
     }
 
     // Smooth scroll for anchor links
