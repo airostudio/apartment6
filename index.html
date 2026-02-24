@@ -649,6 +649,18 @@
       });
     })();
 
+    // Pre-fill search bar from saved session (e.g. coming back from property page)
+    (function() {
+      try {
+        var saved = JSON.parse(sessionStorage.getItem('cascade6_search') || 'null');
+        if (saved) {
+          if (saved.checkin)  document.getElementById('searchCheckin').value  = saved.checkin;
+          if (saved.checkout) document.getElementById('searchCheckout').value = saved.checkout;
+          if (saved.guests)   document.getElementById('searchGuests').value   = saved.guests;
+        }
+      } catch(e) {}
+    })();
+
     // Hero search — check availability then navigate
     document.getElementById('heroSearchBtn').addEventListener('click', function() {
       var checkin  = document.getElementById('searchCheckin').value;
@@ -667,6 +679,11 @@
         showAvailResult('error', 'Check-out must be after check-in.');
         return;
       }
+
+      // Persist search so other pages (booking, property) can pre-fill
+      try {
+        sessionStorage.setItem('cascade6_search', JSON.stringify({ checkin: checkin, checkout: checkout, guests: guests }));
+      } catch(e) {}
 
       // Check against stored bookings in localStorage
       var available = true;

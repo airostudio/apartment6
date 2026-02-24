@@ -273,9 +273,44 @@
         });
 
         if (result.success) {
+          // ── Save confirmed booking to localStorage ──────────────────────
+          let confirmedRef = 'TRA-' + new Date().getFullYear() + '-' + String(Date.now()).slice(-5);
+          try {
+            const pending = JSON.parse(sessionStorage.getItem('cascade6_pending_booking') || 'null');
+            if (pending) {
+              const bk = {
+                id:              'bk-' + Date.now(),
+                ref:             confirmedRef,
+                name:            pending.guestName       || 'Guest',
+                email:           pending.email           || '',
+                phone:           pending.phone           || '',
+                checkin:         pending.checkin,
+                checkout:        pending.checkout,
+                nights:          pending.nights          || 0,
+                guests:          pending.guests          || 2,
+                total:           Number(pending.total || 0).toFixed(2),
+                accom:           pending.accom           || 0,
+                addons:          pending.addons          || [],
+                extraGuestTotal: pending.extraGuestTotal || 0,
+                cleaning:        pending.cleaning        || 0,
+                service:         pending.service         || 0,
+                tax:             pending.tax             || 0,
+                specialRequests: pending.specialRequests || '',
+                status:          'confirmed',
+                bookedAt:        new Date().toISOString()
+              };
+              const existing = JSON.parse(localStorage.getItem('cascade6_bookings') || '[]');
+              existing.push(bk);
+              localStorage.setItem('cascade6_bookings', JSON.stringify(existing));
+              sessionStorage.setItem('cascade6_confirmed_booking', JSON.stringify(bk));
+              sessionStorage.removeItem('cascade6_pending_booking');
+              confirmedRef = bk.ref;
+            }
+          } catch(e) { /* non-critical — proceed to confirmation */ }
+          // ────────────────────────────────────────────────────────────────
+
           window.TrendAccom?.showToast('Payment successful!', 'success');
-          window.location.href = 'confirmation.html?ref=' +
-            (window.TrendAccom?.BookingEngine?.generateReference() || 'TRA-2026-00001');
+          window.location.href = 'confirmation.html?ref=' + encodeURIComponent(confirmedRef);
         }
       } catch (error) {
         window.TrendAccom?.showToast(error.message || 'Payment failed. Please try again.', 'error');

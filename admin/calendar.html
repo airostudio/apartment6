@@ -260,6 +260,129 @@
     .cal-tooltip .t-status--blocked   { background: rgba(148,163,184,0.2); color: #cbd5e1; }
     .cal-tooltip .t-status--cancelled { background: rgba(231,76,60,0.25); color: #fc8a7f; }
 
+    /* ── Booking Detail Panel (HBook-style slide-in) ─── */
+    .bdp-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(15,23,42,0.45);
+        z-index: 980;
+        justify-content: flex-end;
+        align-items: stretch;
+    }
+    .bdp-overlay.open { display: flex; }
+    .bdp-panel {
+        width: 400px;
+        max-width: 100vw;
+        background: #fff;
+        box-shadow: -8px 0 40px rgba(0,0,0,0.18);
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+        transform: translateX(100%);
+        transition: transform 0.22s cubic-bezier(0.4,0,0.2,1);
+    }
+    .bdp-overlay.open .bdp-panel { transform: translateX(0); }
+    .bdp-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 20px;
+        background: #0f2744;
+        color: #fff;
+        flex-shrink: 0;
+        gap: 10px;
+    }
+    .bdp-header-title { font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; opacity: 0.75; }
+    .bdp-close {
+        background: rgba(255,255,255,0.12); border: none; color: #fff;
+        width: 30px; height: 30px; border-radius: 8px;
+        display: flex; align-items: center; justify-content: center;
+        cursor: pointer; font-size: 1.125rem; line-height: 1; flex-shrink: 0;
+        transition: background 0.14s;
+    }
+    .bdp-close:hover { background: rgba(255,255,255,0.22); }
+    .bdp-hero {
+        padding: 20px 20px 16px;
+        border-bottom: 1px solid #e2e8f0;
+        background: #f8fafc;
+    }
+    .bdp-name { font-size: 1.1875rem; font-weight: 700; color: #0f2744; margin-bottom: 4px; }
+    .bdp-ref  { font-size: 0.775rem; color: #94a3b8; font-family: monospace; letter-spacing: 0.06em; }
+    .bdp-status-row { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+    .bdp-badge {
+        display: inline-flex; align-items: center; gap: 5px;
+        padding: 3px 10px; border-radius: 20px;
+        font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+    }
+    .bdp-badge--confirmed { background: #dcfce7; color: #166534; }
+    .bdp-badge--pending   { background: #fef9c3; color: #854d0e; }
+    .bdp-badge--blocked   { background: #f1f5f9; color: #64748b; }
+    .bdp-badge--cancelled { background: #fee2e2; color: #991b1b; }
+    .bdp-booked-at { font-size: 0.75rem; color: #94a3b8; }
+    .bdp-section { padding: 16px 20px; border-bottom: 1px solid #f1f5f9; }
+    .bdp-section-label {
+        font-size: 0.6875rem; font-weight: 700; text-transform: uppercase;
+        letter-spacing: 0.08em; color: #94a3b8; margin-bottom: 12px;
+    }
+    .bdp-row {
+        display: flex; align-items: flex-start; gap: 10px;
+        font-size: 0.875rem; margin-bottom: 8px; color: #334155;
+    }
+    .bdp-row:last-child { margin-bottom: 0; }
+    .bdp-row-icon { width: 16px; flex-shrink: 0; margin-top: 1px; color: #94a3b8; }
+    .bdp-row-val  { flex: 1; line-height: 1.4; }
+    .bdp-row-val strong { font-weight: 600; }
+    .bdp-dates-grid {
+        display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 10px;
+    }
+    .bdp-date-card {
+        background: #f8fafc; border: 1px solid #e2e8f0;
+        border-radius: 10px; padding: 10px 14px;
+    }
+    .bdp-date-card__label { font-size: 0.6875rem; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; }
+    .bdp-date-card__val   { font-size: 0.9rem; font-weight: 700; color: #0f2744; margin-top: 3px; }
+    .bdp-date-card__sub   { font-size: 0.75rem; color: #64748b; margin-top: 1px; }
+    .bdp-nights-pill {
+        display: inline-flex; align-items: center; gap: 6px;
+        background: #e0f2fe; color: #075985;
+        padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600;
+    }
+    .bdp-price-row {
+        display: flex; justify-content: space-between;
+        font-size: 0.875rem; color: #475569; padding: 4px 0;
+    }
+    .bdp-price-row--addon { color: #7c3aed; }
+    .bdp-price-row--total {
+        font-size: 1rem; font-weight: 700; color: #0f2744;
+        padding-top: 10px; margin-top: 6px;
+        border-top: 2px solid #e2e8f0;
+    }
+    .bdp-notes {
+        font-size: 0.875rem; color: #475569; font-style: italic;
+        background: #fffbeb; border-left: 3px solid #f59e0b;
+        padding: 10px 14px; border-radius: 0 8px 8px 0; line-height: 1.5;
+    }
+    .bdp-actions {
+        padding: 16px 20px;
+        display: flex; gap: 10px; flex-shrink: 0;
+        border-top: 1px solid #e2e8f0; margin-top: auto; background: #fff;
+    }
+    .bdp-btn-cancel {
+        flex: 1; padding: 10px; border-radius: 8px;
+        border: 1.5px solid #fecaca; background: #fff; color: #dc2626;
+        font-size: 0.875rem; font-weight: 600; cursor: pointer;
+        transition: all 0.14s; font-family: inherit;
+    }
+    .bdp-btn-cancel:hover { background: #fee2e2; }
+    .bdp-btn-close {
+        flex: 1; padding: 10px; border-radius: 8px;
+        border: none; background: #0f2744; color: #fff;
+        font-size: 0.875rem; font-weight: 600; cursor: pointer;
+        transition: background 0.14s; font-family: inherit;
+    }
+    .bdp-btn-close:hover { background: #1a3a5c; }
+
     /* Nav controls */
     .cal-controls {
         display: flex;
@@ -658,6 +781,84 @@
 <!-- Hover Tooltip -->
 <div class="cal-tooltip" id="calTooltip"></div>
 
+<!-- Booking Detail Panel (HBook-style) -->
+<div class="bdp-overlay" id="bdpOverlay">
+  <div class="bdp-panel" id="bdpPanel">
+    <div class="bdp-header">
+      <span class="bdp-header-title">Booking Details</span>
+      <button class="bdp-close" id="bdpClose" aria-label="Close">&times;</button>
+    </div>
+
+    <!-- Hero: name + ref + status -->
+    <div class="bdp-hero">
+      <div class="bdp-name" id="bdpName">—</div>
+      <div class="bdp-ref"  id="bdpRef"></div>
+      <div class="bdp-status-row">
+        <span class="bdp-badge" id="bdpBadge"></span>
+        <span class="bdp-booked-at" id="bdpBookedAt"></span>
+      </div>
+    </div>
+
+    <!-- Dates + nights -->
+    <div class="bdp-section">
+      <div class="bdp-section-label">Stay</div>
+      <div class="bdp-dates-grid">
+        <div class="bdp-date-card">
+          <div class="bdp-date-card__label">Check-in</div>
+          <div class="bdp-date-card__val" id="bdpCiVal">—</div>
+          <div class="bdp-date-card__sub" id="bdpCiDay"></div>
+        </div>
+        <div class="bdp-date-card">
+          <div class="bdp-date-card__label">Check-out</div>
+          <div class="bdp-date-card__val" id="bdpCoVal">—</div>
+          <div class="bdp-date-card__sub" id="bdpCoDay"></div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+        <span class="bdp-nights-pill">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <span id="bdpNights">— nights</span>
+        </span>
+        <span style="font-size:0.8rem;color:#64748b;" id="bdpGuests"></span>
+      </div>
+    </div>
+
+    <!-- Guest details -->
+    <div class="bdp-section" id="bdpGuestSection">
+      <div class="bdp-section-label">Guest</div>
+      <div class="bdp-row" id="bdpEmailRow" style="display:none;">
+        <svg class="bdp-row-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        <span class="bdp-row-val" id="bdpEmail"></span>
+      </div>
+      <div class="bdp-row" id="bdpPhoneRow" style="display:none;">
+        <svg class="bdp-row-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.5 19.79 19.79 0 0 1 1.61 4.93 2 2 0 0 1 3.58 2.73h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 10.09a16 16 0 0 0 6 6l1.42-1.42a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        <span class="bdp-row-val" id="bdpPhone"></span>
+      </div>
+      <div class="bdp-row" id="bdpNoContactRow" style="display:none;">
+        <span style="font-size:0.8125rem;color:#94a3b8;font-style:italic;">No contact details recorded</span>
+      </div>
+    </div>
+
+    <!-- Price breakdown -->
+    <div class="bdp-section" id="bdpPriceSection">
+      <div class="bdp-section-label">Price Breakdown</div>
+      <div id="bdpPriceRows"></div>
+    </div>
+
+    <!-- Special requests -->
+    <div class="bdp-section" id="bdpNotesSection" style="display:none;">
+      <div class="bdp-section-label">Special Requests</div>
+      <div class="bdp-notes" id="bdpNotes"></div>
+    </div>
+
+    <!-- Actions -->
+    <div class="bdp-actions">
+      <button class="bdp-btn-cancel" id="bdpMarkCancelled">Mark Cancelled</button>
+      <button class="bdp-btn-close"  id="bdpCloseBtn">Close</button>
+    </div>
+  </div>
+</div>
+
 <script src="../js/app.js"></script>
 <script src="../js/admin.js"></script>
 <script src="../js/admin-auth.js"></script>
@@ -719,15 +920,25 @@
             var raw = JSON.parse(localStorage.getItem('cascade6_bookings') || '[]');
             return raw.map(function (b) {
                 return {
-                    id:       b.id       || ('bk-' + Math.random().toString(36).slice(2)),
-                    name:     b.name     || b.guestName || b.guest || 'Guest',
-                    email:    b.email    || '',
-                    phone:    b.phone    || '',
-                    checkin:  b.checkin  || b.checkIn  || b.check_in  || '',
-                    checkout: b.checkout || b.checkOut || b.check_out || '',
-                    nights:   b.nights   || 0,
-                    total:    b.total    || '',
-                    status:   (b.status  || 'confirmed').toLowerCase()
+                    id:              b.id       || ('bk-' + Math.random().toString(36).slice(2)),
+                    ref:             b.ref      || '',
+                    name:            b.name     || b.guestName || b.guest || 'Guest',
+                    email:           b.email    || '',
+                    phone:           b.phone    || '',
+                    checkin:         b.checkin  || b.checkIn  || b.check_in  || '',
+                    checkout:        b.checkout || b.checkOut || b.check_out || '',
+                    nights:          b.nights   || 0,
+                    guests:          b.guests   || 2,
+                    total:           b.total    || '',
+                    accom:           b.accom    || 0,
+                    addons:          b.addons   || [],
+                    extraGuestTotal: b.extraGuestTotal || 0,
+                    cleaning:        b.cleaning || 0,
+                    service:         b.service  || 0,
+                    tax:             b.tax      || 0,
+                    specialRequests: b.specialRequests || '',
+                    bookedAt:        b.bookedAt || '',
+                    status:          (b.status  || 'confirmed').toLowerCase()
                 };
             }).filter(function (b) { return b.checkin && b.checkout; });
         } catch (e) { return []; }
@@ -866,14 +1077,27 @@
                 bar.textContent = b.name || 'Blocked';
             }
 
-            // Tooltip data attributes
-            bar.dataset.name   = b.name;
-            bar.dataset.ci     = b.checkin;
-            bar.dataset.co     = b.checkout;
-            bar.dataset.nights = b.nights || daysDiff(ci, co);
-            bar.dataset.status = b.status;
-            bar.dataset.total  = b.total || '';
-            bar.dataset.bid    = b.id;
+            // Data attributes (used by tooltip + detail panel)
+            bar.dataset.name    = b.name;
+            bar.dataset.ci      = b.checkin;
+            bar.dataset.co      = b.checkout;
+            bar.dataset.nights  = b.nights || daysDiff(ci, co);
+            bar.dataset.status  = b.status;
+            bar.dataset.total   = b.total || '';
+            bar.dataset.bid     = b.id;
+            bar.dataset.ref     = b.ref    || '';
+            bar.dataset.email   = b.email  || '';
+            bar.dataset.phone   = b.phone  || '';
+            bar.dataset.guests  = b.guests || 2;
+            bar.dataset.accom   = b.accom  || 0;
+            bar.dataset.addons  = JSON.stringify(b.addons || []);
+            bar.dataset.extraGuestTotal = b.extraGuestTotal || 0;
+            bar.dataset.cleaning= b.cleaning || 0;
+            bar.dataset.service = b.service  || 0;
+            bar.dataset.tax     = b.tax      || 0;
+            bar.dataset.specialRequests = b.specialRequests || '';
+            bar.dataset.bookedAt= b.bookedAt || '';
+            bar.style.cursor    = 'pointer';
 
             cellsEl.appendChild(bar);
         });
@@ -1020,6 +1244,147 @@
         tooltip.style.left = x + 'px';
         tooltip.style.top  = y + 'px';
     }
+
+    // ── Booking Detail Panel (HBook-style) ────────────────────────────────────
+    var bdpOverlay = document.getElementById('bdpOverlay');
+    var LONG_DAYS  = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    var LONG_MONTHS= ['January','February','March','April','May','June',
+                      'July','August','September','October','November','December'];
+
+    function fmtDateLong(d) {
+        return LONG_DAYS[d.getDay()] + ' ' + d.getDate() + ' ' + LONG_MONTHS[d.getMonth()];
+    }
+    function fmtMoney(n) {
+        var v = parseFloat(n) || 0;
+        return '$' + v.toLocaleString('en-AU', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+    function bdpSet(id, val) { var el = document.getElementById(id); if (el) el.textContent = val; }
+    function bdpShow(id)  { var el = document.getElementById(id); if (el) el.style.display = ''; }
+    function bdpHide(id)  { var el = document.getElementById(id); if (el) el.style.display = 'none'; }
+
+    function openDetailPanel(bar) {
+        var st   = bar.dataset.status || 'confirmed';
+        var ci   = parseYMD(bar.dataset.ci);
+        var co   = parseYMD(bar.dataset.co);
+        var nts  = parseInt(bar.dataset.nights) || (ci && co ? daysDiff(ci, co) : 0);
+
+        // Header
+        bdpSet('bdpName', bar.dataset.name || 'Guest');
+        var ref = bar.dataset.ref;
+        bdpSet('bdpRef', ref ? 'Ref: ' + ref : (bar.dataset.bid ? 'ID: ' + bar.dataset.bid : ''));
+
+        // Status badge
+        var badge = document.getElementById('bdpBadge');
+        if (badge) {
+            badge.textContent = st.charAt(0).toUpperCase() + st.slice(1);
+            badge.className   = 'bdp-badge bdp-badge--' + st;
+        }
+
+        // Booked at
+        var ba = bar.dataset.bookedAt;
+        if (ba) {
+            try {
+                var d = new Date(ba);
+                bdpSet('bdpBookedAt', 'Booked ' + d.getDate() + ' ' + LONG_MONTHS[d.getMonth()] + ' ' + d.getFullYear());
+                bdpShow('bdpBookedAt');
+            } catch(e) {}
+        } else { bdpHide('bdpBookedAt'); }
+
+        // Dates
+        if (ci) {
+            bdpSet('bdpCiVal', ci.getDate() + ' ' + LONG_MONTHS[ci.getMonth()] + ' ' + ci.getFullYear());
+            bdpSet('bdpCiDay', LONG_DAYS[ci.getDay()]);
+        }
+        if (co) {
+            bdpSet('bdpCoVal', co.getDate() + ' ' + LONG_MONTHS[co.getMonth()] + ' ' + co.getFullYear());
+            bdpSet('bdpCoDay', LONG_DAYS[co.getDay()]);
+        }
+        bdpSet('bdpNights', nts + ' night' + (nts !== 1 ? 's' : ''));
+        var guests = parseInt(bar.dataset.guests) || 2;
+        bdpSet('bdpGuests', guests + ' Guest' + (guests !== 1 ? 's' : ''));
+
+        // Guest contact
+        var email = bar.dataset.email, phone = bar.dataset.phone;
+        if (email) { bdpSet('bdpEmail', email); bdpShow('bdpEmailRow'); } else { bdpHide('bdpEmailRow'); }
+        if (phone) { bdpSet('bdpPhone', phone); bdpShow('bdpPhoneRow'); } else { bdpHide('bdpPhoneRow'); }
+        if (!email && !phone && st !== 'blocked') bdpShow('bdpNoContactRow'); else bdpHide('bdpNoContactRow');
+
+        // Price breakdown
+        var priceRows = document.getElementById('bdpPriceRows');
+        if (priceRows) {
+            var html = '';
+            var accom   = parseFloat(bar.dataset.accom)   || 0;
+            var cleaning= parseFloat(bar.dataset.cleaning) || 0;
+            var service = parseFloat(bar.dataset.service)  || 0;
+            var tax     = parseFloat(bar.dataset.tax)      || 0;
+            var tot     = parseFloat(bar.dataset.total)    || 0;
+            var egTotal = parseFloat(bar.dataset.extraGuestTotal) || 0;
+            var addons  = [];
+            try { addons = JSON.parse(bar.dataset.addons || '[]'); } catch(e) {}
+
+            if (accom > 0) {
+                html += '<div class="bdp-price-row"><span>Accommodation (' + nts + ' night' + (nts !== 1 ? 's' : '') + ')</span><span>' + fmtMoney(accom) + '</span></div>';
+            }
+            if (egTotal > 0) {
+                html += '<div class="bdp-price-row bdp-price-row--addon"><span>Extra guests</span><span>' + fmtMoney(egTotal) + '</span></div>';
+            }
+            addons.forEach(function(a) {
+                html += '<div class="bdp-price-row bdp-price-row--addon"><span>' + esc(a.label || '') + '</span><span>' + fmtMoney(a.price || 0) + '</span></div>';
+            });
+            if (cleaning > 0) html += '<div class="bdp-price-row"><span>Cleaning fee</span><span>' + fmtMoney(cleaning) + '</span></div>';
+            if (service  > 0) html += '<div class="bdp-price-row"><span>Service fee</span><span>'  + fmtMoney(service)  + '</span></div>';
+            if (tax      > 0) html += '<div class="bdp-price-row"><span>GST (10%)</span><span>'    + fmtMoney(tax)      + '</span></div>';
+
+            if (tot > 0) {
+                html += '<div class="bdp-price-row bdp-price-row--total"><span>Total Paid</span><span>' + fmtMoney(tot) + '</span></div>';
+            } else if (bar.dataset.total) {
+                html += '<div class="bdp-price-row bdp-price-row--total"><span>Total Paid</span><span>$' + esc(bar.dataset.total) + '</span></div>';
+            }
+
+            priceRows.innerHTML = html || '<div style="font-size:0.8125rem;color:#94a3b8;font-style:italic;">No pricing data</div>';
+        }
+
+        // Notes
+        var notes = bar.dataset.specialRequests;
+        if (notes) {
+            bdpSet('bdpNotes', notes);
+            bdpShow('bdpNotesSection');
+        } else { bdpHide('bdpNotesSection'); }
+
+        // Mark cancelled button: only show for non-blocked, non-cancelled
+        var cancelBtn = document.getElementById('bdpMarkCancelled');
+        if (cancelBtn) {
+            if (st === 'blocked' || st === 'cancelled') cancelBtn.style.display = 'none';
+            else cancelBtn.style.display = '';
+            cancelBtn.onclick = function() {
+                if (!confirm('Mark this booking as cancelled?')) return;
+                var idx = bookings.findIndex ? bookings.findIndex(function(b) { return b.id === bar.dataset.bid; })
+                    : (function() { for (var i = 0; i < bookings.length; i++) if (bookings[i].id === bar.dataset.bid) return i; return -1; })();
+                if (idx !== -1) {
+                    bookings[idx].status = 'cancelled';
+                    saveBookings(bookings);
+                    closeBdp();
+                    render(false);
+                }
+            };
+        }
+
+        bdpOverlay.classList.add('open');
+    }
+
+    function closeBdp() { bdpOverlay.classList.remove('open'); }
+
+    // Click on a booking bar opens the detail panel
+    document.getElementById('calCells').addEventListener('click', function(e) {
+        var bar = e.target.closest('.cal-bar');
+        if (!bar || !bar.dataset.ci) return;
+        tooltip.style.display = 'none'; // hide tooltip first
+        openDetailPanel(bar);
+    });
+
+    document.getElementById('bdpClose').addEventListener('click', closeBdp);
+    document.getElementById('bdpCloseBtn').addEventListener('click', closeBdp);
+    bdpOverlay.addEventListener('click', function(e) { if (e.target === bdpOverlay) closeBdp(); });
 
     // ── Block Dates Modal ──────────────────────────────────────────────────────
     var bmOverlay = document.getElementById('bmOverlay');

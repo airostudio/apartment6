@@ -821,20 +821,30 @@
       var btn = document.getElementById('continueToPayment');
       btn.disabled = false;
       btn.onclick = function() {
-        // Persist full booking data (including addons) so checkout shows the
-        // correct breakdown and charges the right amount.
+        // Read guest details from the form
+        var gFirst = (document.getElementById('firstName').value       || '').trim();
+        var gLast  = (document.getElementById('lastName').value        || '').trim();
+
+        // Persist full booking data so checkout & confirmation show the right details
         var bookingSnapshot = {
-          checkin:        checkinVal,
-          checkout:       checkoutVal,
-          guests:         adults + children,
-          nights:         stay.nights,
-          accom:          stay.accom,
-          extraGuestTotal:extraGuestTotal,
-          addons:         getCheckedAddons(),
-          cleaning:       CLEANING_FEE,
-          service:        serviceFee,
-          tax:            tax,
-          total:          grand
+          checkin:         checkinVal,
+          checkout:        checkoutVal,
+          guests:          adults + children,
+          nights:          stay.nights,
+          accom:           stay.accom,
+          extraGuestTotal: extraGuestTotal,
+          addons:          getCheckedAddons(),
+          cleaning:        CLEANING_FEE,
+          service:         serviceFee,
+          tax:             tax,
+          total:           grand,
+          // Guest details
+          guestFirst:      gFirst,
+          guestLast:       gLast,
+          guestName:       (gFirst + ' ' + gLast).trim() || 'Guest',
+          email:           (document.getElementById('email').value            || '').trim(),
+          phone:           (document.getElementById('phone').value            || '').trim(),
+          specialRequests: (document.getElementById('specialRequests').value  || '').trim()
         };
         try { sessionStorage.setItem('cascade6_pending_booking', JSON.stringify(bookingSnapshot)); } catch(e) {}
 

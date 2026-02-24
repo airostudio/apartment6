@@ -364,8 +364,8 @@
           </svg>
         </div>
         <h1>Booking Confirmed!</h1>
-        <div class="confirmation-success__ref">TRA-2026-00847</div>
-        <p>A confirmation email has been sent to your email address.</p>
+        <div class="confirmation-success__ref" id="confRef">—</div>
+        <p id="confEmailNote">A confirmation email has been sent to your email address.</p>
       </div>
 
       <!-- Booking Details Card -->
@@ -374,30 +374,34 @@
         <div class="booking-details-grid">
           <div class="booking-details-left">
             <div class="booking-detail-item">
+              <div class="booking-detail-item__label">Guest</div>
+              <div class="booking-detail-item__value" id="confGuestName">—</div>
+            </div>
+            <div class="booking-detail-item">
               <div class="booking-detail-item__label">Property</div>
               <div class="booking-detail-item__value">Cascade Apartment 6</div>
             </div>
             <div class="booking-detail-item">
               <div class="booking-detail-item__label">Check-in</div>
-              <div class="booking-detail-item__value">Friday, 27 March 2026</div>
+              <div class="booking-detail-item__value" id="confCheckin">—</div>
             </div>
             <div class="booking-detail-item">
               <div class="booking-detail-item__label">Check-out</div>
-              <div class="booking-detail-item__value">Sunday, 29 March 2026</div>
+              <div class="booking-detail-item__value" id="confCheckout">—</div>
+            </div>
+            <div class="booking-detail-item">
+              <div class="booking-detail-item__label">Nights</div>
+              <div class="booking-detail-item__value" id="confNights">—</div>
             </div>
             <div class="booking-detail-item">
               <div class="booking-detail-item__label">Guests</div>
-              <div class="booking-detail-item__value">2 Adults</div>
-            </div>
-            <div class="booking-detail-item">
-              <div class="booking-detail-item__label">Apartment</div>
-              <div class="booking-detail-item__value">Entire Apartment</div>
+              <div class="booking-detail-item__value" id="confGuests">—</div>
             </div>
           </div>
           <div class="booking-details-right">
             <div class="booking-detail-item">
               <div class="booking-detail-item__label">Booking Reference</div>
-              <div class="booking-detail-item__value">TRA-2026-00847</div>
+              <div class="booking-detail-item__value" id="confRef2">—</div>
             </div>
             <div class="booking-detail-item">
               <div class="booking-detail-item__label">Payment Status</div>
@@ -407,7 +411,15 @@
             </div>
             <div class="booking-detail-item">
               <div class="booking-detail-item__label">Total Paid</div>
-              <div class="booking-detail-item__value total-paid-amount">$489.00</div>
+              <div class="booking-detail-item__value total-paid-amount" id="confTotal">—</div>
+            </div>
+            <div class="booking-detail-item" id="confAddonsRow" style="display:none;">
+              <div class="booking-detail-item__label">Extras</div>
+              <div class="booking-detail-item__value" id="confAddons" style="font-size:0.875rem;line-height:1.6;"></div>
+            </div>
+            <div class="booking-detail-item" id="confNotesRow" style="display:none;">
+              <div class="booking-detail-item__label">Special Requests</div>
+              <div class="booking-detail-item__value" id="confNotes" style="font-size:0.875rem;font-style:italic;color:#666;"></div>
             </div>
           </div>
         </div>
@@ -524,5 +536,69 @@
   </footer>
 
   <script src="js/app.js"></script>
+  <script>
+  // ── Populate confirmation page from sessionStorage ──────────────────────
+  (function() {
+    var DAYS   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    var MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+    function fmtDate(str) {
+      if (!str) return '—';
+      var d = new Date(str + 'T00:00:00');
+      return DAYS[d.getDay()] + ', ' + d.getDate() + ' ' + MONTHS[d.getMonth()] + ' ' + d.getFullYear();
+    }
+    function fmtMoney(n) {
+      return '$' + Number(n).toLocaleString('en-AU', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+    function set(id, val) { var el = document.getElementById(id); if (el) el.textContent = val; }
+
+    // Read from URL param first (ref), then sessionStorage for full details
+    var params = new URLSearchParams(window.location.search);
+    var urlRef = params.get('ref') || '';
+
+    var bk = null;
+    try { bk = JSON.parse(sessionStorage.getItem('cascade6_confirmed_booking') || 'null'); } catch(e) {}
+
+    if (bk) {
+      var ref = bk.ref || urlRef || 'TRA-' + new Date().getFullYear() + '-00001';
+      set('confRef',        ref);
+      set('confRef2',       ref);
+      set('confGuestName',  bk.name || '—');
+      set('confCheckin',    fmtDate(bk.checkin));
+      set('confCheckout',   fmtDate(bk.checkout));
+      set('confNights',     (bk.nights || 1) + ' night' + (bk.nights !== 1 ? 's' : ''));
+      set('confGuests',     (bk.guests || 2) + ' Guest' + (bk.guests !== 1 ? 's' : ''));
+      set('confTotal',      fmtMoney(bk.total || 0));
+
+      if (bk.email) {
+        var noteEl = document.getElementById('confEmailNote');
+        if (noteEl) noteEl.textContent = 'A confirmation email has been sent to ' + bk.email + '.';
+      }
+
+      // Addons & extras
+      var extraLines = [];
+      if (bk.extraGuestTotal > 0) extraLines.push('Extra guests — ' + fmtMoney(bk.extraGuestTotal));
+      if (bk.addons && bk.addons.length > 0) {
+        bk.addons.forEach(function(a) { extraLines.push(a.label + ' — ' + fmtMoney(a.price)); });
+      }
+      if (extraLines.length > 0) {
+        set('confAddons', extraLines.join('\n'));
+        var row = document.getElementById('confAddonsRow');
+        if (row) { row.style.display = ''; document.getElementById('confAddons').style.whiteSpace = 'pre-line'; }
+      }
+
+      // Special requests
+      if (bk.specialRequests) {
+        set('confNotes', bk.specialRequests);
+        var nr = document.getElementById('confNotesRow');
+        if (nr) nr.style.display = '';
+      }
+    } else if (urlRef) {
+      // Fallback: at least show the reference from URL
+      set('confRef',  urlRef);
+      set('confRef2', urlRef);
+    }
+  })();
+  </script>
 </body>
 </html>
