@@ -549,6 +549,10 @@
               <span>GST (10%)</span>
               <span id="coValTax">—</span>
             </div>
+            <div class="price-row" id="coRowPlatformFee" style="display:none">
+              <span>Booking fee (1.5%)</span>
+              <span id="coValPlatformFee">—</span>
+            </div>
             <div class="price-row price-row--total" id="coRowTotal" style="display:none">
               <span>Total</span>
               <span id="coValTotal">—</span>
@@ -705,11 +709,12 @@
         });
       }
 
-      setText('coValCleaning', fmtMoney(pending.cleaning));
-      setText('coValService',  fmtMoney(pending.service));
-      setText('coValTax',      fmtMoney(pending.tax));
-      setText('coValTotal',    fmtMoney(grand));
-      ['coRowNightly','coRowCleaning','coRowService','coRowTax','coRowTotal'].forEach(show);
+      setText('coValCleaning',     fmtMoney(pending.cleaning));
+      setText('coValService',      fmtMoney(pending.service));
+      setText('coValTax',          fmtMoney(pending.tax));
+      setText('coValPlatformFee',  fmtMoney(pending.platformFee || 0));
+      setText('coValTotal',        fmtMoney(grand));
+      ['coRowNightly','coRowCleaning','coRowService','coRowTax','coRowPlatformFee','coRowTotal'].forEach(show);
       hide('coNoDates');
 
       setText('payNowLabel', 'Pay Now — ' + fmtMoney(grand));
@@ -727,6 +732,7 @@
       var CLEAN     = _r.cleaningFee  || 60;
       var SVC       = (_r.serviceRate || 10) / 100;
       var TAX       = 0.10;
+      var PFEE      = 0.015;
 
       function rate(date) {
         var m = date.getMonth() + 1, d = date.getDate(), dow = date.getDay();
@@ -744,18 +750,21 @@
       if (n > 0) {
         var accom = 0, cur = new Date(ci);
         for (var i = 0; i < n; i++) { accom += rate(cur); cur.setDate(cur.getDate() + 1); }
-        var svc      = Math.round(accom * SVC);
-        var subtotal = accom + CLEAN + svc;
-        var tax      = Math.round(subtotal * TAX);
-        var grand    = subtotal + tax;
+        var svc         = Math.round(accom * SVC);
+        var subtotal    = accom + CLEAN + svc;
+        var tax         = Math.round(subtotal * TAX);
+        var preTotal    = subtotal + tax;
+        var platformFee = Math.round(preTotal * PFEE);
+        var grand       = preTotal + platformFee;
 
-        setText('coLblNightly', fmtMoney(Math.round(accom / n)) + ' avg × ' + n + ' night' + (n !== 1 ? 's' : ''));
-        setText('coValNightly', fmtMoney(accom));
-        setText('coValCleaning', fmtMoney(CLEAN));
-        setText('coValService',  fmtMoney(svc));
-        setText('coValTax',      fmtMoney(tax));
-        setText('coValTotal',    fmtMoney(grand));
-        ['coRowNightly','coRowCleaning','coRowService','coRowTax','coRowTotal'].forEach(show);
+        setText('coLblNightly',     fmtMoney(Math.round(accom / n)) + ' avg × ' + n + ' night' + (n !== 1 ? 's' : ''));
+        setText('coValNightly',     fmtMoney(accom));
+        setText('coValCleaning',    fmtMoney(CLEAN));
+        setText('coValService',     fmtMoney(svc));
+        setText('coValTax',         fmtMoney(tax));
+        setText('coValPlatformFee', fmtMoney(platformFee));
+        setText('coValTotal',       fmtMoney(grand));
+        ['coRowNightly','coRowCleaning','coRowService','coRowTax','coRowPlatformFee','coRowTotal'].forEach(show);
         hide('coNoDates');
 
         setText('payNowLabel', 'Pay Now — ' + fmtMoney(grand));

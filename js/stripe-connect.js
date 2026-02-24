@@ -180,7 +180,9 @@
       // In production:
       // 1. POST booking details + billingDetails to your server
       // 2. Server calls Stripe to create a PaymentIntent with Connect params:
-      //      { amount, currency, application_fee_amount, transfer_data: { destination: connectedAccountId } }
+      //      { amount, currency, application_fee_amount: Math.round(amount * 0.015),
+      //        transfer_data: { destination: connectedAccountId } }
+      //      application_fee_amount = 1.5% platform fee (in cents); Stripe deducts their own fee separately.
       // 3. Server returns { clientSecret }
       // 4. Confirm here: await this.stripe.confirmCardPayment(clientSecret, { payment_method: { card: this.cardElement, billing_details: billingDetails } })
 

@@ -515,6 +515,10 @@
               <span>GST (10%)</span>
               <span id="valTax">—</span>
             </div>
+            <div class="price-row" id="rowPlatformFee" style="display:none">
+              <span>Booking fee (1.5%)</span>
+              <span id="valPlatformFee">—</span>
+            </div>
             <div class="price-row price-row--total" id="rowTotal" style="display:none">
               <span>Total</span>
               <span id="valTotal">—</span>
@@ -674,6 +678,7 @@
     var CLEANING_FEE   = _r.cleaningFee  || 60;
     var SERVICE_RATE   = (_r.serviceRate || 10) / 100;
     var TAX_RATE       = 0.10;
+    var PLATFORM_FEE_RATE = 0.015;  // 1.5% Stripe Connect platform fee
 
     var DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
     var MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -799,17 +804,20 @@
         cleaningRow.parentNode.insertBefore(row, cleaningRow);
       });
 
-      // Cleaning, service, tax, total
-      var serviceFee = Math.round(stay.accom * SERVICE_RATE);
-      var subtotal   = stay.accom + extraGuestTotal + addonsTotal + CLEANING_FEE + serviceFee;
-      var tax        = Math.round(subtotal * TAX_RATE);
-      var grand      = subtotal + tax;
+      // Cleaning, service, tax, platform fee, total
+      var serviceFee   = Math.round(stay.accom * SERVICE_RATE);
+      var subtotal     = stay.accom + extraGuestTotal + addonsTotal + CLEANING_FEE + serviceFee;
+      var tax          = Math.round(subtotal * TAX_RATE);
+      var preTotalAmt  = subtotal + tax;
+      var platformFee  = Math.round(preTotalAmt * PLATFORM_FEE_RATE);
+      var grand        = preTotalAmt + platformFee;
 
-      text('valCleaning', fmtMoney(CLEANING_FEE));
-      text('valService',  fmtMoney(serviceFee));
-      text('valTax',      fmtMoney(tax));
-      text('valTotal',    fmtMoney(grand));
-      ['rowCleaning','rowService','rowTax','rowTotal'].forEach(show);
+      text('valCleaning',    fmtMoney(CLEANING_FEE));
+      text('valService',     fmtMoney(serviceFee));
+      text('valTax',         fmtMoney(tax));
+      text('valPlatformFee', fmtMoney(platformFee));
+      text('valTotal',       fmtMoney(grand));
+      ['rowCleaning','rowService','rowTax','rowPlatformFee','rowTotal'].forEach(show);
 
       // Animate total
       var totalEl = document.getElementById('valTotal');
@@ -837,6 +845,7 @@
           cleaning:        CLEANING_FEE,
           service:         serviceFee,
           tax:             tax,
+          platformFee:     platformFee,
           total:           grand,
           // Guest details
           guestFirst:      gFirst,
