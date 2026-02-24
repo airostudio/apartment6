@@ -508,7 +508,7 @@
               <span id="valCleaning">$60.00</span>
             </div>
             <div class="price-row" id="rowService" style="display:none">
-              <span>Service fee</span>
+              <span>Processing fee (1.75% + $0.40)</span>
               <span id="valService">—</span>
             </div>
             <div class="price-row" id="rowTax" style="display:none">
@@ -676,7 +676,8 @@
     var RATE_GREEN     = _r.green        || 200;  // All other dates (green/summer)
     var EXTRA_GUEST_FEE= _r.extraGuestFee|| 50;   // Per extra guest per night (beyond 2 pax)
     var CLEANING_FEE   = _r.cleaningFee  || 60;
-    var SERVICE_RATE   = (_r.serviceRate || 10) / 100;
+    var STRIPE_FEE_RATE  = 0.0175;   // Stripe processing: 1.75% + $0.40
+    var STRIPE_FEE_FIXED = 0.40;
     var TAX_RATE       = 0.10;
     var PLATFORM_FEE_RATE = 0.015;  // 1.5% Stripe Connect platform fee
 
@@ -804,9 +805,10 @@
         cleaningRow.parentNode.insertBefore(row, cleaningRow);
       });
 
-      // Cleaning, service, tax, platform fee, total
-      var serviceFee   = Math.round(stay.accom * SERVICE_RATE);
-      var subtotal     = stay.accom + extraGuestTotal + addonsTotal + CLEANING_FEE + serviceFee;
+      // Processing fee (Stripe 1.75% + $0.40), tax, platform fee, total
+      var base         = stay.accom + extraGuestTotal + addonsTotal + CLEANING_FEE;
+      var serviceFee   = Math.round((base * STRIPE_FEE_RATE + STRIPE_FEE_FIXED) * 100) / 100;
+      var subtotal     = base + serviceFee;
       var tax          = Math.round(subtotal * TAX_RATE);
       var preTotalAmt  = subtotal + tax;
       var platformFee  = Math.round(preTotalAmt * PLATFORM_FEE_RATE);

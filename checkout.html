@@ -543,7 +543,7 @@
               <span id="coValCleaning">—</span>
             </div>
             <div class="price-row" id="coRowService" style="display:none">
-              <span>Service fee</span>
+              <span>Processing fee (1.75% + $0.40)</span>
               <span id="coValService">—</span>
             </div>
             <div class="price-row" id="coRowTax" style="display:none">
@@ -735,10 +735,11 @@
       var PEAK_MIDWK= _r.peakMidweek  || 600;
       var SHOULDER  = _r.shoulder     || 465;
       var GREEN     = _r.green        || 200;
-      var CLEAN     = _r.cleaningFee  || 60;
-      var SVC       = (_r.serviceRate || 10) / 100;
-      var TAX       = 0.10;
-      var PFEE      = 0.015;
+      var CLEAN          = _r.cleaningFee  || 60;
+      var STRIPE_FEE_RATE  = 0.0175;   // Stripe processing: 1.75% + $0.40
+      var STRIPE_FEE_FIXED = 0.40;
+      var TAX            = 0.10;
+      var PFEE           = 0.015;
 
       function rate(date) {
         var m = date.getMonth() + 1, d = date.getDate(), dow = date.getDay();
@@ -756,7 +757,7 @@
       if (n > 0) {
         var accom = 0, cur = new Date(ci);
         for (var i = 0; i < n; i++) { accom += rate(cur); cur.setDate(cur.getDate() + 1); }
-        var svc         = Math.round(accom * SVC);
+        var svc         = Math.round(((accom + CLEAN) * STRIPE_FEE_RATE + STRIPE_FEE_FIXED) * 100) / 100;
         var subtotal    = accom + CLEAN + svc;
         var tax         = Math.round(subtotal * TAX);
         var preTotal    = subtotal + tax;
