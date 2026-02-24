@@ -819,7 +819,10 @@
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
           <span id="bdpNights">— nights</span>
         </span>
-        <span style="font-size:0.8rem;color:#64748b;" id="bdpGuests"></span>
+        <span class="bdp-nights-pill" id="bdpGuests">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <span id="bdpGuestsVal">— guests</span>
+        </span>
       </div>
     </div>
 
@@ -1301,7 +1304,7 @@
         }
         bdpSet('bdpNights', nts + ' night' + (nts !== 1 ? 's' : ''));
         var guests = parseInt(bar.dataset.guests) || 2;
-        bdpSet('bdpGuests', guests + ' Guest' + (guests !== 1 ? 's' : ''));
+        bdpSet('bdpGuestsVal', guests + ' Guest' + (guests !== 1 ? 's' : ''));
 
         // Guest contact
         var email = bar.dataset.email, phone = bar.dataset.phone;
