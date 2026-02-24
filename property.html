@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cascade Apartment 6 — Mt Baw Baw Alpine Resort</title>
-  <meta name="description" content="Book Cascade Apartment 6 at Mt Baw Baw Alpine Resort. Ground floor, self-contained, queen bed + bunk beds, sleeps 5, gas log fire, fully equipped kitchen. From $220/night.">
+  <meta name="description" content="Book Cascade Apartment 6 at Mt Baw Baw Alpine Resort. Ground floor, self-contained, queen bed + bunk beds, sleeps 5, gas log fire, fully equipped kitchen. From $200/night.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -716,31 +716,31 @@
           <h3 style="font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:600;color:#1a1a2e;margin-bottom:20px;">Seasonal Pricing</h3>
           <div class="rates-grid">
             <div class="rate-card featured">
-              <div class="rate-season">Peak Season</div>
-              <div class="rate-dates">Jun &ndash; Aug (Ski Season)</div>
-              <div class="rate-price" id="dispPeak">$280 <span>/ night</span></div>
+              <div class="rate-season">Peak Winter — Weekend</div>
+              <div class="rate-dates">Jun 15 &ndash; Oct 1 &middot; Thu, Fri &amp; Sat</div>
+              <div class="rate-price" id="dispPeakWknd">$800 <span>/ night</span></div>
               <div class="rate-note">Minimum 2 nights on weekends</div>
+            </div>
+            <div class="rate-card featured">
+              <div class="rate-season">Peak Winter — Midweek</div>
+              <div class="rate-dates">Jun 15 &ndash; Oct 1 &middot; Sun &ndash; Wed</div>
+              <div class="rate-price" id="dispPeakMidwk">$600 <span>/ night</span></div>
+              <div class="rate-note">Great value midweek skiing</div>
             </div>
             <div class="rate-card">
               <div class="rate-season">Shoulder Season</div>
-              <div class="rate-dates">Sep &ndash; Nov &amp; Apr &ndash; May</div>
-              <div class="rate-price" id="dispShoulder">$220 <span>/ night</span></div>
+              <div class="rate-dates">May 14 &ndash; Jun 14 &amp; Oct 2 &ndash; Nov 1</div>
+              <div class="rate-price" id="dispShoulder">$465 <span>/ night</span></div>
               <div class="rate-note">Minimum 1 night</div>
             </div>
             <div class="rate-card">
-              <div class="rate-season">Summer Season</div>
-              <div class="rate-dates">Dec &ndash; Mar</div>
-              <div class="rate-price" id="dispSummer">$200 <span>/ night</span></div>
-              <div class="rate-note">Minimum 1 night</div>
-            </div>
-            <div class="rate-card">
-              <div class="rate-season">Midweek Special</div>
-              <div class="rate-dates">Mon &ndash; Thu (all year)</div>
-              <div class="rate-price" id="dispMidweek">$180 <span>/ night</span></div>
-              <div class="rate-note">Minimum 1 night</div>
+              <div class="rate-season">Green Season</div>
+              <div class="rate-dates">All other dates (Nov 2 &ndash; May 13)</div>
+              <div class="rate-price" id="dispGreen">$200 <span>/ night</span></div>
+              <div class="rate-note">Subject to change for events</div>
             </div>
           </div>
-          <p class="rates-footnote">* All rates are for the entire apartment (up to 5 guests). Weekend minimum stay is Friday + Saturday nights. Public holidays may attract peak rates. Contact us to confirm pricing for your dates.</p>
+          <p class="rates-footnote">* All rates are for the entire apartment, base rate for 2 guests. Additional guests charged at $50/night per person (max 5). Public holidays may attract peak rates. Contact us to confirm pricing for your dates.</p>
         </div>
 
         <!-- Reviews Tab -->
@@ -1221,35 +1221,37 @@
       var _r = (function() {
         try { return JSON.parse(localStorage.getItem('cascade6_rates') || 'null'); } catch(e) { return null; }
       })() || {};
-      var PEAK     = _r.peak        || 280;
-      var SHOULDER = _r.shoulder    || 220;
-      var SUMMER   = _r.summer      || 200;
-      var MIDWEEK  = _r.midweek     || 180;
-      var CLEAN    = _r.cleaningFee || 60;
-      var SVC_PCT  = (_r.serviceRate || 10) / 100;
+      var PEAK_WKND = _r.peakWeekend  || 800;
+      var PEAK_MIDWK= _r.peakMidweek  || 600;
+      var SHOULDER  = _r.shoulder     || 465;
+      var GREEN     = _r.green        || 200;
+      var CLEAN     = _r.cleaningFee  || 60;
+      var SVC_PCT   = (_r.serviceRate || 10) / 100;
 
       // Update rates tab display
       function setPriceEl(id, val) {
         var el = document.getElementById(id);
         if (el) el.innerHTML = '$' + val + ' <span>/ night</span>';
       }
-      setPriceEl('dispPeak',     PEAK);
-      setPriceEl('dispShoulder', SHOULDER);
-      setPriceEl('dispSummer',   SUMMER);
-      setPriceEl('dispMidweek',  MIDWEEK);
+      setPriceEl('dispPeakWknd',  PEAK_WKND);
+      setPriceEl('dispPeakMidwk', PEAK_MIDWK);
+      setPriceEl('dispShoulder',  SHOULDER);
+      setPriceEl('dispGreen',     GREEN);
 
       // Update "From" label in sidebar to lowest rate
-      var lowestRate = Math.min(PEAK, SHOULDER, SUMMER, MIDWEEK);
       var fromEl = document.getElementById('sidebarFromPrice');
-      if (fromEl) fromEl.textContent = 'From $' + lowestRate;
+      if (fromEl) fromEl.textContent = 'From $' + GREEN;
 
       function getNightlyRate(date) {
         var m   = date.getMonth() + 1;
-        var dow = date.getDay();
-        if (dow >= 1 && dow <= 4) return MIDWEEK;
-        if (m >= 6 && m <= 8) return PEAK;
-        if ([4,5,9,10,11].indexOf(m) !== -1) return SHOULDER;
-        return SUMMER;
+        var d   = date.getDate();
+        var dow = date.getDay(); // 0=Sun…6=Sat
+        var isPeak = (m === 6 && d >= 15) || (m >= 7 && m <= 9) || (m === 10 && d <= 1);
+        var isShoulder = (m === 5 && d >= 14) || (m === 6 && d <= 14) ||
+                         (m === 10 && d >= 2) || (m === 11 && d === 1);
+        if (isPeak) return (dow >= 4) ? PEAK_WKND : PEAK_MIDWK;
+        if (isShoulder) return SHOULDER;
+        return GREEN;
       }
 
       function updateSidebarPrice() {

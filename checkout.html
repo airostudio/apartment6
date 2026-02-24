@@ -720,20 +720,22 @@
       var _r = (function() {
         try { return JSON.parse(localStorage.getItem('cascade6_rates') || 'null'); } catch(e) { return null; }
       })() || {};
-      var PEAK     = _r.peak        || 280;
-      var SHOULDER = _r.shoulder    || 220;
-      var SUMMER   = _r.summer      || 200;
-      var MIDWEEK  = _r.midweek     || 180;
-      var CLEAN    = _r.cleaningFee || 60;
-      var SVC      = (_r.serviceRate || 10) / 100;
-      var TAX      = 0.10;
+      var PEAK_WKND = _r.peakWeekend  || 800;
+      var PEAK_MIDWK= _r.peakMidweek  || 600;
+      var SHOULDER  = _r.shoulder     || 465;
+      var GREEN     = _r.green        || 200;
+      var CLEAN     = _r.cleaningFee  || 60;
+      var SVC       = (_r.serviceRate || 10) / 100;
+      var TAX       = 0.10;
 
       function rate(date) {
-        var m = date.getMonth() + 1, dow = date.getDay();
-        if (dow >= 1 && dow <= 4) return MIDWEEK;
-        if (m >= 6 && m <= 8) return PEAK;
-        if ([4,5,9,10,11].indexOf(m) !== -1) return SHOULDER;
-        return SUMMER;
+        var m = date.getMonth() + 1, d = date.getDate(), dow = date.getDay();
+        var isPeak = (m === 6 && d >= 15) || (m >= 7 && m <= 9) || (m === 10 && d <= 1);
+        var isShoulder = (m === 5 && d >= 14) || (m === 6 && d <= 14) ||
+                         (m === 10 && d >= 2) || (m === 11 && d === 1);
+        if (isPeak) return (dow >= 4) ? PEAK_WKND : PEAK_MIDWK;
+        if (isShoulder) return SHOULDER;
+        return GREEN;
       }
 
       var ci = new Date(checkin + 'T00:00:00');

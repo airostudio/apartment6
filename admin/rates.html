@@ -107,12 +107,12 @@
                     </h2>
                 </div>
                 <div class="admin-card-body">
-                    <p style="color:var(--color-text-muted,#666);margin-bottom:1.5rem;font-size:0.9rem;">Rates apply per night. Midweek (Mon–Thu) overrides the seasonal rate on those nights.</p>
+                    <p style="color:var(--color-text-muted,#666);margin-bottom:1.5rem;font-size:0.9rem;">Base rates are per night for 2 guests. Thu/Fri/Sat during Peak Winter use the Weekend rate; Sun–Wed use the Midweek rate.</p>
                     <div class="table-responsive">
                         <table class="admin-table">
                             <thead>
                                 <tr>
-                                    <th>Season</th>
+                                    <th>Season / Rate Type</th>
                                     <th>Applies To</th>
                                     <th style="width:180px;">Rate per Night (AUD)</th>
                                 </tr>
@@ -122,14 +122,29 @@
                                     <td>
                                         <div class="room-type-cell">
                                             <span class="room-type-dot" style="background:#3b82f6;"></span>
-                                            <span class="room-type-name">Peak Season</span>
+                                            <span class="room-type-name">Peak Winter — Weekend</span>
                                         </div>
                                     </td>
-                                    <td style="color:#666;font-size:0.9rem;">June &ndash; August (Ski Season)</td>
+                                    <td style="color:#666;font-size:0.9rem;">Jun 15 &ndash; Oct 1 &middot; Thu, Fri &amp; Sat</td>
                                     <td>
                                         <div style="display:flex;align-items:center;gap:6px;">
                                             <span style="font-weight:600;color:#555;">$</span>
-                                            <input type="number" id="ratePeak" min="0" step="1" class="form-input" style="width:110px;padding:6px 10px;font-size:1rem;font-weight:600;" placeholder="280">
+                                            <input type="number" id="ratePeakWknd" min="0" step="1" class="form-input" style="width:110px;padding:6px 10px;font-size:1rem;font-weight:600;" placeholder="800">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="room-type-cell">
+                                            <span class="room-type-dot" style="background:#60a5fa;"></span>
+                                            <span class="room-type-name">Peak Winter — Midweek</span>
+                                        </div>
+                                    </td>
+                                    <td style="color:#666;font-size:0.9rem;">Jun 15 &ndash; Oct 1 &middot; Sun &ndash; Wed</td>
+                                    <td>
+                                        <div style="display:flex;align-items:center;gap:6px;">
+                                            <span style="font-weight:600;color:#555;">$</span>
+                                            <input type="number" id="ratePeakMidwk" min="0" step="1" class="form-input" style="width:110px;padding:6px 10px;font-size:1rem;font-weight:600;" placeholder="600">
                                         </div>
                                     </td>
                                 </tr>
@@ -140,11 +155,11 @@
                                             <span class="room-type-name">Shoulder Season</span>
                                         </div>
                                     </td>
-                                    <td style="color:#666;font-size:0.9rem;">Apr &ndash; May &amp; Sep &ndash; Nov</td>
+                                    <td style="color:#666;font-size:0.9rem;">May 14 &ndash; Jun 14 &amp; Oct 2 &ndash; Nov 1</td>
                                     <td>
                                         <div style="display:flex;align-items:center;gap:6px;">
                                             <span style="font-weight:600;color:#555;">$</span>
-                                            <input type="number" id="rateShoulder" min="0" step="1" class="form-input" style="width:110px;padding:6px 10px;font-size:1rem;font-weight:600;" placeholder="220">
+                                            <input type="number" id="rateShoulder" min="0" step="1" class="form-input" style="width:110px;padding:6px 10px;font-size:1rem;font-weight:600;" placeholder="465">
                                         </div>
                                     </td>
                                 </tr>
@@ -152,29 +167,14 @@
                                     <td>
                                         <div class="room-type-cell">
                                             <span class="room-type-dot" style="background:#10b981;"></span>
-                                            <span class="room-type-name">Summer Season</span>
+                                            <span class="room-type-name">Green Season</span>
                                         </div>
                                     </td>
-                                    <td style="color:#666;font-size:0.9rem;">Dec &ndash; Mar</td>
+                                    <td style="color:#666;font-size:0.9rem;">All other dates (Nov 2 &ndash; May 13, Dec &ndash; Mar)</td>
                                     <td>
                                         <div style="display:flex;align-items:center;gap:6px;">
                                             <span style="font-weight:600;color:#555;">$</span>
-                                            <input type="number" id="rateSummer" min="0" step="1" class="form-input" style="width:110px;padding:6px 10px;font-size:1rem;font-weight:600;" placeholder="200">
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="room-type-cell">
-                                            <span class="room-type-dot" style="background:#f59e0b;"></span>
-                                            <span class="room-type-name">Midweek Special</span>
-                                        </div>
-                                    </td>
-                                    <td style="color:#666;font-size:0.9rem;">Mon &ndash; Thu (all seasons)</td>
-                                    <td>
-                                        <div style="display:flex;align-items:center;gap:6px;">
-                                            <span style="font-weight:600;color:#555;">$</span>
-                                            <input type="number" id="rateMidweek" min="0" step="1" class="form-input" style="width:110px;padding:6px 10px;font-size:1rem;font-weight:600;" placeholder="180">
+                                            <input type="number" id="rateGreen" min="0" step="1" class="form-input" style="width:110px;padding:6px 10px;font-size:1rem;font-weight:600;" placeholder="200">
                                         </div>
                                     </td>
                                 </tr>
@@ -223,6 +223,16 @@
                                         </div>
                                     </td>
                                 </tr>
+                                <tr>
+                                    <td><span class="fee-name">Extra Guest Fee</span></td>
+                                    <td><span class="badge badge-info">Per person / per night (beyond 2 pax)</span></td>
+                                    <td>
+                                        <div style="display:flex;align-items:center;gap:6px;">
+                                            <span style="font-weight:600;color:#555;">$</span>
+                                            <input type="number" id="feeExtraGuest" min="0" step="1" class="form-input" style="width:110px;padding:6px 10px;font-size:1rem;font-weight:600;" placeholder="50">
+                                        </div>
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -235,7 +245,7 @@
                     <div style="display:flex;align-items:flex-start;gap:12px;">
                         <svg viewBox="0 0 24 24" fill="none" stroke="#1a73a7" stroke-width="2" style="width:20px;height:20px;flex-shrink:0;margin-top:2px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                         <div style="font-size:0.9rem;color:#1a3a5c;line-height:1.6;">
-                            <strong>How rates work:</strong> When a guest selects dates, the nightly rate is calculated per day — midweek (Mon–Thu) always uses the Midweek Special rate regardless of season. Fri, Sat, Sun use the seasonal rate for that month. Rates are saved to your browser and applied to all pricing on the site.
+                            <strong>How rates work:</strong> Each night of the stay is priced individually. During <strong>Peak Winter (Jun 15 – Oct 1)</strong>, Thu/Fri/Sat nights use the Weekend rate and Sun–Wed nights use the Midweek rate. <strong>Shoulder</strong> (May 14–Jun 14 &amp; Oct 2–Nov 1) and <strong>Green Season</strong> are flat daily rates. The Extra Guest Fee is added automatically per additional guest per night beyond the 2-pax base rate. Rates are saved to your browser and applied instantly across the entire site.
                         </div>
                     </div>
                 </div>
@@ -249,7 +259,15 @@
     <script src="../js/admin-auth.js"></script>
     <script>
     (function() {
-        var DEFAULTS = { peak: 280, shoulder: 220, summer: 200, midweek: 180, cleaningFee: 60, serviceRate: 10 };
+        var DEFAULTS = {
+            peakWeekend:   800,
+            peakMidweek:   600,
+            shoulder:      465,
+            green:         200,
+            cleaningFee:    60,
+            serviceRate:    10,
+            extraGuestFee:  50
+        };
 
         function loadRates() {
             try {
@@ -259,12 +277,13 @@
         }
 
         function populateForm(r) {
-            document.getElementById('ratePeak').value     = r.peak;
-            document.getElementById('rateShoulder').value = r.shoulder;
-            document.getElementById('rateSummer').value   = r.summer;
-            document.getElementById('rateMidweek').value  = r.midweek;
-            document.getElementById('feeClean').value     = r.cleaningFee;
-            document.getElementById('feeService').value   = r.serviceRate;
+            document.getElementById('ratePeakWknd').value  = r.peakWeekend  || DEFAULTS.peakWeekend;
+            document.getElementById('ratePeakMidwk').value = r.peakMidweek  || DEFAULTS.peakMidweek;
+            document.getElementById('rateShoulder').value  = r.shoulder     || DEFAULTS.shoulder;
+            document.getElementById('rateGreen').value     = r.green        || DEFAULTS.green;
+            document.getElementById('feeClean').value      = r.cleaningFee  || DEFAULTS.cleaningFee;
+            document.getElementById('feeService').value    = r.serviceRate  || DEFAULTS.serviceRate;
+            document.getElementById('feeExtraGuest').value = r.extraGuestFee|| DEFAULTS.extraGuestFee;
         }
 
         function showToast() {
@@ -275,12 +294,13 @@
 
         document.getElementById('saveRatesBtn').addEventListener('click', function() {
             var r = {
-                peak:        parseInt(document.getElementById('ratePeak').value)     || DEFAULTS.peak,
-                shoulder:    parseInt(document.getElementById('rateShoulder').value) || DEFAULTS.shoulder,
-                summer:      parseInt(document.getElementById('rateSummer').value)   || DEFAULTS.summer,
-                midweek:     parseInt(document.getElementById('rateMidweek').value)  || DEFAULTS.midweek,
-                cleaningFee: parseInt(document.getElementById('feeClean').value)     || DEFAULTS.cleaningFee,
-                serviceRate: parseInt(document.getElementById('feeService').value)   || DEFAULTS.serviceRate
+                peakWeekend:   parseInt(document.getElementById('ratePeakWknd').value)  || DEFAULTS.peakWeekend,
+                peakMidweek:   parseInt(document.getElementById('ratePeakMidwk').value) || DEFAULTS.peakMidweek,
+                shoulder:      parseInt(document.getElementById('rateShoulder').value)  || DEFAULTS.shoulder,
+                green:         parseInt(document.getElementById('rateGreen').value)     || DEFAULTS.green,
+                cleaningFee:   parseInt(document.getElementById('feeClean').value)      || DEFAULTS.cleaningFee,
+                serviceRate:   parseInt(document.getElementById('feeService').value)    || DEFAULTS.serviceRate,
+                extraGuestFee: parseInt(document.getElementById('feeExtraGuest').value) || DEFAULTS.extraGuestFee
             };
             localStorage.setItem('cascade6_rates', JSON.stringify(r));
             showToast();

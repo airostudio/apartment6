@@ -666,25 +666,30 @@
     var _r = (function() {
       try { return JSON.parse(localStorage.getItem('cascade6_rates') || 'null'); } catch(e) { return null; }
     })() || {};
-    var RATE_PEAK     = _r.peak        || 280;  // Jun, Jul, Aug (ski season)
-    var RATE_SHOULDER = _r.shoulder    || 220;  // Apr, May, Sep, Oct, Nov
-    var RATE_SUMMER   = _r.summer      || 200;  // Dec, Jan, Feb, Mar
-    var RATE_MIDWEEK  = _r.midweek     || 180;  // Mon–Thu any season
-    var CLEANING_FEE  = _r.cleaningFee || 60;
-    var SERVICE_RATE  = (_r.serviceRate || 10) / 100; // e.g. 10 → 0.10
-    var TAX_RATE      = 0.10; // 10% GST on total
+    var RATE_PEAK_WKND = _r.peakWeekend  || 800;  // Peak Thu–Sat (Jun 15–Oct 1)
+    var RATE_PEAK_MIDWK= _r.peakMidweek  || 600;  // Peak Sun–Wed (Jun 15–Oct 1)
+    var RATE_SHOULDER  = _r.shoulder     || 465;  // May 14–Jun 14, Oct 2–Nov 1
+    var RATE_GREEN     = _r.green        || 200;  // All other dates (green/summer)
+    var EXTRA_GUEST_FEE= _r.extraGuestFee|| 50;   // Per extra guest per night (beyond 2 pax)
+    var CLEANING_FEE   = _r.cleaningFee  || 60;
+    var SERVICE_RATE   = (_r.serviceRate || 10) / 100;
+    var TAX_RATE       = 0.10;
 
     var DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
     var MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
     function getNightlyRate(date) {
       var m   = date.getMonth() + 1; // 1–12
-      var dow = date.getDay();       // 0=Sun … 6=Sat
-      var isWeekday = dow >= 1 && dow <= 4; // Mon–Thu
-      if (isWeekday) return RATE_MIDWEEK;
-      if (m >= 6 && m <= 8) return RATE_PEAK;
-      if ([4,5,9,10,11].indexOf(m) !== -1) return RATE_SHOULDER;
-      return RATE_SUMMER;
+      var d   = date.getDate();       // 1–31
+      var dow = date.getDay();        // 0=Sun … 6=Sat
+      // Peak Winter: Jun 15 – Oct 1
+      var isPeak = (m === 6 && d >= 15) || (m >= 7 && m <= 9) || (m === 10 && d <= 1);
+      // Shoulder: May 14–Jun 14  and  Oct 2–Nov 1
+      var isShoulder = (m === 5 && d >= 14) || (m === 6 && d <= 14) ||
+                       (m === 10 && d >= 2) || (m === 11 && d === 1);
+      if (isPeak) return (dow >= 4) ? RATE_PEAK_WKND : RATE_PEAK_MIDWK; // Thu/Fri/Sat vs Sun–Wed
+      if (isShoulder) return RATE_SHOULDER;
+      return RATE_GREEN;
     }
 
     function calcStay(checkinVal, checkoutVal) {
@@ -770,11 +775,22 @@
       text('valNightly', fmtMoney(stay.accom));
       show('rowNightly');
 
-      // Add-on rows
+      // Add-on rows (checkbox extras)
       clearAddonRows();
       var addons = getCheckedAddons();
       var addonsTotal = 0;
       var cleaningRow = document.getElementById('rowCleaning');
+
+      // Extra guest fee (auto-calculated for guests beyond 2 pax base rate)
+      var extraGuests = Math.max(0, (adults + children) - 2);
+      var extraGuestTotal = extraGuests * EXTRA_GUEST_FEE * stay.nights;
+      if (extraGuestTotal > 0) {
+        var egRow = document.createElement('div');
+        egRow.className = 'price-row price-row--addon';
+        egRow.innerHTML = '<span>Extra guests (' + extraGuests + ' × ' + stay.nights + ' night' + (stay.nights !== 1 ? 's' : '') + ')</span><span>' + fmtMoney(extraGuestTotal) + '</span>';
+        cleaningRow.parentNode.insertBefore(egRow, cleaningRow);
+      }
+
       addons.forEach(function(a) {
         addonsTotal += a.price;
         var row = document.createElement('div');
@@ -785,7 +801,7 @@
 
       // Cleaning, service, tax, total
       var serviceFee = Math.round(stay.accom * SERVICE_RATE);
-      var subtotal   = stay.accom + addonsTotal + CLEANING_FEE + serviceFee;
+      var subtotal   = stay.accom + extraGuestTotal + addonsTotal + CLEANING_FEE + serviceFee;
       var tax        = Math.round(subtotal * TAX_RATE);
       var grand      = subtotal + tax;
 
@@ -808,16 +824,17 @@
         // Persist full booking data (including addons) so checkout shows the
         // correct breakdown and charges the right amount.
         var bookingSnapshot = {
-          checkin:  checkinVal,
-          checkout: checkoutVal,
-          guests:   adults + children,
-          nights:   stay.nights,
-          accom:    stay.accom,
-          addons:   getCheckedAddons(),
-          cleaning: CLEANING_FEE,
-          service:  serviceFee,
-          tax:      tax,
-          total:    grand
+          checkin:        checkinVal,
+          checkout:       checkoutVal,
+          guests:         adults + children,
+          nights:         stay.nights,
+          accom:          stay.accom,
+          extraGuestTotal:extraGuestTotal,
+          addons:         getCheckedAddons(),
+          cleaning:       CLEANING_FEE,
+          service:        serviceFee,
+          tax:            tax,
+          total:          grand
         };
         try { sessionStorage.setItem('cascade6_pending_booking', JSON.stringify(bookingSnapshot)); } catch(e) {}
 
@@ -855,7 +872,7 @@
     });
 
     // Wire all change events
-    ['checkoutDate','numAdults','numChildren'].forEach(function(id) {
+    ['checkinDate','checkoutDate','numAdults','numChildren'].forEach(function(id) {
       document.getElementById(id).addEventListener('change', updateSummary);
     });
     document.querySelectorAll('.addon-option input[type="checkbox"]').forEach(function(cb) {
