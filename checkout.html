@@ -463,6 +463,7 @@
 
               <!-- Hidden field: carries the authoritative grand total (in cents) to the payment handler -->
               <input type="hidden" id="bookingAmountCents" name="amount" value="0">
+              <input type="hidden" id="platformFeeCents"   name="platformFeeCents" value="0">
 
               <div class="form-row">
                 <div class="form-group">
@@ -675,6 +676,10 @@
       var el = document.getElementById('bookingAmountCents');
       if (el) el.value = Math.round(dollars * 100);
     }
+    function setPlatformFee(dollars) {
+      var el = document.getElementById('platformFeeCents');
+      if (el) el.value = Math.round(dollars * 100);
+    }
 
     // Dates & guests header
     setHTML('coCheckin',  '<strong>Check-in:</strong> '  + fmtDate(checkin));
@@ -719,6 +724,7 @@
 
       setText('payNowLabel', 'Pay Now — ' + fmtMoney(grand));
       setAmount(grand);
+      setPlatformFee(pending.platformFee || 0);
 
     } else if (checkin && checkout) {
       // Fallback: recalculate base price from dates (no addon data available)
@@ -769,6 +775,7 @@
 
         setText('payNowLabel', 'Pay Now — ' + fmtMoney(grand));
         setAmount(grand);
+        setPlatformFee(platformFee);
       }
     }
   })();

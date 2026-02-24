@@ -160,37 +160,46 @@
         throw new Error('Stripe not initialized');
       }
 
-      // In production, this would:
-      // 1. Send booking data to your server
-      // 2. Server creates a PaymentIntent with Stripe Connect params
-      // 3. Return the client_secret
-      // 4. Confirm payment on the client side
+      // 1. Create the PaymentIntent server-side (keeps secret key off the client)
+      const intentRes = await fetch('/api/create-payment-intent', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({
+          amountCents:      bookingData.amountCents,
+          platformFeeCents: bookingData.platformFeeCents,
+          currency:         'aud',
+        }),
+      });
 
-      const billingDetails = {
-        name: bookingData.cardholderName,
-        email: bookingData.email,
-        address: {
-          line1: bookingData.address,
-          city: bookingData.city,
-          state: bookingData.state,
-          country: bookingData.country || 'AU',
+      const intentData = await intentRes.json();
+      if (!intentRes.ok) throw new Error(intentData.error || 'Could not create payment');
+
+      // 2. Confirm the payment client-side using the card element
+      const { paymentIntent, error } = await this.stripe.confirmCardPayment(
+        intentData.clientSecret,
+        {
+          payment_method: {
+            card: this.cardElement,
+            billing_details: {
+              name:    bookingData.cardholderName,
+              email:   bookingData.email,
+              address: {
+                line1:   bookingData.address,
+                city:    bookingData.city,
+                state:   bookingData.state,
+                country: bookingData.country || 'AU',
+              },
+            },
+          },
         }
-      };
+      );
 
-      // In production:
-      // 1. POST booking details + billingDetails to your server
-      // 2. Server calls Stripe to create a PaymentIntent with Connect params:
-      //      { amount, currency, application_fee_amount: Math.round(amount * 0.015),
-      //        transfer_data: { destination: connectedAccountId } }
-      //      application_fee_amount = 1.5% platform fee (in cents); Stripe deducts their own fee separately.
-      // 3. Server returns { clientSecret }
-      // 4. Confirm here: await this.stripe.confirmCardPayment(clientSecret, { payment_method: { card: this.cardElement, billing_details: billingDetails } })
+      if (error) throw new Error(error.message);
 
-      // Simulate successful payment
       return {
-        success: true,
-        paymentIntentId: 'pi_simulated_' + Date.now(),
-        status: 'succeeded'
+        success:         true,
+        paymentIntentId: paymentIntent.id,
+        status:          paymentIntent.status,
       };
     },
 
@@ -264,14 +273,22 @@
         const formData = new FormData(form);
         const data = Object.fromEntries(formData);
 
+        // Retrieve email from pending booking (not collected again at checkout)
+        let guestEmail = '';
+        try {
+          const pb = JSON.parse(sessionStorage.getItem('cascade6_pending_booking') || 'null');
+          if (pb) guestEmail = pb.email || '';
+        } catch(_) {}
+
         const result = await StripeConnect.processPayment({
-          cardholderName: data.cardHolderName,
-          address: data.billingStreet,
-          city: data.billingCity,
-          state: data.billingState,
-          country: data.billingCountry || 'AU',
-          // amount is in cents (set by the checkout page summary script)
-          amount: parseInt(data.amount) || 0
+          cardholderName:   data.cardHolderName,
+          email:            guestEmail,
+          address:          data.billingStreet,
+          city:             data.billingCity,
+          state:            data.billingState,
+          country:          data.billingCountry || 'AU',
+          amountCents:      parseInt(data.amount) || 0,
+          platformFeeCents: parseInt(data.platformFeeCents) || 0,
         });
 
         if (result.success) {
@@ -297,6 +314,7 @@
                 cleaning:        pending.cleaning        || 0,
                 service:         pending.service         || 0,
                 tax:             pending.tax             || 0,
+                platformFee:     pending.platformFee     || 0,
                 specialRequests: pending.specialRequests || '',
                 status:          'confirmed',
                 bookedAt:        new Date().toISOString()
