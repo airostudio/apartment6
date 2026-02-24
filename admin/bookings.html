@@ -397,17 +397,17 @@
     function calcTotal(checkin, checkout) {
         if (!checkin || !checkout) return 0;
         var r = getRates();
-        var PEAK = r.peak || 280, SH = r.shoulder || 220, SUM = r.summer || 200, MID = r.midweek || 180, CLEAN = r.cleaningFee || 60, SVC = (r.serviceRate || 10) / 100;
+        var PW = r.peakWeekend || 800, PM = r.peakMidweek || 600, SH = r.shoulder || 465, GR = r.green || 200, CLEAN = r.cleaningFee || 60, SVC = (r.serviceRate || 10) / 100;
         var ci = new Date(checkin + 'T00:00:00'), co = new Date(checkout + 'T00:00:00');
         if (co <= ci) return 0;
         var accom = 0, cur = new Date(ci);
         while (cur < co) {
-            var m = cur.getMonth() + 1, dow = cur.getDay();
-            var isWeekday = dow >= 0 && dow <= 4; // Sun-Thu
-            if (isWeekday) accom += MID;
-            else if (m >= 6 && m <= 8) accom += PEAK;
-            else if ([4,5,9,10,11].indexOf(m) !== -1) accom += SH;
-            else accom += SUM;
+            var m = cur.getMonth() + 1, d = cur.getDate(), dow = cur.getDay();
+            var isPeak = (m === 6 && d >= 15) || (m >= 7 && m <= 9) || (m === 10 && d <= 1);
+            var isShoulder = (m === 5 && d >= 14) || (m === 6 && d <= 14) || (m === 10 && d >= 2) || (m === 11 && d === 1);
+            if (isPeak) accom += (dow >= 4) ? PW : PM;
+            else if (isShoulder) accom += SH;
+            else accom += GR;
             cur.setDate(cur.getDate() + 1);
         }
         return Math.round(accom + CLEAN + accom * SVC);

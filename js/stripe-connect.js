@@ -70,6 +70,7 @@
       });
 
       this.cardElement = this.elements.create('card', {
+        hidePostalCode: true,   // not required for Australian cards
         style: {
           base: {
             fontSize: '16px',
@@ -97,20 +98,56 @@
     },
 
     /**
-     * Show placeholder when Stripe is not loaded
+     * Show a realistic card input when Stripe.js cannot initialise
+     * (e.g. publishable key not yet configured).
+     * Replace the publishableKey in config with a real key to use live Stripe Elements.
      */
     showPlaceholder() {
       const cardContainer = document.getElementById('stripe-card-element');
-      if (cardContainer) {
-        cardContainer.innerHTML = `
-          <div style="padding: 16px; border: 2px dashed var(--color-light); border-radius: 8px; text-align: center; color: var(--color-gray);">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin: 0 auto 8px;">
-              <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/>
+      if (!cardContainer) return;
+
+      cardContainer.innerHTML = `
+        <div style="font-family:'Inter',sans-serif;color:#32325d;">
+          <div style="display:flex;align-items:center;gap:10px;padding-bottom:10px;margin-bottom:10px;border-bottom:1px solid #e6ebf1;">
+            <input id="demoCardNum" type="text" inputmode="numeric" autocomplete="cc-number"
+              placeholder="Card number"
+              maxlength="19"
+              style="border:none;outline:none;font-size:15px;color:#32325d;font-family:inherit;background:transparent;flex:1;min-width:0;">
+            <svg viewBox="0 0 38 24" width="34" height="22" aria-hidden="true" style="flex-shrink:0;opacity:0.35;">
+              <rect width="38" height="24" rx="4" fill="#e8e8e8"/>
+              <rect x="4" y="8" width="10" height="8" rx="2" fill="#aaa"/>
+              <rect x="17" y="10" width="17" height="4" rx="1" fill="#aaa"/>
             </svg>
-            <p style="font-size: 14px; margin-bottom: 4px;">Stripe Payment Element</p>
-            <p style="font-size: 12px; opacity: 0.7;">Connect your Stripe account to enable payments</p>
           </div>
-        `;
+          <div style="display:flex;gap:12px;">
+            <input id="demoExpiry" type="text" inputmode="numeric" autocomplete="cc-exp"
+              placeholder="MM / YY"
+              maxlength="7"
+              style="border:none;outline:none;font-size:15px;color:#32325d;font-family:inherit;background:transparent;width:50%;">
+            <input id="demoCvc" type="text" inputmode="numeric" autocomplete="cc-csc"
+              placeholder="CVC"
+              maxlength="4"
+              style="border:none;outline:none;font-size:15px;color:#32325d;font-family:inherit;background:transparent;width:50%;">
+          </div>
+        </div>`;
+
+      // Format card number: groups of 4
+      const numEl = document.getElementById('demoCardNum');
+      if (numEl) {
+        numEl.addEventListener('input', function () {
+          const v = this.value.replace(/\D/g, '').slice(0, 16);
+          this.value = v.replace(/(.{4})/g, '$1 ').trim();
+        });
+      }
+
+      // Format expiry: MM / YY
+      const expEl = document.getElementById('demoExpiry');
+      if (expEl) {
+        expEl.addEventListener('input', function () {
+          let v = this.value.replace(/\D/g, '').slice(0, 4);
+          if (v.length > 2) v = v.slice(0, 2) + ' / ' + v.slice(2);
+          this.value = v;
+        });
       }
     },
 
@@ -123,41 +160,46 @@
         throw new Error('Stripe not initialized');
       }
 
-      // In production, this would:
-      // 1. Send booking data to your server
-      // 2. Server creates a PaymentIntent with Stripe Connect params
-      // 3. Return the client_secret
-      // 4. Confirm payment on the client side
-
-      const billingDetails = {
-        name: bookingData.cardholderName,
-        email: bookingData.email,
-        address: {
-          line1: bookingData.address,
-          city: bookingData.city,
-          state: bookingData.state,
-          postal_code: bookingData.postcode,
-          country: bookingData.country || 'AU',
-        }
-      };
-
-      // Simulate server call for PaymentIntent
-      // In production, replace with actual API call:
-      // const response = await fetch('/api/create-payment-intent', { ... });
-      // const { clientSecret } = await response.json();
-
-        amount: bookingData.amount,
-        currency: this.config.currency,
-        connectedAccountId: bookingData.propertyStripeAccount,
-        applicationFeeAmount: Math.round(bookingData.amount * 0.05), // 5% platform fee
-        billingDetails
+      // 1. Create the PaymentIntent server-side (keeps secret key off the client)
+      const intentRes = await fetch('/api/create-payment-intent', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({
+          amountCents:      bookingData.amountCents,
+          platformFeeCents: bookingData.platformFeeCents,
+          currency:         'aud',
+        }),
       });
 
-      // Simulate successful payment
+      const intentData = await intentRes.json();
+      if (!intentRes.ok) throw new Error(intentData.error || 'Could not create payment');
+
+      // 2. Confirm the payment client-side using the card element
+      const { paymentIntent, error } = await this.stripe.confirmCardPayment(
+        intentData.clientSecret,
+        {
+          payment_method: {
+            card: this.cardElement,
+            billing_details: {
+              name:    bookingData.cardholderName,
+              email:   bookingData.email,
+              address: {
+                line1:   bookingData.address,
+                city:    bookingData.city,
+                state:   bookingData.state,
+                country: bookingData.country || 'AU',
+              },
+            },
+          },
+        }
+      );
+
+      if (error) throw new Error(error.message);
+
       return {
-        success: true,
-        paymentIntentId: 'pi_simulated_' + Date.now(),
-        status: 'succeeded'
+        success:         true,
+        paymentIntentId: paymentIntent.id,
+        status:          paymentIntent.status,
       };
     },
 
@@ -200,11 +242,8 @@
      * Create a refund
      */
     async createRefund(paymentIntentId, amount, reason) {
-        paymentIntentId,
-        amount,
-        reason
-      });
-
+      // In production: POST { paymentIntentId, amount, reason } to your server,
+      // which calls Stripe to create the refund via the API.
       return {
         success: true,
         refundId: 'rf_simulated_' + Date.now(),
@@ -234,21 +273,64 @@
         const formData = new FormData(form);
         const data = Object.fromEntries(formData);
 
+        // Retrieve email from pending booking (not collected again at checkout)
+        let guestEmail = '';
+        try {
+          const pb = JSON.parse(sessionStorage.getItem('cascade6_pending_booking') || 'null');
+          if (pb) guestEmail = pb.email || '';
+        } catch(_) {}
+
         const result = await StripeConnect.processPayment({
-          cardholderName: data.cardholderName,
-          email: data.email,
-          address: data.address,
-          city: data.city,
-          state: data.state,
-          postcode: data.postcode,
-          country: data.country,
-          amount: parseInt(data.amount) || 0
+          cardholderName:   data.cardHolderName,
+          email:            guestEmail,
+          address:          data.billingStreet,
+          city:             data.billingCity,
+          state:            data.billingState,
+          country:          data.billingCountry || 'AU',
+          amountCents:      parseInt(data.amount) || 0,
+          platformFeeCents: parseInt(data.platformFeeCents) || 0,
         });
 
         if (result.success) {
+          // ── Save confirmed booking to localStorage ──────────────────────
+          let confirmedRef = 'TRA-' + new Date().getFullYear() + '-' + String(Date.now()).slice(-5);
+          try {
+            const pending = JSON.parse(sessionStorage.getItem('cascade6_pending_booking') || 'null');
+            if (pending) {
+              const bk = {
+                id:              'bk-' + Date.now(),
+                ref:             confirmedRef,
+                name:            pending.guestName       || 'Guest',
+                email:           pending.email           || '',
+                phone:           pending.phone           || '',
+                checkin:         pending.checkin,
+                checkout:        pending.checkout,
+                nights:          pending.nights          || 0,
+                guests:          pending.guests          || 2,
+                total:           Number(pending.total || 0).toFixed(2),
+                accom:           pending.accom           || 0,
+                addons:          pending.addons          || [],
+                extraGuestTotal: pending.extraGuestTotal || 0,
+                cleaning:        pending.cleaning        || 0,
+                service:         pending.service         || 0,
+                tax:             pending.tax             || 0,
+                platformFee:     pending.platformFee     || 0,
+                specialRequests: pending.specialRequests || '',
+                status:          'confirmed',
+                bookedAt:        new Date().toISOString()
+              };
+              const existing = JSON.parse(localStorage.getItem('cascade6_bookings') || '[]');
+              existing.push(bk);
+              localStorage.setItem('cascade6_bookings', JSON.stringify(existing));
+              sessionStorage.setItem('cascade6_confirmed_booking', JSON.stringify(bk));
+              sessionStorage.removeItem('cascade6_pending_booking');
+              confirmedRef = bk.ref;
+            }
+          } catch(e) { /* non-critical — proceed to confirmation */ }
+          // ────────────────────────────────────────────────────────────────
+
           window.TrendAccom?.showToast('Payment successful!', 'success');
-          window.location.href = 'confirmation.html?ref=' +
-            (window.TrendAccom?.BookingEngine?.generateReference() || 'TRA-2026-00001');
+          window.location.href = 'confirmation.html?ref=' + encodeURIComponent(confirmedRef);
         }
       } catch (error) {
         window.TrendAccom?.showToast(error.message || 'Payment failed. Please try again.', 'error');

@@ -1573,3 +1573,107 @@
 
 /* iCal table */
 .admin-card-body { padding: var(--space-xl); }
+
+/* ── Fix: public-site .btn styles leak into admin ─────────────────────────
+   main.css .btn sets height:48px, text-transform:uppercase, letter-spacing
+   which is wrong for admin buttons. Reset those inside .admin-layout.       */
+.admin-layout .btn {
+  height: auto;
+  min-height: 36px;
+  text-transform: none;
+  letter-spacing: 0;
+  padding: var(--space-xs) var(--space-md);
+  font-size: var(--font-size-sm);
+}
+
+/* ── Fix: .btn-primary alias (single-hyphen) ──────────────────────────────
+   Admin HTML uses btn-primary but main.css only defines btn--primary.
+   Map the single-hyphen variant to admin primary colours (navy, not gold).  */
+.btn-primary {
+  background: var(--color-primary);
+  color: var(--color-white) !important;
+  border-color: var(--color-primary);
+  border-style: solid;
+  border-width: 1.5px;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-xs) var(--space-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-family: inherit;
+  transition: all var(--transition-fast);
+  text-decoration: none;
+}
+.btn-primary:hover {
+  background: var(--color-primary-light);
+  border-color: var(--color-primary-light);
+  color: var(--color-white) !important;
+}
+
+/* ── Fix: admin-card__footer BEM variants (missing from admin.css) ────────
+   HTML uses admin-card__footer (double-underscore BEM) but only
+   admin-card-footer (single-hyphen) was defined.                            */
+.admin-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-md) var(--space-xl);
+  border-top: 1px solid var(--color-light);
+  background: var(--color-off-white);
+}
+
+.admin-card__footer-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-primary);
+  text-decoration: none;
+}
+.admin-card__footer-link:hover { color: var(--color-primary-light); }
+
+.admin-card__footer-icon { width: 14px; height: 14px; }
+
+/* ── Missing: form-input, badge-info alias, card-title-icon ──────────────
+   Used in admin/rates.html and admin/guests.html.                          */
+.form-input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--color-light);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-family: inherit;
+  color: var(--color-dark);
+  background: var(--color-white);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  line-height: 1.5;
+}
+.form-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(15,39,68,0.1);
+}
+
+/* Single-hyphen alias (rates.html uses badge-info not badge--info) */
+.badge-info { background: rgba(52,152,219,.12); color: #2980b9; }
+
+/* SVG icon inside admin card title headings */
+.card-title-icon { width: 18px; height: 18px; flex-shrink: 0; color: var(--color-primary); }
+
+/* admin-card-title: h2 inside admin-card-header (flex row for icon + text) */
+.admin-card-title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-family: var(--font-primary);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-darker);
+}
+
+/* Page header child wrapper (used in guests.html) */
+.admin-page-header-text { flex: 1; min-width: 0; }

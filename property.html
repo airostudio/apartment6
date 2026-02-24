@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cascade Apartment 6 — Mt Baw Baw Alpine Resort</title>
-  <meta name="description" content="Book Cascade Apartment 6 at Mt Baw Baw Alpine Resort. Ground floor, self-contained, queen bed + bunk beds, sleeps 5, gas log fire, fully equipped kitchen. From $220/night.">
+  <meta name="description" content="Book Cascade Apartment 6 at Mt Baw Baw Alpine Resort. Ground floor, self-contained, queen bed + bunk beds, sleeps 5, gas log fire, fully equipped kitchen. From $200/night.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -716,31 +716,31 @@
           <h3 style="font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:600;color:#1a1a2e;margin-bottom:20px;">Seasonal Pricing</h3>
           <div class="rates-grid">
             <div class="rate-card featured">
-              <div class="rate-season">Peak Season</div>
-              <div class="rate-dates">Jun &ndash; Aug (Ski Season)</div>
-              <div class="rate-price" id="dispPeak">$280 <span>/ night</span></div>
+              <div class="rate-season">Peak Winter — Weekend</div>
+              <div class="rate-dates">Jun 15 &ndash; Oct 1 &middot; Thu, Fri &amp; Sat</div>
+              <div class="rate-price" id="dispPeakWknd">$800 <span>/ night</span></div>
               <div class="rate-note">Minimum 2 nights on weekends</div>
+            </div>
+            <div class="rate-card featured">
+              <div class="rate-season">Peak Winter — Midweek</div>
+              <div class="rate-dates">Jun 15 &ndash; Oct 1 &middot; Sun &ndash; Wed</div>
+              <div class="rate-price" id="dispPeakMidwk">$600 <span>/ night</span></div>
+              <div class="rate-note">Great value midweek skiing</div>
             </div>
             <div class="rate-card">
               <div class="rate-season">Shoulder Season</div>
-              <div class="rate-dates">Sep &ndash; Nov &amp; Apr &ndash; May</div>
-              <div class="rate-price" id="dispShoulder">$220 <span>/ night</span></div>
+              <div class="rate-dates">May 14 &ndash; Jun 14 &amp; Oct 2 &ndash; Nov 1</div>
+              <div class="rate-price" id="dispShoulder">$465 <span>/ night</span></div>
               <div class="rate-note">Minimum 1 night</div>
             </div>
             <div class="rate-card">
-              <div class="rate-season">Summer Season</div>
-              <div class="rate-dates">Dec &ndash; Mar</div>
-              <div class="rate-price" id="dispSummer">$200 <span>/ night</span></div>
-              <div class="rate-note">Minimum 1 night</div>
-            </div>
-            <div class="rate-card">
-              <div class="rate-season">Midweek Special</div>
-              <div class="rate-dates">Mon &ndash; Thu (all year)</div>
-              <div class="rate-price" id="dispMidweek">$180 <span>/ night</span></div>
-              <div class="rate-note">Minimum 1 night</div>
+              <div class="rate-season">Green Season</div>
+              <div class="rate-dates">All other dates (Nov 2 &ndash; May 13)</div>
+              <div class="rate-price" id="dispGreen">$200 <span>/ night</span></div>
+              <div class="rate-note">Subject to change for events</div>
             </div>
           </div>
-          <p class="rates-footnote">* All rates are for the entire apartment (up to 5 guests). Weekend minimum stay is Friday + Saturday nights. Public holidays may attract peak rates. Contact us to confirm pricing for your dates.</p>
+          <p class="rates-footnote">* All rates are for the entire apartment, base rate for 2 guests. Additional guests charged at $50/night per person (max 5). Public holidays may attract peak rates. Contact us to confirm pricing for your dates.</p>
         </div>
 
         <!-- Reviews Tab -->
@@ -886,7 +886,9 @@
         </div>
 
         <button class="btn-book" id="bookNowBtn">Check Availability</button>
-        <p class="booking-note">You won't be charged yet</p>
+        <p class="booking-note" id="bookingNote">Select dates to see pricing</p>
+        <p id="bookingError" style="display:none;color:#c0392b;font-size:0.82rem;margin:8px 0;padding:8px 12px;background:#fdf2f2;border-left:3px solid #c0392b;border-radius:4px;"></p>
+        <div id="propAvailResult" style="display:none;"></div>
 
         <div class="price-breakdown" id="priceBreakdown" style="display:none;">
           <div class="price-row">
@@ -1009,13 +1011,100 @@
     }
 
     // ── Book button ────────────────────────────────────────────────
-    document.getElementById('bookNowBtn').addEventListener('click', function() {
-      var checkin = document.getElementById('checkin').value;
+    function updateBookBtn() {
+      var checkin  = document.getElementById('checkin').value;
       var checkout = document.getElementById('checkout').value;
-      var guests = document.getElementById('guests').value;
-      if (!checkin || !checkout) { alert('Please select your check-in and check-out dates.'); return; }
-      var p = new URLSearchParams({ checkin: checkin, checkout: checkout, guests: guests, propertyId: 'cascade-apt-6' });
-      window.location.href = 'booking.html?' + p.toString();
+      var btn  = document.getElementById('bookNowBtn');
+      var note = document.getElementById('bookingNote');
+      var ar   = document.getElementById('propAvailResult');
+      // Reset any previous availability result when dates change
+      if (ar) { ar.style.display = 'none'; ar.innerHTML = ''; }
+      var err = document.getElementById('bookingError');
+      if (err) err.style.display = 'none';
+      if (checkin && checkout) {
+        btn.textContent = 'Check Availability';
+        btn.style.background = '#c9a84c';
+        note.textContent = 'Click to check if these dates are free';
+      } else {
+        btn.textContent = 'Check Availability';
+        btn.style.background = '';
+        note.textContent = 'Select dates to see pricing';
+      }
+    }
+    ['checkin','checkout','guests'].forEach(function(id) {
+      document.getElementById(id).addEventListener('change', updateBookBtn);
+    });
+    updateBookBtn();
+
+    document.getElementById('bookNowBtn').addEventListener('click', function() {
+      var checkin   = document.getElementById('checkin').value;
+      var checkout  = document.getElementById('checkout').value;
+      var guestsRaw = document.getElementById('guests').value;
+      var err = document.getElementById('bookingError');
+      var ar  = document.getElementById('propAvailResult');
+
+      // Validate dates
+      if (!checkin || !checkout) {
+        err.textContent = !checkin ? 'Please select a check-in date.' : 'Please select a check-out date.';
+        err.style.display = 'block';
+        ar.style.display = 'none';
+        setTimeout(function() { err.style.display = 'none'; }, 4000);
+        document.getElementById(!checkin ? 'checkin' : 'checkout').focus();
+        return;
+      }
+      if (checkout <= checkin) {
+        err.textContent = 'Check-out date must be after check-in date.';
+        err.style.display = 'block';
+        ar.style.display = 'none';
+        setTimeout(function() { err.style.display = 'none'; }, 4000);
+        return;
+      }
+      err.style.display = 'none';
+
+      // Check availability against stored bookings
+      var available = true;
+      try {
+        var bookings = JSON.parse(localStorage.getItem('cascade6_bookings') || '[]');
+        var ci = new Date(checkin + 'T00:00:00');
+        var co = new Date(checkout + 'T00:00:00');
+        for (var i = 0; i < bookings.length; i++) {
+          var b = bookings[i];
+          if (b.status === 'cancelled') continue;
+          var bs = new Date((b.checkin || b.checkIn || b.check_in) + 'T00:00:00');
+          var be = new Date((b.checkout || b.checkOut || b.check_out) + 'T00:00:00');
+          if (ci < be && co > bs) { available = false; break; }
+        }
+      } catch(e) { /* localStorage unavailable — assume available */ }
+
+      if (!available) {
+        err.textContent = 'Sorry, those dates are not available. Please try different dates.';
+        err.style.display = 'block';
+        ar.style.display = 'none';
+        ar.innerHTML = '';
+        setTimeout(function() { err.style.display = 'none'; }, 6000);
+        return;
+      }
+
+      // Dates are available — show result + Book Now button
+      var nights = Math.round((new Date(checkout) - new Date(checkin)) / 86400000);
+      var guests = parseInt(guestsRaw) || 2;
+      var bookHref = 'booking.html?' + new URLSearchParams({ checkin: checkin, checkout: checkout, guests: guests }).toString();
+
+      ar.style.display = 'block';
+      ar.innerHTML =
+        '<div style="margin-top:10px;padding:14px 16px;border-radius:10px;background:#ecfdf5;border:1px solid #6ee7b7;">'
+          + '<div style="color:#065f46;font-weight:600;font-size:0.875rem;display:flex;align-items:center;gap:7px;margin-bottom:11px;">'
+            + '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>'
+            + 'Available for ' + nights + ' night' + (nights !== 1 ? 's' : '') + '!'
+          + '</div>'
+          + '<a href="' + bookHref + '" '
+            + 'style="display:flex;align-items:center;justify-content:center;gap:7px;padding:11px 16px;background:#0f2744;color:#fff;border-radius:8px;font-size:0.9rem;font-weight:700;text-decoration:none;box-sizing:border-box;width:100%;"'
+            + ' onmouseover="this.style.background=\'#1a3a5c\'" onmouseout="this.style.background=\'#0f2744\'">'
+            + '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>'
+            + 'Book Now'
+            + '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>'
+          + '</a>'
+        + '</div>';
     });
 
     // ── Photo Gallery Lightbox ─────────────────────────────────────
@@ -1132,35 +1221,37 @@
       var _r = (function() {
         try { return JSON.parse(localStorage.getItem('cascade6_rates') || 'null'); } catch(e) { return null; }
       })() || {};
-      var PEAK     = _r.peak        || 280;
-      var SHOULDER = _r.shoulder    || 220;
-      var SUMMER   = _r.summer      || 200;
-      var MIDWEEK  = _r.midweek     || 180;
-      var CLEAN    = _r.cleaningFee || 60;
-      var SVC_PCT  = (_r.serviceRate || 10) / 100;
+      var PEAK_WKND = _r.peakWeekend  || 800;
+      var PEAK_MIDWK= _r.peakMidweek  || 600;
+      var SHOULDER  = _r.shoulder     || 465;
+      var GREEN     = _r.green        || 200;
+      var CLEAN     = _r.cleaningFee  || 60;
+      var SVC_PCT   = (_r.serviceRate || 10) / 100;
 
       // Update rates tab display
       function setPriceEl(id, val) {
         var el = document.getElementById(id);
         if (el) el.innerHTML = '$' + val + ' <span>/ night</span>';
       }
-      setPriceEl('dispPeak',     PEAK);
-      setPriceEl('dispShoulder', SHOULDER);
-      setPriceEl('dispSummer',   SUMMER);
-      setPriceEl('dispMidweek',  MIDWEEK);
+      setPriceEl('dispPeakWknd',  PEAK_WKND);
+      setPriceEl('dispPeakMidwk', PEAK_MIDWK);
+      setPriceEl('dispShoulder',  SHOULDER);
+      setPriceEl('dispGreen',     GREEN);
 
       // Update "From" label in sidebar to lowest rate
-      var lowestRate = Math.min(PEAK, SHOULDER, SUMMER, MIDWEEK);
       var fromEl = document.getElementById('sidebarFromPrice');
-      if (fromEl) fromEl.textContent = 'From $' + lowestRate;
+      if (fromEl) fromEl.textContent = 'From $' + GREEN;
 
       function getNightlyRate(date) {
         var m   = date.getMonth() + 1;
-        var dow = date.getDay();
-        if (dow >= 1 && dow <= 4) return MIDWEEK;
-        if (m >= 6 && m <= 8) return PEAK;
-        if ([4,5,9,10,11].indexOf(m) !== -1) return SHOULDER;
-        return SUMMER;
+        var d   = date.getDate();
+        var dow = date.getDay(); // 0=Sun…6=Sat
+        var isPeak = (m === 6 && d >= 15) || (m >= 7 && m <= 9) || (m === 10 && d <= 1);
+        var isShoulder = (m === 5 && d >= 14) || (m === 6 && d <= 14) ||
+                         (m === 10 && d >= 2) || (m === 11 && d === 1);
+        if (isPeak) return (dow >= 4) ? PEAK_WKND : PEAK_MIDWK;
+        if (isShoulder) return SHOULDER;
+        return GREEN;
       }
 
       function updateSidebarPrice() {
@@ -1195,8 +1286,19 @@
         if (co.value && co.value <= this.value) co.value = '';
         co.min = this.value;
         updateSidebarPrice();
+        updateBookBtn();
       });
-      document.getElementById('checkout').addEventListener('change', updateSidebarPrice);
+      document.getElementById('checkout').addEventListener('change', function() {
+        updateSidebarPrice();
+        updateBookBtn();
+      });
+      document.getElementById('guests').addEventListener('change', updateSidebarPrice);
+
+      // Pre-fill from URL and run initial price update
+      var today = new Date().toISOString().split('T')[0];
+      document.getElementById('checkin').min  = today;
+      document.getElementById('checkout').min = today;
+      updateSidebarPrice();
     })();
   </script>
 </body>
