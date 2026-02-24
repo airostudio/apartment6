@@ -805,6 +805,22 @@
       var btn = document.getElementById('continueToPayment');
       btn.disabled = false;
       btn.onclick = function() {
+        // Persist full booking data (including addons) so checkout shows the
+        // correct breakdown and charges the right amount.
+        var bookingSnapshot = {
+          checkin:  checkinVal,
+          checkout: checkoutVal,
+          guests:   adults + children,
+          nights:   stay.nights,
+          accom:    stay.accom,
+          addons:   getCheckedAddons(),
+          cleaning: CLEANING_FEE,
+          service:  serviceFee,
+          tax:      tax,
+          total:    grand
+        };
+        try { sessionStorage.setItem('cascade6_pending_booking', JSON.stringify(bookingSnapshot)); } catch(e) {}
+
         var p = new URLSearchParams({
           checkin:  checkinVal,
           checkout: checkoutVal,

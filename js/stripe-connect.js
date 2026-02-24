@@ -70,6 +70,7 @@
       });
 
       this.cardElement = this.elements.create('card', {
+        hidePostalCode: true,   // not required for Australian cards
         style: {
           base: {
             fontSize: '16px',
@@ -172,7 +173,6 @@
           line1: bookingData.address,
           city: bookingData.city,
           state: bookingData.state,
-          postal_code: bookingData.postcode,
           country: bookingData.country || 'AU',
         }
       };
@@ -263,13 +263,12 @@
         const data = Object.fromEntries(formData);
 
         const result = await StripeConnect.processPayment({
-          cardholderName: data.cardholderName,
-          email: data.email,
-          address: data.address,
-          city: data.city,
-          state: data.state,
-          postcode: data.postcode,
-          country: data.country,
+          cardholderName: data.cardHolderName,
+          address: data.billingStreet,
+          city: data.billingCity,
+          state: data.billingState,
+          country: data.billingCountry || 'AU',
+          // amount is in cents (set by the checkout page summary script)
           amount: parseInt(data.amount) || 0
         });
 

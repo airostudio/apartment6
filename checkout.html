@@ -461,11 +461,10 @@
                 </div>
               </div>
 
+              <!-- Hidden field: carries the authoritative grand total (in cents) to the payment handler -->
+              <input type="hidden" id="bookingAmountCents" name="amount" value="0">
+
               <div class="form-row">
-                <div class="form-group">
-                  <label for="billingPostcode">Postcode *</label>
-                  <input type="text" id="billingPostcode" name="billingPostcode" placeholder="2000" required>
-                </div>
                 <div class="form-group">
                   <label for="billingCountry">Country *</label>
                   <select id="billingCountry" name="billingCountry" required>
@@ -643,14 +642,13 @@
   <script src="js/app.js"></script>
   <script src="js/stripe-connect.js"></script>
   <script>
-  // ── Populate checkout order summary from URL params ──────────────────────
+  // ── Populate checkout order summary ──────────────────────────────────────
   (function() {
     var p = new URLSearchParams(window.location.search);
     var checkin  = p.get('checkin');
     var checkout = p.get('checkout');
-    var guests   = parseInt(p.get('guests'))  || 2;
-    var nights   = parseInt(p.get('nights'))  || 0;
-    var total    = parseFloat(p.get('total')) || 0;
+    var guests   = parseInt(p.get('guests')) || 2;
+    var nights   = parseInt(p.get('nights')) || 0;
 
     var DAYS   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
     var MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -668,7 +666,13 @@
     function show(id)   { var el = document.getElementById(id); if (el) el.style.display = ''; }
     function hide(id)   { var el = document.getElementById(id); if (el) el.style.display = 'none'; }
 
-    // Dates & guests
+    function setAmount(dollars) {
+      // Store amount in cents in the hidden form field so Stripe receives the right value
+      var el = document.getElementById('bookingAmountCents');
+      if (el) el.value = Math.round(dollars * 100);
+    }
+
+    // Dates & guests header
     setHTML('coCheckin',  '<strong>Check-in:</strong> '  + fmtDate(checkin));
     setHTML('coCheckout', '<strong>Check-out:</strong> ' + fmtDate(checkout));
     setHTML('coGuests',   '<strong>Guests:</strong> '    + guests + ' Guest' + (guests !== 1 ? 's' : ''));
@@ -676,8 +680,43 @@
       setText('coNights', nights + ' night' + (nights !== 1 ? 's' : '') + ' · Entire Apartment');
     }
 
-    // Recalculate price if we have dates (ignore param total, recompute live)
-    if (checkin && checkout) {
+    // ── Try to restore the full booking snapshot saved in booking.html ──────
+    var pending = null;
+    try { pending = JSON.parse(sessionStorage.getItem('cascade6_pending_booking') || 'null'); } catch(e) {}
+
+    if (pending && pending.checkin === checkin && pending.checkout === checkout) {
+      // Use the authoritative figures from booking.html (includes addons)
+      var n     = pending.nights;
+      var accom = pending.accom;
+      var grand = pending.total;
+
+      setText('coLblNightly', fmtMoney(Math.round(accom / n)) + ' avg × ' + n + ' night' + (n !== 1 ? 's' : ''));
+      setText('coValNightly', fmtMoney(accom));
+      show('coRowNightly');
+
+      // Insert addon rows above the cleaning fee row
+      var cleaningRow = document.getElementById('coRowCleaning');
+      if (pending.addons && pending.addons.length > 0 && cleaningRow) {
+        pending.addons.forEach(function(a) {
+          var row = document.createElement('div');
+          row.className = 'price-row price-row--addon';
+          row.innerHTML = '<span>' + a.label + '</span><span>' + fmtMoney(a.price) + '</span>';
+          cleaningRow.parentNode.insertBefore(row, cleaningRow);
+        });
+      }
+
+      setText('coValCleaning', fmtMoney(pending.cleaning));
+      setText('coValService',  fmtMoney(pending.service));
+      setText('coValTax',      fmtMoney(pending.tax));
+      setText('coValTotal',    fmtMoney(grand));
+      ['coRowNightly','coRowCleaning','coRowService','coRowTax','coRowTotal'].forEach(show);
+      hide('coNoDates');
+
+      setText('payNowLabel', 'Pay Now — ' + fmtMoney(grand));
+      setAmount(grand);
+
+    } else if (checkin && checkout) {
+      // Fallback: recalculate base price from dates (no addon data available)
       var _r = (function() {
         try { return JSON.parse(localStorage.getItem('cascade6_rates') || 'null'); } catch(e) { return null; }
       })() || {};
@@ -717,8 +756,8 @@
         ['coRowNightly','coRowCleaning','coRowService','coRowTax','coRowTotal'].forEach(show);
         hide('coNoDates');
 
-        // Update Pay Now button label
         setText('payNowLabel', 'Pay Now — ' + fmtMoney(grand));
+        setAmount(grand);
       }
     }
   })();
