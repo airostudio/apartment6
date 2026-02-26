@@ -1677,3 +1677,348 @@
 
 /* Page header child wrapper (used in guests.html) */
 .admin-page-header-text { flex: 1; min-width: 0; }
+
+/* ── Settings page: form layout ──────────────────────────────────────────── */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-lg);
+  margin-bottom: var(--space-lg);
+}
+
+.form-row-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: var(--space-lg);
+  margin-bottom: var(--space-lg);
+}
+
+@media (max-width: 640px) {
+  .form-row,
+  .form-row-3 { grid-template-columns: 1fr; }
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-md);
+}
+
+.form-group label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-dark);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--color-light);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-family: inherit;
+  color: var(--color-dark);
+  background: var(--color-white);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  line-height: 1.5;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(15, 39, 68, 0.08);
+}
+
+.form-group textarea { resize: vertical; }
+
+.form-hint {
+  font-size: var(--font-size-xs);
+  color: var(--color-gray);
+  margin-top: 2px;
+}
+
+/* ── Settings section h3 divider ─────────────────────────────────────────── */
+.settings-section > h3 {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-darker);
+  padding-bottom: var(--space-md);
+  margin-bottom: var(--space-lg);
+  border-bottom: 1px solid var(--color-light);
+}
+
+/* ── Toggle switch (label wrapper, alias for .toggle) ───────────────────── */
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+.toggle-switch .toggle-slider {
+  position: absolute;
+  inset: 0;
+  background: var(--color-muted);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.toggle-switch .toggle-slider::before {
+  content: '';
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  left: 3px;
+  top: 3px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform var(--transition-fast);
+}
+
+.toggle-switch input:checked + .toggle-slider { background: var(--color-primary); }
+.toggle-switch input:checked + .toggle-slider::before { transform: translateX(20px); }
+
+/* ── Toggle rows (notifications / booking rules) ─────────────────────────── */
+.toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-md) 0;
+  border-bottom: 1px solid var(--color-light);
+  gap: var(--space-md);
+}
+
+.toggle-row:last-child { border-bottom: none; }
+
+.toggle-info { flex: 1; }
+
+.toggle-info h4 {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-dark);
+  margin-bottom: 2px;
+}
+
+.toggle-info p {
+  font-size: var(--font-size-xs);
+  color: var(--color-gray);
+}
+
+.toggle-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.inline-select {
+  height: 32px;
+  padding: 0 var(--space-sm);
+  border: 1px solid var(--color-light);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-xs);
+  font-family: inherit;
+  color: var(--color-dark);
+  background: var(--color-white);
+  cursor: pointer;
+  transition: border-color var(--transition-fast);
+}
+
+.inline-select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+/* ── Policy cards (cancellation) ─────────────────────────────────────────── */
+.policy-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-md) var(--space-lg);
+  border: 1px solid var(--color-light);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-sm);
+  background: var(--color-off-white);
+  transition: all var(--transition-fast);
+  gap: var(--space-md);
+}
+
+.policy-card.active-policy {
+  border-color: var(--color-primary);
+  background: rgba(15, 39, 68, 0.04);
+}
+
+.policy-info { flex: 1; }
+
+.policy-info h4 {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-dark);
+  margin-bottom: 2px;
+}
+
+.policy-info p {
+  font-size: var(--font-size-xs);
+  color: var(--color-gray);
+}
+
+/* ── Upload area (appearance tab) ────────────────────────────────────────── */
+.upload-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-xl) var(--space-lg);
+  border: 2px dashed var(--color-light);
+  border-radius: var(--radius-lg);
+  background: var(--color-off-white);
+  cursor: pointer;
+  text-align: center;
+  transition: all var(--transition-fast);
+  gap: var(--space-sm);
+}
+
+.upload-area:hover {
+  border-color: var(--color-primary-light);
+  background: rgba(15, 39, 68, 0.03);
+}
+
+.upload-area svg {
+  width: 32px;
+  height: 32px;
+  color: var(--color-muted);
+}
+
+.upload-area p {
+  font-size: var(--font-size-xs);
+  color: var(--color-gray);
+  margin: 0;
+}
+
+.upload-label {
+  color: var(--color-primary);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* ── Users table (users tab) ─────────────────────────────────────────────── */
+.users-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-sm);
+}
+
+.users-table thead tr { background: var(--color-off-white); }
+
+.users-table th {
+  padding: var(--space-sm) var(--space-md);
+  text-align: left;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-gray);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid var(--color-light);
+  white-space: nowrap;
+}
+
+.users-table td {
+  padding: var(--space-md);
+  border-bottom: 1px solid var(--color-light);
+  vertical-align: middle;
+  color: var(--color-dark);
+}
+
+.users-table tbody tr:last-child td { border-bottom: none; }
+.users-table tbody tr:hover { background: var(--color-off-white); }
+
+.user-cell {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  color: #fff;
+  flex-shrink: 0;
+  background: var(--color-primary);
+}
+
+.user-avatar.bg-blue  { background: var(--color-primary); }
+.user-avatar.bg-green { background: var(--color-success); }
+.user-avatar.bg-gold  { background: var(--color-secondary); }
+
+.user-name {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-darker);
+  font-size: var(--font-size-sm);
+}
+
+/* ── Role & status badges (users table) ──────────────────────────────────── */
+.role-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px var(--space-sm);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.role-owner  { background: rgba(201, 168, 76, .15); color: var(--color-secondary); }
+.role-admin  { background: rgba(15, 39, 68, .1);    color: var(--color-primary); }
+.role-viewer { background: rgba(52, 152, 219, .1);  color: var(--color-info); }
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--font-size-xs);
+  color: var(--color-gray);
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-muted);
+  flex-shrink: 0;
+}
+
+.status-dot.active   { background: var(--color-success); }
+.status-dot.inactive { background: var(--color-danger); }
+.status-dot.pending  { background: var(--color-warning); }
+
+.action-link {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.action-link:hover {
+  color: var(--color-primary-light);
+  text-decoration: underline;
+}
