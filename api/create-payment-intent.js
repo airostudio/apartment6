@@ -1,8 +1,24 @@
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const secretKey = process.env.STRIPE_SECRET_KEY;
+
+// Guard: catch misconfigured key before Stripe SDK throws an opaque error
+if (!secretKey) {
+  console.error('STRIPE_SECRET_KEY environment variable is not set.');
+} else if (secretKey.startsWith('pk_')) {
+  console.error('STRIPE_SECRET_KEY is set to a publishable key (pk_...). Set it to the secret key (sk_...) instead.');
+}
+
+const stripe = require('stripe')(secretKey);
 
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  if (!secretKey) {
+    return res.status(500).json({ error: 'Payment service not configured: STRIPE_SECRET_KEY is missing.' });
+  }
+  if (secretKey.startsWith('pk_')) {
+    return res.status(500).json({ error: 'Payment service misconfigured: STRIPE_SECRET_KEY must be a secret key (sk_...), not a publishable key.' });
   }
 
   const { amountCents, platformFeeCents, currency = 'aud' } = req.body;

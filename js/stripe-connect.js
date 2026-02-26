@@ -40,13 +40,25 @@
     },
 
     /**
-     * Initialize Stripe
+     * Initialize Stripe — fetches the publishable key from the server first
+     * so we never need to hardcode it in client-side code.
      */
-    init() {
+    async init() {
       if (typeof Stripe === 'undefined') {
         console.warn('Stripe.js not loaded. Payment processing unavailable.');
         this.showPlaceholder();
         return;
+      }
+
+      // Fetch the publishable key from the server-side config endpoint
+      try {
+        const res = await fetch('/api/stripe-config');
+        if (res.ok) {
+          const data = await res.json();
+          if (data.publishableKey) this.config.publishableKey = data.publishableKey;
+        }
+      } catch (e) {
+        console.warn('Could not fetch Stripe config:', e.message);
       }
 
       try {
@@ -367,8 +379,8 @@
   // ============================================
   // Initialize
   // ============================================
-  function init() {
-    StripeConnect.init();
+  async function init() {
+    await StripeConnect.init();
     initCheckoutForm();
     initStripeAdmin();
   }
