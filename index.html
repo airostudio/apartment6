@@ -281,16 +281,6 @@
           <label for="searchCheckout">Check Out</label>
           <input type="date" id="searchCheckout">
         </div>
-        <div class="search-field">
-          <label for="searchGuests">Guests</label>
-          <select id="searchGuests">
-            <option value="1">1 Guest</option>
-            <option value="2" selected>2 Guests</option>
-            <option value="3">3 Guests</option>
-            <option value="4">4 Guests</option>
-            <option value="5">5 Guests</option>
-          </select>
-        </div>
         <button class="btn btn--primary" id="heroSearchBtn">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
           Check Availability
@@ -467,9 +457,9 @@
           <div style="width: 80px; height: 80px; border-radius: var(--radius-full); background: rgba(15, 39, 68, 0.08); display: flex; align-items: center; justify-content: center; margin: 0 auto var(--space-lg);">
             <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
           </div>
-          <h4 style="margin-bottom: var(--space-sm);">Add Your Guests</h4>
+          <h4 style="margin-bottom: var(--space-sm);">Enter Your Details</h4>
           <p style="color: var(--color-gray); font-size: var(--font-size-sm); line-height: var(--line-height-relaxed);">
-            Cascade Apartment 6 sleeps up to 5 guests comfortably between the queen bed, bunks, and sofa beds.
+            Fill in your guest details and number of guests. Cascade Apartment 6 sleeps up to 5 between the queen bed, bunks, and sofa beds.
           </p>
         </div>
         <div class="text-center">
@@ -656,7 +646,6 @@
         if (saved) {
           if (saved.checkin)  document.getElementById('searchCheckin').value  = saved.checkin;
           if (saved.checkout) document.getElementById('searchCheckout').value = saved.checkout;
-          if (saved.guests)   document.getElementById('searchGuests').value   = saved.guests;
         }
       } catch(e) {}
     })();
@@ -665,7 +654,6 @@
     document.getElementById('heroSearchBtn').addEventListener('click', function() {
       var checkin  = document.getElementById('searchCheckin').value;
       var checkout = document.getElementById('searchCheckout').value;
-      var guests   = document.getElementById('searchGuests').value;
 
       // Remove any previous result banner
       var old = document.getElementById('availResult');
@@ -682,7 +670,7 @@
 
       // Persist search so other pages (booking, property) can pre-fill
       try {
-        sessionStorage.setItem('cascade6_search', JSON.stringify({ checkin: checkin, checkout: checkout, guests: guests }));
+        sessionStorage.setItem('cascade6_search', JSON.stringify({ checkin: checkin, checkout: checkout }));
       } catch(e) {}
 
       // Check against stored bookings in localStorage
@@ -713,7 +701,7 @@
 
       // Dates are available — show result with Book Now button
       var nights = Math.round((new Date(checkout) - new Date(checkin)) / 86400000);
-      var bookHref = 'booking.html?' + new URLSearchParams({ checkin: checkin, checkout: checkout, guests: guests }).toString();
+      var bookHref = 'booking.html?' + new URLSearchParams({ checkin: checkin, checkout: checkout }).toString();
       showAvailSuccess(nights, bookHref);
     });
 

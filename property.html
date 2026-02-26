@@ -873,16 +873,6 @@
               <input type="date" id="checkout">
             </div>
           </div>
-          <div class="booking-form-field" style="border-top:1px solid #ddd;">
-            <label for="guests">Guests</label>
-            <select id="guests">
-              <option>1 Guest</option>
-              <option selected>2 Guests</option>
-              <option>3 Guests</option>
-              <option>4 Guests</option>
-              <option>5 Guests (max)</option>
-            </select>
-          </div>
         </div>
 
         <button class="btn-book" id="bookNowBtn">Check Availability</button>
@@ -1004,11 +994,6 @@
     var params = new URLSearchParams(window.location.search);
     if (params.get('checkin')) document.getElementById('checkin').value = params.get('checkin');
     if (params.get('checkout')) document.getElementById('checkout').value = params.get('checkout');
-    if (params.get('guests')) {
-      var sel = document.getElementById('guests');
-      var g = parseInt(params.get('guests'));
-      if (g >= 1 && g <= 5) sel.selectedIndex = g - 1;
-    }
 
     // ── Book button ────────────────────────────────────────────────
     function updateBookBtn() {
@@ -1031,7 +1016,7 @@
         note.textContent = 'Select dates to see pricing';
       }
     }
-    ['checkin','checkout','guests'].forEach(function(id) {
+    ['checkin','checkout'].forEach(function(id) {
       document.getElementById(id).addEventListener('change', updateBookBtn);
     });
     updateBookBtn();
@@ -1039,7 +1024,6 @@
     document.getElementById('bookNowBtn').addEventListener('click', function() {
       var checkin   = document.getElementById('checkin').value;
       var checkout  = document.getElementById('checkout').value;
-      var guestsRaw = document.getElementById('guests').value;
       var err = document.getElementById('bookingError');
       var ar  = document.getElementById('propAvailResult');
 
@@ -1087,8 +1071,7 @@
 
       // Dates are available — show result + Book Now button
       var nights = Math.round((new Date(checkout) - new Date(checkin)) / 86400000);
-      var guests = parseInt(guestsRaw) || 2;
-      var bookHref = 'booking.html?' + new URLSearchParams({ checkin: checkin, checkout: checkout, guests: guests }).toString();
+      var bookHref = 'booking.html?' + new URLSearchParams({ checkin: checkin, checkout: checkout }).toString();
 
       ar.style.display = 'block';
       ar.innerHTML =
@@ -1292,7 +1275,6 @@
         updateSidebarPrice();
         updateBookBtn();
       });
-      document.getElementById('guests').addEventListener('change', updateSidebarPrice);
 
       // Pre-fill from URL and run initial price update
       var today = new Date().toISOString().split('T')[0];
