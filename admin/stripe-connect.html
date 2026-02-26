@@ -307,12 +307,16 @@
             <div class="admin-page-header">
                 <div>
                     <h1 class="admin-page-header__title">Stripe Connect</h1>
-                    <p class="admin-page-header__description">Manage payment processing and payouts for your property</p>
+                    <p class="admin-page-header__description">Payment processing, owner payouts, and platform earnings for Cascade Apartment 6</p>
                 </div>
-                <div class="admin-page-header__actions">
-                    <a href="https://dashboard.stripe.com" target="_blank" rel="noopener noreferrer" class="admin-btn admin-btn--outline">
+                <div class="admin-page-header__actions" style="display:flex;gap:10px;flex-wrap:wrap;">
+                    <a href="https://dashboard.stripe.com" target="_blank" rel="noopener noreferrer" class="admin-btn admin-btn--primary" style="background:#635bff;color:#fff;border-color:#635bff;">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-                        Stripe Dashboard
+                        Platform Dashboard (Admin)
+                    </a>
+                    <a href="https://dashboard.stripe.com/connect/accounts" target="_blank" rel="noopener noreferrer" class="admin-btn admin-btn--outline">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                        Owner Account (Connected)
                     </a>
                 </div>
             </div>
@@ -327,9 +331,9 @@
             <div class="admin-stats-row">
                 <div class="admin-stat-card">
                     <div class="admin-stat-card__content">
-                        <div class="admin-stat-card__label">Total Revenue</div>
+                        <div class="admin-stat-card__label">Total Bookings Revenue</div>
                         <div class="admin-stat-card__value">$48,290</div>
-                        <div class="admin-stat-card__sublabel">This year</div>
+                        <div class="admin-stat-card__sublabel">Gross collected this year</div>
                     </div>
                     <div class="admin-stat-card__icon admin-stat-card__icon--gold">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
@@ -337,9 +341,19 @@
                 </div>
                 <div class="admin-stat-card">
                     <div class="admin-stat-card__content">
-                        <div class="admin-stat-card__label">Pending Payout</div>
-                        <div class="admin-stat-card__value">$3,840</div>
-                        <div class="admin-stat-card__sublabel">Pays out Friday</div>
+                        <div class="admin-stat-card__label">Platform Fees Collected</div>
+                        <div class="admin-stat-card__value">$724</div>
+                        <div class="admin-stat-card__sublabel">1.5% of gross — admin account</div>
+                    </div>
+                    <div class="admin-stat-card__icon" style="background:rgba(99,91,255,.12);color:#635bff;width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                    </div>
+                </div>
+                <div class="admin-stat-card">
+                    <div class="admin-stat-card__content">
+                        <div class="admin-stat-card__label">Owner Pending Payout</div>
+                        <div class="admin-stat-card__value">$3,782</div>
+                        <div class="admin-stat-card__sublabel">Owner account — pays out Friday</div>
                     </div>
                     <div class="admin-stat-card__icon admin-stat-card__icon--blue">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><polyline points="17 11 21 7 17 3"/><line x1="21" y1="7" x2="9" y2="7"/><polyline points="7 21 3 17 7 13"/><line x1="15" y1="17" x2="3" y2="17"/></svg>
@@ -347,19 +361,9 @@
                 </div>
                 <div class="admin-stat-card">
                     <div class="admin-stat-card__content">
-                        <div class="admin-stat-card__label">Platform Fee</div>
-                        <div class="admin-stat-card__value">5%</div>
-                        <div class="admin-stat-card__sublabel">Per transaction</div>
-                    </div>
-                    <div class="admin-stat-card__icon admin-stat-card__icon--navy">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
-                    </div>
-                </div>
-                <div class="admin-stat-card">
-                    <div class="admin-stat-card__content">
                         <div class="admin-stat-card__label">Account Status</div>
                         <div class="admin-stat-card__value" style="font-size:var(--font-size-xl);color:var(--color-success);">Active</div>
-                        <div class="admin-stat-card__sublabel">Payouts enabled</div>
+                        <div class="admin-stat-card__sublabel">Charges &amp; payouts enabled</div>
                     </div>
                     <div class="admin-stat-card__icon admin-stat-card__icon--green">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><polyline points="20 6 9 17 4 12"/></svg>
@@ -371,15 +375,63 @@
             <div class="stripe-hero">
                 <div>
                     <div class="stripe-hero__title">Connected to Stripe</div>
-                    <p class="stripe-hero__sub">Your Stripe Connect account is active. Payments are processed securely with automatic weekly payouts minus the 5% platform fee.</p>
+                    <p class="stripe-hero__sub">Payment flow: Guest pays full amount → Stripe routes 1.5% application fee to the platform (admin) account → remaining balance transfers to the owner's connected account and pays out weekly.</p>
                 </div>
                 <div class="stripe-logo">stripe</div>
+            </div>
+
+            <!-- Payment flow info -->
+            <div class="settings-section" style="border-left:4px solid #635bff;">
+                <div class="settings-section__header">
+                    <h2 class="settings-section__title" style="color:#635bff;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" style="vertical-align:-3px;margin-right:6px;"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                        Platform Account (Admin) — How You Earn
+                    </h2>
+                    <a href="https://dashboard.stripe.com" target="_blank" rel="noopener noreferrer" class="admin-btn admin-btn--outline" style="font-size:var(--font-size-xs);padding:6px 12px;border-color:#635bff;color:#635bff;">
+                        Open Platform Dashboard →
+                    </a>
+                </div>
+                <div class="settings-section__body">
+                    <p style="font-size:var(--font-size-sm);color:var(--color-gray);margin-bottom:var(--space-lg);line-height:var(--line-height-relaxed);">
+                        When a guest completes a booking, Stripe automatically splits the payment:
+                        <strong>1.5% goes directly to your platform Stripe account</strong> as an application fee — this is how the admin is paid.
+                        The rest is transferred to the owner's connected account.
+                        You can see all platform fees collected in your <a href="https://dashboard.stripe.com" target="_blank" rel="noopener noreferrer" style="color:#635bff;">platform Stripe dashboard</a> under <em>Payments → Application fees</em>.
+                    </p>
+                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:var(--space-lg);">
+                        <div style="background:#f5f4ff;border-radius:10px;padding:16px;border:1px solid rgba(99,91,255,.2);">
+                            <div style="font-size:0.72rem;font-weight:600;color:#635bff;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Guest Pays</div>
+                            <div style="font-size:1.4rem;font-weight:700;color:#1a1a2e;">$1,000.00</div>
+                            <div style="font-size:0.78rem;color:#888;">Total booking amount</div>
+                        </div>
+                        <div style="background:#f5f4ff;border-radius:10px;padding:16px;border:1px solid rgba(99,91,255,.2);">
+                            <div style="font-size:0.72rem;font-weight:600;color:#635bff;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Platform Earns (Admin)</div>
+                            <div style="font-size:1.4rem;font-weight:700;color:#635bff;">$15.00</div>
+                            <div style="font-size:0.78rem;color:#888;">1.5% application fee</div>
+                        </div>
+                        <div style="background:#f0fdf4;border-radius:10px;padding:16px;border:1px solid rgba(34,197,94,.2);">
+                            <div style="font-size:0.72rem;font-weight:600;color:var(--color-success);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Owner Receives</div>
+                            <div style="font-size:1.4rem;font-weight:700;color:#065f46;">$985.00</div>
+                            <div style="font-size:0.78rem;color:#888;">After 1.5% fee deducted</div>
+                        </div>
+                        <div style="background:#fafafa;border-radius:10px;padding:16px;border:1px solid #e5e7eb;">
+                            <div style="font-size:0.72rem;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Stripe Processing</div>
+                            <div style="font-size:1.4rem;font-weight:700;color:#555;">~$17.90</div>
+                            <div style="font-size:0.78rem;color:#888;">1.75% + $0.40 (Stripe's fee, separate)</div>
+                        </div>
+                    </div>
+                    <div class="fee-callout" style="margin-top:0;">
+                        <strong>To view your platform earnings in Stripe:</strong> Log in at
+                        <a href="https://dashboard.stripe.com" target="_blank" rel="noopener noreferrer" style="color:#635bff;">dashboard.stripe.com</a>
+                        → Payments → Application fees. This shows every 1.5% fee the platform collected when the owner was paid for a booking.
+                    </div>
+                </div>
             </div>
 
             <!-- Connection details -->
             <div class="connect-status">
                 <div class="connect-status__header">
-                    <h2 class="connect-status__title">Account Details</h2>
+                    <h2 class="connect-status__title">Owner Connected Account — Payout Details</h2>
                     <span class="status-indicator status-indicator--connected">
                         <span class="status-dot"></span>
                         Connected
@@ -466,9 +518,9 @@
                         </div>
                     </div>
                     <div class="fee-callout">
-                        <strong>Platform fee:</strong> 5% is deducted from each booking payment before payout.
-                        This covers payment processing (Stripe fees ~1.75%), fraud protection, and platform services.
-                        Stripe's standard card fee of 1.75% + 30¢ AUD is also deducted by Stripe separately.
+                        <strong>Platform fee:</strong> 1.5% is automatically collected as an application fee before each payout to the owner.
+                        This appears in the platform (admin) Stripe account under <em>Application fees</em>.
+                        Stripe's card processing fee of 1.75% + $0.40 AUD is deducted separately by Stripe from the owner's payout.
                     </div>
                 </div>
             </div>
@@ -510,10 +562,10 @@
                             <tr>
                                 <th>Date</th>
                                 <th>Guest</th>
-                                <th>Description</th>
+                                <th>Booking</th>
                                 <th>Gross</th>
-                                <th>Fee</th>
-                                <th>Net</th>
+                                <th title="1.5% application fee — goes to platform/admin account">Platform Fee (1.5%)</th>
+                                <th>Owner Net</th>
                                 <th>Status</th>
                             </tr>
                         </thead>
@@ -521,51 +573,56 @@
                             <tr>
                                 <td>20 Feb 2026</td>
                                 <td>Sarah M.</td>
-                                <td>Booking #TRA-2026-0156 · 5 nights</td>
+                                <td>#TRA-2026-0156 · 5 nights</td>
                                 <td class="amount-positive">+$975.00</td>
-                                <td style="color:var(--color-gray)">−$48.75</td>
-                                <td class="amount-positive">$926.25</td>
+                                <td style="color:#635bff;font-weight:600;">+$14.63</td>
+                                <td class="amount-positive">$960.37</td>
                                 <td><span class="admin-badge admin-badge--success">Paid out</span></td>
                             </tr>
                             <tr>
                                 <td>18 Feb 2026</td>
                                 <td>James K.</td>
-                                <td>Booking #TRA-2026-0155 · 3 nights</td>
+                                <td>#TRA-2026-0155 · 3 nights</td>
                                 <td class="amount-positive">+$585.00</td>
-                                <td style="color:var(--color-gray)">−$29.25</td>
-                                <td class="amount-positive">$555.75</td>
+                                <td style="color:#635bff;font-weight:600;">+$8.78</td>
+                                <td class="amount-positive">$576.22</td>
                                 <td><span class="admin-badge admin-badge--success">Paid out</span></td>
                             </tr>
                             <tr>
                                 <td>15 Feb 2026</td>
                                 <td>Emma L.</td>
-                                <td>Booking #TRA-2026-0154 · 7 nights</td>
+                                <td>#TRA-2026-0154 · 7 nights</td>
                                 <td class="amount-positive">+$1,365.00</td>
-                                <td style="color:var(--color-gray)">−$68.25</td>
-                                <td class="amount-positive">$1,296.75</td>
+                                <td style="color:#635bff;font-weight:600;">+$20.48</td>
+                                <td class="amount-positive">$1,344.52</td>
                                 <td><span class="admin-badge admin-badge--primary">Pending</span></td>
                             </tr>
                             <tr>
                                 <td>12 Feb 2026</td>
                                 <td>Oliver P.</td>
-                                <td>Refund — Booking #TRA-2026-0150</td>
+                                <td>Refund — #TRA-2026-0150</td>
                                 <td class="amount-negative">−$390.00</td>
-                                <td style="color:var(--color-gray)">+$19.50</td>
-                                <td class="amount-negative">−$370.50</td>
+                                <td style="color:var(--color-gray);">−$5.85</td>
+                                <td class="amount-negative">−$384.15</td>
                                 <td><span class="admin-badge admin-badge--warning">Refunded</span></td>
                             </tr>
                             <tr>
                                 <td>10 Feb 2026</td>
                                 <td>Mia C.</td>
-                                <td>Booking #TRA-2026-0153 · 4 nights</td>
+                                <td>#TRA-2026-0153 · 4 nights</td>
                                 <td class="amount-positive">+$780.00</td>
-                                <td style="color:var(--color-gray)">−$39.00</td>
-                                <td class="amount-positive">$741.00</td>
+                                <td style="color:#635bff;font-weight:600;">+$11.70</td>
+                                <td class="amount-positive">$768.30</td>
                                 <td><span class="admin-badge admin-badge--success">Paid out</span></td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
+                <p style="font-size:0.78rem;color:#888;padding:12px 16px 4px;border-top:1px solid #f0f0f0;margin-top:0;">
+                    <strong>Platform Fee</strong> (purple) = 1.5% application fee collected by the admin Stripe account per booking. View in your
+                    <a href="https://dashboard.stripe.com" target="_blank" rel="noopener noreferrer" style="color:#635bff;">platform Stripe dashboard</a> → Payments → Application fees.
+                    <strong>Owner Net</strong> = gross minus 1.5% platform fee (Stripe's own processing fee is also deducted separately).
+                </p>
             </div>
 
         </div><!-- /.admin-content -->

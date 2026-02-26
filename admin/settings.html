@@ -13,9 +13,9 @@
     
     <style>
         .settings-tabs { display:flex; border-bottom:2px solid var(--color-light); margin-bottom:var(--space-xl); gap:0; }
-        .tab-btn { padding:var(--space-md) var(--space-xl); font-size:var(--font-size-sm); font-weight:var(--font-weight-medium); color:var(--color-gray); border:none; border-bottom:2px solid transparent; margin-bottom:-2px; background:none; cursor:pointer; font-family:inherit; transition:all var(--transition-fast); }
-        .tab-btn:hover { color:var(--color-dark); }
-        .tab-btn.active { color:var(--color-primary); border-bottom-color:var(--color-primary); font-weight:var(--font-weight-semibold); }
+        .settings-tab { padding:var(--space-md) var(--space-xl); font-size:var(--font-size-sm); font-weight:var(--font-weight-medium); color:var(--color-gray); border:none; border-bottom:2px solid transparent; margin-bottom:-2px; background:none; cursor:pointer; font-family:inherit; transition:all var(--transition-fast); }
+        .settings-tab:hover { color:var(--color-dark); }
+        .settings-tab.active { color:var(--color-primary); border-bottom-color:var(--color-primary); font-weight:var(--font-weight-semibold); }
         .tab-content { display:none; }
         .tab-content.active { display:block; }
         .settings-section { background:var(--color-white); border:1px solid var(--color-light); border-radius:var(--radius-lg); margin-bottom:var(--space-lg); }
@@ -150,7 +150,7 @@
 
                     <div class="form-group">
                         <label for="siteDescription">Site Description</label>
-                        <textarea id="siteDescription" rows="3">Premium accommodation management platform for short-term rental properties.</textarea>
+                        <textarea id="siteDescription" rows="3">Cascade Apartment 6 — self-contained alpine apartment at Mt Baw Baw Alpine Resort, Victoria. Ground floor, sleeps up to 5 guests, with gas log fire, full kitchen, and ski-in/ski-out access.</textarea>
                     </div>
 
                     <div class="form-row">
@@ -160,7 +160,7 @@
                         </div>
                         <div class="form-group">
                             <label for="contactPhone">Contact Phone</label>
-                            <input type="tel" id="contactPhone" value="+61 2 9876 5432">
+                            <input type="tel" id="contactPhone" value="+61 3 5165 1136">
                         </div>
                     </div>
 
@@ -168,8 +168,8 @@
                         <div class="form-group">
                             <label for="defaultTimezone">Default Timezone</label>
                             <select id="defaultTimezone">
-                                <option value="Australia/Sydney" selected>Australia/Sydney (AEST/AEDT)</option>
-                                <option value="Australia/Melbourne">Australia/Melbourne (AEST/AEDT)</option>
+                                <option value="Australia/Sydney">Australia/Sydney (AEST/AEDT)</option>
+                                <option value="Australia/Melbourne" selected>Australia/Melbourne (AEST/AEDT)</option>
                                 <option value="Australia/Brisbane">Australia/Brisbane (AEST)</option>
                                 <option value="Australia/Perth">Australia/Perth (AWST)</option>
                                 <option value="Australia/Adelaide">Australia/Adelaide (ACST/ACDT)</option>
@@ -205,32 +205,32 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label for="businessName">Business Name</label>
-                            <input type="text" id="businessName" value="Cascade Apartment 6 Pty Ltd">
+                            <input type="text" id="businessName" value="Cascade Apartment 6">
                         </div>
                         <div class="form-group">
                             <label for="abnTaxId">ABN / Tax ID</label>
-                            <input type="text" id="abnTaxId" value="12 345 678 901">
-                            <p class="form-hint">Australian Business Number or equivalent tax identifier</p>
+                            <input type="text" id="abnTaxId" placeholder="e.g. 12 345 678 901">
+                            <p class="form-hint">Australian Business Number for GST invoicing</p>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="businessAddress">Street Address</label>
-                        <input type="text" id="businessAddress" value="Level 5, 123 George Street">
+                        <label for="businessAddress">Property Address</label>
+                        <input type="text" id="businessAddress" value="Apartment 6, Cascade Apartments, Mt Baw Baw Alpine Resort">
                     </div>
 
                     <div class="form-row-3">
                         <div class="form-group">
-                            <label for="businessCity">City</label>
-                            <input type="text" id="businessCity" value="Sydney">
+                            <label for="businessCity">Town</label>
+                            <input type="text" id="businessCity" value="Mt Baw Baw">
                         </div>
                         <div class="form-group">
                             <label for="businessState">State</label>
-                            <input type="text" id="businessState" value="NSW">
+                            <input type="text" id="businessState" value="VIC">
                         </div>
                         <div class="form-group">
                             <label for="businessPostcode">Postcode</label>
-                            <input type="text" id="businessPostcode" value="2000">
+                            <input type="text" id="businessPostcode" value="3833">
                         </div>
                     </div>
 
@@ -241,7 +241,7 @@
                         </div>
                         <div class="form-group">
                             <label for="businessPhone">Business Phone</label>
-                            <input type="tel" id="businessPhone" value="+61 2 9876 5400">
+                            <input type="tel" id="businessPhone" value="+61 3 5165 1136">
                         </div>
                     </div>
                 </div>
@@ -262,7 +262,7 @@
                                 <option value="request">Request &amp; Approve</option>
                                 <option value="enquiry">Enquiry Only</option>
                             </select>
-                            <p class="form-hint">How guests can book your properties</p>
+                            <p class="form-hint">How guests can book the apartment</p>
                         </div>
                     </div>
 
@@ -395,9 +395,9 @@
                     </div>
 
                     <div class="form-group" style="margin-top: 20px;">
-                        <label for="maxGuests">Maximum Guests Per Booking</label>
-                        <input type="number" id="maxGuests" value="10" min="1" style="max-width: 200px;">
-                        <p class="form-hint">Default maximum for all properties. Can be overridden per property.</p>
+                        <label for="maxGuests">Maximum Guests</label>
+                        <input type="number" id="maxGuests" value="5" min="1" max="5" style="max-width: 200px;">
+                        <p class="form-hint">Cascade Apartment 6 sleeps up to 5 guests (queen bed + bunks + sofa bed).</p>
                     </div>
                 </div>
             </div>
@@ -615,32 +615,32 @@
 
                     <div class="form-group">
                         <label for="heroTitle">Hero Title</label>
-                        <input type="text" id="heroTitle" value="Find Your Perfect Stay">
+                        <input type="text" id="heroTitle" value="Your Alpine Escape at Mt Baw Baw">
                     </div>
 
                     <div class="form-group">
                         <label for="heroSubtitle">Hero Subtitle</label>
-                        <input type="text" id="heroSubtitle" value="Discover unique accommodation experiences curated just for you">
+                        <input type="text" id="heroSubtitle" value="Self-contained apartment steps from the ski lifts — sleep 5, gas fire, full kitchen, direct booking.">
                     </div>
 
                     <div class="toggle-row">
                         <div class="toggle-info">
-                            <h4>Show Featured Properties</h4>
-                            <p>Display a section of featured properties on the homepage</p>
+                            <h4>Show Guest Reviews</h4>
+                            <p>Display guest review summary on the homepage</p>
                         </div>
                         <label class="toggle-switch">
-                            <input type="checkbox" name="showFeatured" checked>
+                            <input type="checkbox" name="showReviews" checked>
                             <span class="toggle-slider"></span>
                         </label>
                     </div>
 
                     <div class="toggle-row">
                         <div class="toggle-info">
-                            <h4>Show Testimonials</h4>
-                            <p>Display guest testimonials on the homepage</p>
+                            <h4>Show Availability Search</h4>
+                            <p>Display the date search bar on the homepage hero</p>
                         </div>
                         <label class="toggle-switch">
-                            <input type="checkbox" name="showTestimonials" checked>
+                            <input type="checkbox" name="showSearch" checked>
                             <span class="toggle-slider"></span>
                         </label>
                     </div>
@@ -650,9 +650,9 @@
             <!-- ==================== USERS TAB ==================== -->
             <div class="tab-content" id="tab-users">
 
-                <!-- Team Members -->
+                <!-- Account -->
                 <div class="settings-section">
-                    <h3>Team Members</h3>
+                    <h3>Admin Account</h3>
 
                     <table class="users-table">
                         <thead>
@@ -661,7 +661,6 @@
                                 <th>Email</th>
                                 <th>Role</th>
                                 <th>Status</th>
-                                <th>Last Login</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -669,11 +668,11 @@
                             <tr>
                                 <td>
                                     <div class="user-cell">
-                                        <div class="user-avatar bg-blue">SM</div>
-                                        <span class="user-name">Sarah Mitchell</span>
+                                        <div class="user-avatar bg-blue">OW</div>
+                                        <span class="user-name">Property Owner</span>
                                     </div>
                                 </td>
-                                <td>sarah@cascadeapartments.com.au</td>
+                                <td>info@cascadeapartments.com.au</td>
                                 <td><span class="role-badge role-owner">Owner</span></td>
                                 <td>
                                     <span class="status-badge">
@@ -681,67 +680,34 @@
                                         Active
                                     </span>
                                 </td>
-                                <td>19 Feb 2026, 9:15 AM</td>
                                 <td>
                                     <a href="#" class="action-link">Edit</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="user-cell">
-                                        <div class="user-avatar bg-green">JC</div>
-                                        <span class="user-name">James Chen</span>
-                                    </div>
-                                </td>
-                                <td>james@cascadeapartments.com.au</td>
-                                <td><span class="role-badge role-admin">Admin</span></td>
-                                <td>
-                                    <span class="status-badge">
-                                        <span class="status-dot active"></span>
-                                        Active
-                                    </span>
-                                </td>
-                                <td>18 Feb 2026, 4:32 PM</td>
-                                <td>
-                                    <a href="#" class="action-link">Edit</a>
-                                    <a href="#" class="action-link danger">Remove</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="user-cell">
-                                        <div class="user-avatar bg-orange">ER</div>
-                                        <span class="user-name">Emma Robinson</span>
-                                    </div>
-                                </td>
-                                <td>emma@cascadeapartments.com.au</td>
-                                <td><span class="role-badge role-manager">Manager</span></td>
-                                <td>
-                                    <span class="status-badge">
-                                        <span class="status-dot inactive"></span>
-                                        Inactive
-                                    </span>
-                                </td>
-                                <td>15 Feb 2026, 11:20 AM</td>
-                                <td>
-                                    <a href="#" class="action-link">Edit</a>
-                                    <a href="#" class="action-link danger">Remove</a>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
+                </div>
 
-                    <div class="invite-section">
-                        <button class="btn btn-primary" id="inviteBtn">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                                <circle cx="8.5" cy="7" r="4"/>
-                                <line x1="20" y1="8" x2="20" y2="14"/>
-                                <line x1="23" y1="11" x2="17" y2="11"/>
-                            </svg>
-                            Invite Team Member
-                        </button>
+                <!-- Change Password -->
+                <div class="settings-section">
+                    <h3>Change Password</h3>
+                    <div class="form-row" style="max-width:480px;">
+                        <div class="form-group">
+                            <label for="currentPassword">Current Password</label>
+                            <input type="password" id="currentPassword" placeholder="Enter current password">
+                        </div>
                     </div>
+                    <div class="form-row" style="max-width:480px;">
+                        <div class="form-group">
+                            <label for="newPassword">New Password</label>
+                            <input type="password" id="newPassword" placeholder="Minimum 8 characters">
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmPassword">Confirm New Password</label>
+                            <input type="password" id="confirmPassword" placeholder="Repeat new password">
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" style="margin-top:8px;">Update Password</button>
                 </div>
             </div>
 
