@@ -316,6 +316,18 @@
           try {
             const pending = JSON.parse(sessionStorage.getItem('cascade6_pending_booking') || 'null');
             if (pending) {
+              // Double-check availability before saving (race-condition safety net)
+              const existingBookings = JSON.parse(localStorage.getItem('cascade6_bookings') || '[]');
+              const newStart = new Date(pending.checkin);
+              const newEnd   = new Date(pending.checkout);
+              const conflict = existingBookings.some(bk => {
+                if (bk.status === 'cancelled') return false;
+                return newStart < new Date(bk.checkout) && newEnd > new Date(bk.checkin);
+              });
+              if (conflict) {
+                throw new Error('These dates are no longer available. Please contact us to arrange a refund.');
+              }
+
               const bk = {
                 id:              'bk-' + Date.now(),
                 ref:             confirmedRef,

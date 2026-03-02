@@ -831,6 +831,31 @@
       var btn = document.getElementById('continueToPayment');
       btn.disabled = false;
       btn.onclick = function() {
+        // Check for date conflicts before proceeding to payment
+        var existingBookings = [];
+        try { existingBookings = JSON.parse(localStorage.getItem('cascade6_bookings') || '[]'); } catch(e) {}
+        var newStart = new Date(checkinVal);
+        var newEnd   = new Date(checkoutVal);
+        var conflict = existingBookings.some(function(bk) {
+          if (bk.status === 'cancelled') return false;
+          return newStart < new Date(bk.checkout) && newEnd > new Date(bk.checkin);
+        });
+        if (conflict) {
+          var errEl = document.getElementById('dateConflictError');
+          if (!errEl) {
+            errEl = document.createElement('div');
+            errEl.id = 'dateConflictError';
+            errEl.style.cssText = 'background:#fef2f2;border:1px solid #fca5a5;color:#b91c1c;padding:12px 16px;border-radius:8px;margin-top:12px;font-size:0.9rem;';
+            document.getElementById('continueToPayment').parentNode.insertBefore(errEl, document.getElementById('continueToPayment'));
+          }
+          errEl.textContent = 'Sorry, those dates are no longer available. Please choose different dates.';
+          errEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          return;
+        }
+        // Clear any previous conflict error
+        var errEl = document.getElementById('dateConflictError');
+        if (errEl) errEl.remove();
+
         // Read guest details from the form
         var gFirst = (document.getElementById('firstName').value       || '').trim();
         var gLast  = (document.getElementById('lastName').value        || '').trim();
