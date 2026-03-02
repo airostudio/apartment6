@@ -19,10 +19,17 @@ function expandDates(checkin, checkout) {
   return dates;
 }
 
-/** Check Stripe PaymentIntents for date conflicts */
+// In-flight checkouts hold a date claim for this window.
+// The first PaymentIntent created for a set of dates wins.
+const CLAIM_WINDOW_MS = 30 * 60 * 1000;
+
+/** Check Stripe PaymentIntents for date conflicts.
+ *  Blocks on confirmed bookings AND in-flight checkouts (requires_payment_method
+ *  within CLAIM_WINDOW_MS) so concurrent guests can't double-book. */
 async function isAvailable(checkin, checkout) {
   const newStart = new Date(checkin  + 'T00:00:00');
   const newEnd   = new Date(checkout + 'T00:00:00');
+  const now      = Date.now();
 
   let intents = [];
   let page = await stripe.paymentIntents.list({ limit: 100 });
@@ -36,7 +43,10 @@ async function isAvailable(checkin, checkout) {
   }
 
   return !intents.some(pi => {
-    if (pi.status !== 'succeeded' && pi.status !== 'processing') return false;
+    const isConfirmed = pi.status === 'succeeded' || pi.status === 'processing';
+    const isPending   = pi.status === 'requires_payment_method' &&
+                        (now - pi.created * 1000) < CLAIM_WINDOW_MS;
+    if (!isConfirmed && !isPending) return false;
     const m = pi.metadata || {};
     if (!m.checkin || !m.checkout) return false;
     const bStart = new Date(m.checkin  + 'T00:00:00');
@@ -102,7 +112,7 @@ module.exports = async function handler(req, res) {
 
     const connectedAccountId = process.env.STRIPE_CONNECTED_ACCOUNT_ID;
     if (connectedAccountId) {
-      params.application_fee_amount = Math.round(platformFeeCents || amountCents * 0.015);
+      params.application_fee_amount = Math.round(platformFeeCents || amountCents * 0.011);
       params.transfer_data          = { destination: connectedAccountId };
     }
 

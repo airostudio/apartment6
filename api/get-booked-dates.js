@@ -34,6 +34,9 @@ module.exports = async function handler(req, res) {
     return res.status(200).json({ dates: [], ranges: [], source: 'fallback' });
   }
 
+  // In-flight checkouts block dates for this window (consistent with check-availability)
+  const CLAIM_WINDOW_MS = 30 * 60 * 1000;
+
   try {
     const stripe = require('stripe')(secretKey);
 
@@ -48,14 +51,23 @@ module.exports = async function handler(req, res) {
       intents.push(...page.data);
     }
 
-    const ranges = [];
+    const now      = Date.now();
+    const ranges   = [];
     const allDates = new Set();
 
     intents.forEach(pi => {
-      if (pi.status !== 'succeeded' && pi.status !== 'processing') return;
+      const isConfirmed = pi.status === 'succeeded' || pi.status === 'processing';
+      const isPending   = pi.status === 'requires_payment_method' &&
+                          (now - pi.created * 1000) < CLAIM_WINDOW_MS;
+      if (!isConfirmed && !isPending) return;
       const m = pi.metadata || {};
       if (!m.checkin || !m.checkout) return;
-      ranges.push({ checkin: m.checkin, checkout: m.checkout });
+      // 'pending' lets the calendar distinguish held-but-unpaid from confirmed
+      ranges.push({
+        checkin:  m.checkin,
+        checkout: m.checkout,
+        status:   isConfirmed ? 'confirmed' : 'pending',
+      });
       expandDates(m.checkin, m.checkout).forEach(d => allDates.add(d));
     });
 

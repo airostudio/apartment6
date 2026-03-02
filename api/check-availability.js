@@ -40,6 +40,9 @@ module.exports = async function handler(req, res) {
     return res.status(200).json({ available: true, source: 'fallback' });
   }
 
+  // In-flight checkouts block dates for this window (prevents race conditions)
+  const CLAIM_WINDOW_MS = 30 * 60 * 1000;
+
   try {
     const stripe = require('stripe')(secretKey);
 
@@ -55,14 +58,19 @@ module.exports = async function handler(req, res) {
       intents.push(...page.data);
     }
 
-    // Only consider active bookings with date metadata
+    const now = Date.now();
+
+    // Block on confirmed bookings AND in-flight checkouts (requires_payment_method
+    // within the claim window) — first PaymentIntent created for a date range wins.
     const conflict = intents.some(pi => {
-      if (pi.status !== 'succeeded' && pi.status !== 'processing') return false;
+      const isConfirmed = pi.status === 'succeeded' || pi.status === 'processing';
+      const isPending   = pi.status === 'requires_payment_method' &&
+                          (now - pi.created * 1000) < CLAIM_WINDOW_MS;
+      if (!isConfirmed && !isPending) return false;
       const m = pi.metadata || {};
       if (!m.checkin || !m.checkout) return false;
       const bStart = new Date(m.checkin  + 'T00:00:00');
       const bEnd   = new Date(m.checkout + 'T00:00:00');
-      // Standard interval overlap: A.start < B.end AND A.end > B.start
       return newStart < bEnd && newEnd > bStart;
     });
 
