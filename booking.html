@@ -827,34 +827,20 @@
       totalEl.style.color = '#c9a84c';
       setTimeout(function() { totalEl.style.color = ''; }, 600);
 
-      // Enable continue button, pass params
+      // Enable continue button (only if no date conflict detected by checkDatesAvailable)
       var btn = document.getElementById('continueToPayment');
-      btn.disabled = false;
+      btn.dataset.summaryReady = 'true';
+      var dateErrVisible = document.getElementById('dateConflictError') &&
+                           document.getElementById('dateConflictError').style.display !== 'none';
+      if (!dateErrVisible) btn.disabled = false;
+
       btn.onclick = function() {
-        // Check for date conflicts before proceeding to payment
-        var existingBookings = [];
-        try { existingBookings = JSON.parse(localStorage.getItem('cascade6_bookings') || '[]'); } catch(e) {}
-        var newStart = new Date(checkinVal);
-        var newEnd   = new Date(checkoutVal);
-        var conflict = existingBookings.some(function(bk) {
-          if (bk.status === 'cancelled') return false;
-          return newStart < new Date(bk.checkout) && newEnd > new Date(bk.checkin);
-        });
-        if (conflict) {
-          var errEl = document.getElementById('dateConflictError');
-          if (!errEl) {
-            errEl = document.createElement('div');
-            errEl.id = 'dateConflictError';
-            errEl.style.cssText = 'background:#fef2f2;border:1px solid #fca5a5;color:#b91c1c;padding:12px 16px;border-radius:8px;margin-top:12px;font-size:0.9rem;';
-            document.getElementById('continueToPayment').parentNode.insertBefore(errEl, document.getElementById('continueToPayment'));
-          }
-          errEl.textContent = 'Sorry, those dates are no longer available. Please choose different dates.';
+        // Final gate: if a date error is showing, block navigation
+        var errEl = document.getElementById('dateConflictError');
+        if (errEl && errEl.style.display !== 'none') {
           errEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
           return;
         }
-        // Clear any previous conflict error
-        var errEl = document.getElementById('dateConflictError');
-        if (errEl) errEl.remove();
 
         // Read guest details from the form
         var gFirst = (document.getElementById('firstName').value       || '').trim();
@@ -909,17 +895,92 @@
     document.getElementById('checkinDate').min  = today;
     document.getElementById('checkoutDate').min = today;
 
+    // ── Availability check (called whenever both dates are set) ───────────
+    var availCheckTimer = null;
+    function setDateError(msg) {
+      var errEl = document.getElementById('dateConflictError');
+      if (!errEl) {
+        errEl = document.createElement('div');
+        errEl.id = 'dateConflictError';
+        errEl.style.cssText = 'background:#fef2f2;border:1px solid #fca5a5;color:#b91c1c;' +
+          'padding:12px 16px;border-radius:8px;margin:12px 0;font-weight:500;font-size:0.9rem;';
+        var dateRow = document.getElementById('checkinDate').closest('.form-group') || document.getElementById('checkinDate').parentNode;
+        dateRow.parentNode.insertBefore(errEl, dateRow.nextSibling);
+      }
+      errEl.textContent = msg;
+      errEl.style.display = 'block';
+    }
+    function clearDateError() {
+      var errEl = document.getElementById('dateConflictError');
+      if (errEl) errEl.style.display = 'none';
+    }
+
+    function checkDatesAvailable(checkin, checkout) {
+      clearTimeout(availCheckTimer);
+      availCheckTimer = setTimeout(function() {
+        var btn = document.getElementById('continueToPayment');
+
+        // Always check localStorage first (works in demo mode without Stripe)
+        var localConflict = false;
+        try {
+          var existing = JSON.parse(localStorage.getItem('cascade6_bookings') || '[]');
+          var s = new Date(checkin + 'T00:00:00');
+          var e = new Date(checkout + 'T00:00:00');
+          localConflict = existing.some(function(bk) {
+            if (bk.status === 'cancelled') return false;
+            return s < new Date((bk.checkout || bk.checkOut) + 'T00:00:00') &&
+                   e > new Date((bk.checkin  || bk.checkIn)  + 'T00:00:00');
+          });
+        } catch(_) {}
+
+        if (localConflict) {
+          setDateError('Sorry, those dates are not available. Please choose different dates.');
+          if (btn) btn.disabled = true;
+          return;
+        }
+
+        // Server-side check via Stripe
+        fetch('/api/check-availability', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ checkin: checkin, checkout: checkout })
+        })
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          if (!data.available) {
+            setDateError('Sorry, those dates are not available. Please choose different dates.');
+            if (btn) btn.disabled = true;
+          } else {
+            clearDateError();
+            // Re-enable button only if summary also computed a valid stay
+            if (btn && btn.dataset.summaryReady === 'true') btn.disabled = false;
+          }
+        })
+        .catch(function() {
+          // Network error — don't block the user; the payment step will check again
+          clearDateError();
+        });
+      }, 300);
+    }
+    // ─────────────────────────────────────────────────────────────────────
+
     // Enforce check-out after check-in
     document.getElementById('checkinDate').addEventListener('change', function() {
       var cout = document.getElementById('checkoutDate');
       if (cout.value && cout.value <= this.value) cout.value = '';
       cout.min = this.value;
       updateSummary();
+      if (this.value && cout.value) checkDatesAvailable(this.value, cout.value);
     });
 
     // Wire all change events
     ['checkinDate','checkoutDate','numAdults','numChildren'].forEach(function(id) {
       document.getElementById(id).addEventListener('change', updateSummary);
+    });
+    // Trigger availability check on checkout date change too
+    document.getElementById('checkoutDate').addEventListener('change', function() {
+      var cin = document.getElementById('checkinDate').value;
+      if (cin && this.value) checkDatesAvailable(cin, this.value);
     });
     document.querySelectorAll('.addon-option input[type="checkbox"]').forEach(function(cb) {
       cb.addEventListener('change', updateSummary);

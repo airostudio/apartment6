@@ -1045,29 +1045,43 @@
       }
       err.style.display = 'none';
 
-      // Check availability against stored bookings
-      var available = true;
-      try {
-        var bookings = JSON.parse(localStorage.getItem('cascade6_bookings') || '[]');
+      // Check availability — server-side via Stripe, fallback to localStorage
+      var btn2 = document.getElementById('bookNowBtn');
+      btn2.disabled = true;
+      btn2.textContent = 'Checking…';
+
+      fetch('/api/check-availability', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ checkin: checkin, checkout: checkout })
+      })
+      .then(function(r) { return r.json(); })
+      .catch(function() {
+        // API unreachable — fall back to localStorage
+        var bookings = [];
+        try { bookings = JSON.parse(localStorage.getItem('cascade6_bookings') || '[]'); } catch(_) {}
         var ci = new Date(checkin + 'T00:00:00');
         var co = new Date(checkout + 'T00:00:00');
-        for (var i = 0; i < bookings.length; i++) {
-          var b = bookings[i];
-          if (b.status === 'cancelled') continue;
-          var bs = new Date((b.checkin || b.checkIn || b.check_in) + 'T00:00:00');
-          var be = new Date((b.checkout || b.checkOut || b.check_out) + 'T00:00:00');
-          if (ci < be && co > bs) { available = false; break; }
-        }
-      } catch(e) { /* localStorage unavailable — assume available */ }
+        var conflict = bookings.some(function(b) {
+          if (b.status === 'cancelled') return false;
+          return ci < new Date((b.checkout || b.checkOut || '') + 'T00:00:00') &&
+                 co > new Date((b.checkin  || b.checkIn  || '') + 'T00:00:00');
+        });
+        return { available: !conflict };
+      })
+      .then(function(data) {
+        btn2.disabled = false;
+        btn2.textContent = 'Book Now';
+        btn2.style.background = '';
 
-      if (!available) {
-        err.textContent = 'Sorry, those dates are not available. Please try different dates.';
-        err.style.display = 'block';
-        ar.style.display = 'none';
-        ar.innerHTML = '';
-        setTimeout(function() { err.style.display = 'none'; }, 6000);
-        return;
-      }
+        if (!data.available) {
+          err.textContent = 'Sorry, those dates are not available. Please try different dates.';
+          err.style.display = 'block';
+          ar.style.display = 'none';
+          ar.innerHTML = '';
+          setTimeout(function() { err.style.display = 'none'; }, 6000);
+          return;
+        }
 
       // Dates are available — show result + Book Now button
       var nights = Math.round((new Date(checkout) - new Date(checkin)) / 86400000);
@@ -1088,7 +1102,8 @@
             + '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>'
           + '</a>'
         + '</div>';
-    });
+      }); // end .then(data)
+    }); // end click listener
 
     // ── Photo Gallery Lightbox ─────────────────────────────────────
     var GALLERY = [

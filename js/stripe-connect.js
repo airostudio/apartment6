@@ -187,10 +187,17 @@
           amountCents:      bookingData.amountCents,
           platformFeeCents: bookingData.platformFeeCents,
           currency:         'aud',
+          checkin:          bookingData.checkin,
+          checkout:         bookingData.checkout,
+          guestName:        bookingData.guestName,
         }),
       });
 
       const intentData = await intentRes.json();
+      // 409 means dates became unavailable between the pre-check and intent creation
+      if (intentRes.status === 409) {
+        throw new Error('These dates are no longer available. Please go back and choose different dates.');
+      }
       if (!intentRes.ok) throw new Error(intentData.error || 'Could not create payment');
 
       // 2. Confirm the payment client-side using the card element
@@ -292,12 +299,30 @@
         const formData = new FormData(form);
         const data = Object.fromEntries(formData);
 
-        // Retrieve email from pending booking (not collected again at checkout)
+        // Retrieve pending booking (email + dates needed for availability check)
+        let pendingBooking = null;
         let guestEmail = '';
         try {
-          const pb = JSON.parse(sessionStorage.getItem('cascade6_pending_booking') || 'null');
-          if (pb) guestEmail = pb.email || '';
+          pendingBooking = JSON.parse(sessionStorage.getItem('cascade6_pending_booking') || 'null');
+          if (pendingBooking) guestEmail = pendingBooking.email || '';
         } catch(_) {}
+
+        // ── Server-side availability check before touching Stripe ──────────
+        if (pendingBooking?.checkin && pendingBooking?.checkout) {
+          const availRes = await fetch('/api/check-availability', {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify({
+              checkin:  pendingBooking.checkin,
+              checkout: pendingBooking.checkout,
+            }),
+          }).then(r => r.json()).catch(() => ({ available: true }));
+
+          if (!availRes.available) {
+            throw new Error('These dates are no longer available. Please go back and choose different dates.');
+          }
+        }
+        // ──────────────────────────────────────────────────────────────────
 
         const result = await StripeConnect.processPayment({
           cardholderName:   data.cardHolderName,
@@ -308,6 +333,9 @@
           country:          data.billingCountry || 'AU',
           amountCents:      parseInt(data.amount) || 0,
           platformFeeCents: parseInt(data.platformFeeCents) || 0,
+          checkin:          pendingBooking?.checkin,
+          checkout:         pendingBooking?.checkout,
+          guestName:        pendingBooking?.guestName,
         });
 
         if (result.success) {
