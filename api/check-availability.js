@@ -60,14 +60,19 @@ module.exports = async function handler(req, res) {
 
     const now = Date.now();
 
-    // Block on confirmed bookings AND in-flight checkouts (requires_payment_method
-    // within the claim window) — first PaymentIntent created for a date range wins.
+    // Block on:
+    //  • admin_override PIs — permanent, no time limit, highest priority
+    //  • confirmed bookings (succeeded / processing)
+    //  • in-flight guest checkouts (requires_payment_method within 30 min)
     const conflict = intents.some(pi => {
-      const isConfirmed = pi.status === 'succeeded' || pi.status === 'processing';
-      const isPending   = pi.status === 'requires_payment_method' &&
-                          (now - pi.created * 1000) < CLAIM_WINDOW_MS;
-      if (!isConfirmed && !isPending) return false;
+      if (pi.status === 'cancelled') return false;
       const m = pi.metadata || {};
+      const isAdminOverride = m.source === 'admin_override';
+      const isConfirmed     = pi.status === 'succeeded' || pi.status === 'processing';
+      const isPending       = pi.status === 'requires_payment_method' &&
+                              (now - pi.created * 1000) < CLAIM_WINDOW_MS;
+      // Admin holds block unconditionally (no expiry window)
+      if (!isAdminOverride && !isConfirmed && !isPending) return false;
       if (!m.checkin || !m.checkout) return false;
       const bStart = new Date(m.checkin  + 'T00:00:00');
       const bEnd   = new Date(m.checkout + 'T00:00:00');

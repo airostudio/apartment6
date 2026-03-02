@@ -194,9 +194,13 @@
       });
 
       const intentData = await intentRes.json();
-      // 409 means dates became unavailable between the pre-check and intent creation
       if (intentRes.status === 409) {
-        throw new Error('These dates are no longer available. Please go back and choose different dates.');
+        // DATES_JUST_TAKEN  — lost a simultaneous-booking race (post-creation check)
+        // DATES_UNAVAILABLE — dates were already blocked before the PI was even attempted
+        const msg = intentData.error === 'DATES_JUST_TAKEN'
+          ? 'These dates were just taken by another guest moments ago. Please go back and choose different dates.'
+          : 'These dates are no longer available. Please go back and choose different dates.';
+        throw new Error(msg);
       }
       if (!intentRes.ok) throw new Error(intentData.error || 'Could not create payment');
 

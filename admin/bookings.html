@@ -537,31 +537,105 @@
     document.getElementById('editCheckin').addEventListener('change', recalcModalTotal);
     document.getElementById('editCheckout').addEventListener('change', recalcModalTotal);
 
-    document.getElementById('editModalSave').addEventListener('click', function() {
-        var name = document.getElementById('editName').value.trim();
-        var email = document.getElementById('editEmail').value.trim();
-        var checkin = document.getElementById('editCheckin').value;
+    document.getElementById('editModalSave').addEventListener('click', async function() {
+        var saveBtn  = document.getElementById('editModalSave');
+        var name     = document.getElementById('editName').value.trim();
+        var email    = document.getElementById('editEmail').value.trim();
+        var checkin  = document.getElementById('editCheckin').value;
         var checkout = document.getElementById('editCheckout').value;
         if (!name || !email || !checkin || !checkout) { alert('Please fill in all required fields.'); return; }
         if (checkout <= checkin) { alert('Check-out must be after check-in.'); return; }
 
-        var id = document.getElementById('editBookingId').value;
+        var id       = document.getElementById('editBookingId').value;
         var bookings = loadBookings();
-        var existing = id ? bookings.findIndex(function(b){return b.id===id;}) : -1;
-        var total = parseInt(document.getElementById('editTotal').value) || calcTotal(checkin, checkout);
+        var existing = id ? bookings.findIndex(function(b){ return b.id === id; }) : -1;
+        var total    = parseInt(document.getElementById('editTotal').value) || calcTotal(checkin, checkout);
+        var notes    = document.getElementById('editNotes').value.trim();
+
+        // Determine whether dates changed (we only need a new hold if they did)
+        var existingBk  = existing >= 0 ? bookings[existing] : null;
+        var oldHoldId   = existingBk ? (existingBk.holdId || null) : null;
+        var datesChanged = !existingBk ||
+                           existingBk.checkin !== checkin ||
+                           existingBk.checkout !== checkout;
+
+        // ── Call admin-hold-dates API when dates change or new booking ────
+        var holdId = existingBk && !datesChanged ? oldHoldId : null;
+
+        if (datesChanged) {
+            saveBtn.disabled    = true;
+            saveBtn.textContent = 'Saving…';
+
+            var holdPayload = {
+                checkin:    checkin,
+                checkout:   checkout,
+                guestName:  name,
+                notes:      notes,
+                oldHoldId:  oldHoldId,
+            };
+
+            try {
+                var holdRes  = await fetch('/api/admin-hold-dates', {
+                    method:  'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body:    JSON.stringify(holdPayload),
+                });
+                var holdData = await holdRes.json();
+
+                if (holdRes.status === 409 && holdData.error === 'ADMIN_HOLD_CONFLICT') {
+                    // Warn the admin and ask for explicit override confirmation
+                    var shouldOverride = confirm(
+                        'Warning: ' + holdData.message +
+                        '\n\nClick OK to override anyway, or Cancel to go back.'
+                    );
+                    if (!shouldOverride) {
+                        saveBtn.disabled    = false;
+                        saveBtn.textContent = 'Save';
+                        return;
+                    }
+                    // Retry with force flag
+                    var forceRes  = await fetch('/api/admin-hold-dates', {
+                        method:  'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body:    JSON.stringify(Object.assign({}, holdPayload, { force: true })),
+                    });
+                    var forceData = await forceRes.json();
+                    if (forceRes.ok) {
+                        holdId = forceData.holdId || null;
+                        if (forceData.displacedPending > 0) {
+                            showToast('Admin override: ' + forceData.displacedPending + ' in-progress guest checkout(s) cancelled.');
+                        }
+                    }
+                } else if (holdRes.ok) {
+                    holdId = holdData.holdId || null;
+                    if (holdData.displacedPending > 0) {
+                        showToast('Admin override: ' + holdData.displacedPending + ' in-progress guest checkout(s) displaced.');
+                    }
+                }
+                // If API returned an unexpected error, log and continue —
+                // the booking is still saved to localStorage.
+            } catch (err) {
+                // Network error / demo mode — proceed without Stripe hold
+                console.warn('admin-hold-dates unavailable:', err.message);
+            } finally {
+                saveBtn.disabled    = false;
+                saveBtn.textContent = 'Save';
+            }
+        }
 
         var record = {
-            id: id || nextId(bookings),
-            name: name,
-            email: email,
-            phone: document.getElementById('editPhone').value.trim(),
-            guests: parseInt(document.getElementById('editGuests').value) || 2,
-            checkin: checkin,
-            checkout: checkout,
-            status: document.getElementById('editStatus').value,
-            total: total,
-            notes: document.getElementById('editNotes').value.trim(),
-            createdAt: existing >= 0 ? (bookings[existing].createdAt || Date.now()) : Date.now()
+            id:        id || nextId(bookings),
+            name:      name,
+            email:     email,
+            phone:     document.getElementById('editPhone').value.trim(),
+            guests:    parseInt(document.getElementById('editGuests').value) || 2,
+            checkin:   checkin,
+            checkout:  checkout,
+            status:    document.getElementById('editStatus').value,
+            total:     total,
+            notes:     notes,
+            holdId:    holdId,
+            createdAt: existingBk ? (existingBk.createdAt || Date.now()) : Date.now(),
         };
 
         if (existing >= 0) { bookings[existing] = record; } else { bookings.push(record); }
@@ -624,14 +698,25 @@
     document.getElementById('cancelModalClose').addEventListener('click', closeCancelModal);
     document.getElementById('cancelModalAbort').addEventListener('click', closeCancelModal);
     cancelModal.addEventListener('click', function(e) { if (e.target === cancelModal) closeCancelModal(); });
-    document.getElementById('cancelModalConfirm').addEventListener('click', function() {
+    document.getElementById('cancelModalConfirm').addEventListener('click', async function() {
         if (!cancelingId) return;
         var bookings = loadBookings();
-        var idx = bookings.findIndex(function(b){return b.id===cancelingId;});
-        if (idx >= 0) { bookings[idx].status = 'cancelled'; saveBookings(bookings); }
+        var idx = bookings.findIndex(function(b){ return b.id === cancelingId; });
+        if (idx >= 0) {
+            // Release the Stripe admin hold so those dates become bookable again
+            var holdId = bookings[idx].holdId;
+            if (holdId) {
+                try {
+                    await fetch('/api/admin-hold-dates?id=' + encodeURIComponent(holdId), { method: 'DELETE' });
+                } catch (_) { /* ignore — dates will remain blocked until PI ages out */ }
+            }
+            bookings[idx].status = 'cancelled';
+            bookings[idx].holdId = null;
+            saveBookings(bookings);
+        }
         closeCancelModal();
         renderTable();
-        showToast('Booking cancelled.');
+        showToast('Booking cancelled and dates released.');
     });
 
     // ── Table click delegation ────────────────────────────────────────────────

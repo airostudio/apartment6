@@ -56,17 +56,21 @@ module.exports = async function handler(req, res) {
     const allDates = new Set();
 
     intents.forEach(pi => {
-      const isConfirmed = pi.status === 'succeeded' || pi.status === 'processing';
-      const isPending   = pi.status === 'requires_payment_method' &&
-                          (now - pi.created * 1000) < CLAIM_WINDOW_MS;
-      if (!isConfirmed && !isPending) return;
+      if (pi.status === 'cancelled') return;
       const m = pi.metadata || {};
+      const isAdminOverride = m.source === 'admin_override';
+      const isConfirmed     = pi.status === 'succeeded' || pi.status === 'processing';
+      const isPending       = pi.status === 'requires_payment_method' &&
+                              (now - pi.created * 1000) < CLAIM_WINDOW_MS;
+      // Admin holds block regardless of time window
+      if (!isAdminOverride && !isConfirmed && !isPending) return;
       if (!m.checkin || !m.checkout) return;
-      // 'pending' lets the calendar distinguish held-but-unpaid from confirmed
+      // status: 'admin' = admin hold, 'confirmed' = paid, 'pending' = in-flight checkout
       ranges.push({
-        checkin:  m.checkin,
-        checkout: m.checkout,
-        status:   isConfirmed ? 'confirmed' : 'pending',
+        checkin:   m.checkin,
+        checkout:  m.checkout,
+        status:    isAdminOverride ? 'admin' : (isConfirmed ? 'confirmed' : 'pending'),
+        guestName: m.guestName || null,
       });
       expandDates(m.checkin, m.checkout).forEach(d => allDates.add(d));
     });
