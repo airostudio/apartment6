@@ -1907,11 +1907,16 @@ h6 { font-size: var(--font-size-md); }
 }
 
 @media (max-width: 768px) {
-  /* Revert header to simple flex on mobile: logo left, toggle right */
+  /* Mobile header: hamburger left | logo centre | Book Now right */
   .header-inner {
     display: flex;
     justify-content: space-between;
-    padding-left: var(--space-md);
+    padding: 0 var(--space-md);
+  }
+
+  /* Dissolve header-right so its children join the header-inner flex row */
+  .header-right {
+    display: contents;
   }
 
   .nav-main {
@@ -1921,6 +1926,11 @@ h6 { font-size: var(--font-size-md); }
   .mobile-menu-toggle {
     display: flex;
     order: -1;
+  }
+
+  /* Hide Owner Login — too wide for mobile header */
+  .nav-actions .btn--ghost {
+    display: none;
   }
 
   .search-bar {
