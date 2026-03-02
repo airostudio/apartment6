@@ -1911,6 +1911,7 @@ h6 { font-size: var(--font-size-md); }
   .header-inner {
     display: flex;
     justify-content: space-between;
+    padding-left: var(--space-md);
   }
 
   .nav-main {
@@ -1919,6 +1920,7 @@ h6 { font-size: var(--font-size-md); }
 
   .mobile-menu-toggle {
     display: flex;
+    order: -1;
   }
 
   .search-bar {
