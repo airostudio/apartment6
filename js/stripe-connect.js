@@ -1,15 +1,10 @@
 /**
- * TrendAccom - Stripe Connect Integration
- * Handles: Stripe Connect onboarding, payment processing,
- * payment intents, and checkout flow
+ * TrendAccom - Stripe Payment Handler
+ * Handles: Stripe Elements initialisation, payment processing,
+ * payment intents, and checkout form submission.
  *
  * NOTE: This module requires the Stripe.js library to be loaded:
  * <script src="https://js.stripe.com/v3/"></script>
- *
- * For Stripe Connect, you need:
- * 1. A Stripe platform account with Connect enabled
- * 2. Each property owner connects their Stripe account
- * 3. Payments go through the platform and are split to connected accounts
  */
 
 (function() {
@@ -184,12 +179,11 @@
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
         body:    JSON.stringify({
-          amountCents:      bookingData.amountCents,
-          platformFeeCents: bookingData.platformFeeCents,
-          currency:         'aud',
-          checkin:          bookingData.checkin,
-          checkout:         bookingData.checkout,
-          guestName:        bookingData.guestName,
+          amountCents: bookingData.amountCents,
+          currency:    'aud',
+          checkin:     bookingData.checkin,
+          checkout:    bookingData.checkout,
+          guestName:   bookingData.guestName,
         }),
       });
 
@@ -230,41 +224,6 @@
         success:         true,
         paymentIntentId: paymentIntent.id,
         status:          paymentIntent.status,
-      };
-    },
-
-    /**
-     * Stripe Connect Onboarding for property owners
-     * Creates an Account Link for the Connect onboarding flow
-     */
-    async startOnboarding() {
-      // In production, this would:
-      // 1. Call your server to create a Connect account
-      // 2. Server calls Stripe to create an Account Link
-      // 3. Redirect the property owner to Stripe's onboarding
-
-
-      // Simulated redirect URL
-      const onboardingUrl = 'https://connect.stripe.com/setup/s/demo';
-
-      window.TrendAccom?.showToast('Redirecting to Stripe Connect...', 'info');
-
-      // In production: window.location.href = onboardingUrl;
-      return { url: onboardingUrl };
-    },
-
-    /**
-     * Check Connect account status
-     */
-    async checkAccountStatus(accountId) {
-      // In production, call your server to check the connected account status
-      return {
-        accountId: accountId || 'acct_demo',
-        chargesEnabled: true,
-        payoutsEnabled: true,
-        detailsSubmitted: true,
-        businessType: 'company',
-        created: '2026-01-15'
       };
     },
 
@@ -408,33 +367,11 @@
   }
 
   // ============================================
-  // Stripe Connect Admin Handler
-  // ============================================
-  function initStripeAdmin() {
-    const connectBtn = document.getElementById('stripeConnectBtn');
-    if (connectBtn) {
-      connectBtn.addEventListener('click', async () => {
-        await StripeConnect.startOnboarding();
-      });
-    }
-
-    const disconnectBtn = document.getElementById('stripeDisconnectBtn');
-    if (disconnectBtn) {
-      disconnectBtn.addEventListener('click', () => {
-        if (confirm('Are you sure you want to disconnect your Stripe account?')) {
-          window.TrendAccom?.showToast('Stripe account disconnected', 'warning');
-        }
-      });
-    }
-  }
-
-  // ============================================
   // Initialize
   // ============================================
   async function init() {
     await StripeConnect.init();
     initCheckoutForm();
-    initStripeAdmin();
   }
 
   if (document.readyState === 'loading') {

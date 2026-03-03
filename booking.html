@@ -515,10 +515,6 @@
               <span>GST (10%)</span>
               <span id="valTax">—</span>
             </div>
-            <div class="price-row" id="rowPlatformFee" style="display:none">
-              <span>Booking fee (1.1%)</span>
-              <span id="valPlatformFee">—</span>
-            </div>
             <div class="price-row price-row--total" id="rowTotal" style="display:none">
               <span>Total</span>
               <span id="valTotal">—</span>
@@ -679,7 +675,6 @@
     var STRIPE_FEE_RATE  = 0.0175;   // Stripe processing: 1.75% + $0.40
     var STRIPE_FEE_FIXED = 0.40;
     var TAX_RATE       = 0.10;
-    var PLATFORM_FEE_RATE = 0.011;  // 1.1% Stripe Connect platform fee
 
     var DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
     var MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -805,21 +800,18 @@
         cleaningRow.parentNode.insertBefore(row, cleaningRow);
       });
 
-      // Processing fee (Stripe 1.75% + $0.40), tax, platform fee, total
+      // Processing fee (Stripe 1.75% + $0.40), tax, total
       var base         = stay.accom + extraGuestTotal + addonsTotal + CLEANING_FEE;
       var serviceFee   = Math.round((base * STRIPE_FEE_RATE + STRIPE_FEE_FIXED) * 100) / 100;
       var subtotal     = base + serviceFee;
       var tax          = Math.round(subtotal * TAX_RATE);
-      var preTotalAmt  = subtotal + tax;
-      var platformFee  = Math.round(preTotalAmt * PLATFORM_FEE_RATE);
-      var grand        = preTotalAmt + platformFee;
+      var grand        = subtotal + tax;
 
       text('valCleaning',    fmtMoney(CLEANING_FEE));
       text('valService',     fmtMoney(serviceFee));
       text('valTax',         fmtMoney(tax));
-      text('valPlatformFee', fmtMoney(platformFee));
       text('valTotal',       fmtMoney(grand));
-      ['rowCleaning','rowService','rowTax','rowPlatformFee','rowTotal'].forEach(show);
+      ['rowCleaning','rowService','rowTax','rowTotal'].forEach(show);
 
       // Animate total
       var totalEl = document.getElementById('valTotal');
@@ -858,7 +850,7 @@
           cleaning:        CLEANING_FEE,
           service:         serviceFee,
           tax:             tax,
-          platformFee:     platformFee,
+          platformFee:     0,
           total:           grand,
           // Guest details
           guestFirst:      gFirst,
