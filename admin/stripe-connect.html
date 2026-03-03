@@ -524,6 +524,26 @@ VERCEL_DEPLOY_HOOK=https://api.vercel.com/v1/integrations/deploy/…  # optional
                         </div>
                     </div>
 
+                    <!-- Connect-not-enabled error (shown when platform hasn't enabled Stripe Connect) -->
+                    <div id="connectNotEnabledError" hidden style="margin-top:var(--space-xl);">
+                        <div class="warn-banner" style="margin-bottom:0;">
+                            <div class="warn-banner__title">Stripe Connect is not enabled on your platform account</div>
+                            <p class="warn-banner__sub" style="margin:6px 0 12px;">
+                                Your Stripe account needs Connect enabled before you can create sub-accounts for payouts.
+                                This is a one-time setup — it's free and usually approved immediately.
+                            </p>
+                            <ol style="font-size:var(--font-size-sm);color:#92400e;line-height:1.8;padding-left:1.25rem;margin:0 0 12px;">
+                                <li>Open your <a href="https://dashboard.stripe.com/settings/connect" target="_blank" rel="noopener" style="color:#92400e;font-weight:600;text-decoration:underline;">Stripe Dashboard → Settings → Connect</a></li>
+                                <li>Click <strong>Get started with Connect</strong> and complete the short form</li>
+                                <li>Return here and click <strong>Connect Stripe Account</strong> again</li>
+                            </ol>
+                            <a href="https://dashboard.stripe.com/settings/connect" target="_blank" rel="noopener"
+                               style="display:inline-block;padding:0.45rem 1rem;background:#f59e0b;color:#fff;border-radius:6px;font-size:0.8125rem;font-weight:600;text-decoration:none;">
+                                Open Stripe Connect Settings →
+                            </a>
+                        </div>
+                    </div>
+
                     <!-- Connect button -->
                     <div id="connectBtnWrap" style="margin-top:var(--space-xl);">
                         <button class="admin-btn admin-btn--primary" id="connectBtn" style="background:var(--stripe);border-color:var(--stripe);font-size:var(--font-size-base);padding:14px 32px;gap:10px;">
@@ -1030,8 +1050,13 @@ VERCEL_DEPLOY_HOOK=https://api.vercel.com/v1/integrations/deploy/…  # optional
             .then(function (data) {
                 if (data.url) {
                     window.location.href = data.url;
+                } else if (data.error === 'CONNECT_NOT_ENABLED') {
+                    var errEl = document.getElementById('connectNotEnabledError');
+                    if (errEl) { errEl.hidden = false; errEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }
+                    connectBtn.disabled    = false;
+                    connectBtn.textContent = 'Connect Stripe Account';
                 } else {
-                    alert('Could not start Stripe onboarding: ' + (data.error || 'Unknown error'));
+                    alert('Could not start Stripe onboarding: ' + (data.message || data.error || 'Unknown error'));
                     connectBtn.disabled    = false;
                     connectBtn.textContent = 'Connect Stripe Account';
                 }

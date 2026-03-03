@@ -78,6 +78,12 @@ module.exports = async function handler(req, res) {
     return res.status(200).json({ url: accountLink.url, accountId: account.id });
   } catch (err) {
     console.error('stripe-connect-url error:', err.message);
-    return res.status(500).json({ error: err.message });
+    // Detect the specific "not signed up for Connect" error so the frontend
+    // can show targeted instructions rather than a raw Stripe error string.
+    const isConnectNotEnabled = /signed up for Connect/i.test(err.message);
+    return res.status(500).json({
+      error:   isConnectNotEnabled ? 'CONNECT_NOT_ENABLED' : err.message,
+      message: err.message,
+    });
   }
 };
