@@ -1,4 +1,5 @@
 const secretKey = process.env.STRIPE_SECRET_KEY;
+const cfg       = require('./_shared-config');
 
 if (!secretKey) {
   console.error('STRIPE_SECRET_KEY environment variable is not set.');
@@ -160,7 +161,9 @@ module.exports = async function handler(req, res) {
       },
     };
 
-    const connectedAccountId = process.env.STRIPE_CONNECTED_ACCOUNT_ID;
+    // Read at request time so /tmp session config (saved via admin UI) is
+    // picked up immediately after onboarding, without needing a redeploy.
+    const connectedAccountId = cfg.getConnectedAccountId();
     if (connectedAccountId) {
       params.application_fee_amount = Math.round(platformFeeCents || amountCents * 0.011);
       params.transfer_data          = { destination: connectedAccountId };

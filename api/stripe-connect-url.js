@@ -14,6 +14,7 @@
  */
 
 const secretKey = process.env.STRIPE_SECRET_KEY;
+const cfg       = require('./_shared-config');
 
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -31,17 +32,29 @@ module.exports = async function handler(req, res) {
   try {
     const stripe = require('stripe')(secretKey);
 
-    // Create a Stripe Express account for the property owner.
-    // Express accounts give the owner their own Stripe-managed dashboard while
-    // allowing the platform to charge application fees on each payment.
-    const account = await stripe.accounts.create({
-      type: 'express',
-      country: 'AU',
-      capabilities: {
-        card_payments: { requested: true },
-        transfers:     { requested: true },
-      },
-    });
+    // Reuse any in-progress (incomplete) Express account rather than creating
+    // a new one on every button click.  pendingAccountId is cleared when the
+    // admin completes onboarding and stripe-connect-save is called.
+    let accountId = cfg.getPendingAccountId();
+
+    if (!accountId) {
+      // Create a new Stripe Express account for the property owner.
+      // Express accounts give the owner their own Stripe-managed dashboard
+      // while allowing the platform to charge application fees on each payment.
+      const account = await stripe.accounts.create({
+        type: 'express',
+        country: 'AU',
+        capabilities: {
+          card_payments: { requested: true },
+          transfers:     { requested: true },
+        },
+      });
+      accountId = account.id;
+      cfg.savePendingAccountId(accountId);
+    }
+
+    // Treat accountId as a local var below — keep original variable name
+    const account = { id: accountId };
 
     // Build absolute base URL for Stripe's redirect URLs
     const body   = req.body || {};

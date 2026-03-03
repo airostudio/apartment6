@@ -10,8 +10,8 @@
  *   { configured: true, connected: true, … } — full account details
  */
 
-const secretKey          = process.env.STRIPE_SECRET_KEY;
-const connectedAccountId = process.env.STRIPE_CONNECTED_ACCOUNT_ID;
+const secretKey = process.env.STRIPE_SECRET_KEY;
+const cfg       = require('./_shared-config');
 
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -19,6 +19,10 @@ module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   if (req.method === 'OPTIONS') return res.status(204).end();
   if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' });
+
+  // Read at request time so /tmp session config is picked up immediately
+  // after the admin saves via stripe-connect-save, without needing redeploy.
+  const connectedAccountId = cfg.getConnectedAccountId();
 
   // ── Platform not configured ──────────────────────────────────────────────
   if (!secretKey || secretKey.startsWith('pk_')) {
@@ -33,7 +37,7 @@ module.exports = async function handler(req, res) {
     return res.status(200).json({
       configured: true,
       connected:  false,
-      reason:     'STRIPE_CONNECTED_ACCOUNT_ID environment variable is not set.',
+      reason:     'No connected account saved yet. Complete Stripe onboarding to connect.',
     });
   }
 
