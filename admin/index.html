@@ -48,7 +48,7 @@
                 <span class="admin-sidebar__section-title">INTEGRATIONS</span>
                 <ul class="admin-sidebar__menu">
                     <li class="admin-sidebar__menu-item"><a href="ical-sync.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg><span>iCal Sync</span></a></li>
-                    <li class="admin-sidebar__menu-item"><a href="stripe-connect.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg><span>Stripe Connect</span></a></li>
+                    <li class="admin-sidebar__menu-item"><a href="stripe-connect.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg><span>Stripe Settings</span></a></li>
                 </ul>
             </div>
             <div class="admin-sidebar__section">
@@ -166,18 +166,6 @@
                     <div class="stat-card-change stat-card-change--neutral">
                         <span class="stat-card-change-period">Awaiting confirmation</span>
                     </div>
-                </div>
-            </div>
-
-            <!-- Stripe Connect CTA (shown when not connected) -->
-            <div id="stripeCtaBanner" style="display:none;margin-bottom:1.5rem;">
-                <div class="admin-card" style="padding:1.25rem 1.5rem;border-left:4px solid #635bff;background:#f5f5ff;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#635bff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-                    <div style="flex:1;min-width:200px;">
-                        <div style="font-weight:600;font-size:0.9375rem;color:#4338ca;">Stripe Connect not set up</div>
-                        <div style="font-size:0.8125rem;color:#4338ca;margin-top:2px;">Connect your Stripe account to receive payouts. Guests pay online and 98.9% transfers directly to your bank.</div>
-                    </div>
-                    <a href="stripe-connect.html" style="display:inline-block;padding:0.45rem 1.1rem;background:#635bff;color:#fff;border-radius:6px;font-size:0.8125rem;font-weight:600;text-decoration:none;white-space:nowrap;">Set up Stripe Connect →</a>
                 </div>
             </div>
 
@@ -415,15 +403,6 @@
         }
     })();
 
-    // Check Stripe Connect status — show CTA banner if not connected
-    fetch('/api/stripe-connect-status')
-        .then(function (r) { return r.json(); })
-        .then(function (d) {
-            if (d.configured && !d.connected) {
-                document.getElementById('stripeCtaBanner').style.display = '';
-            }
-        })
-        .catch(function () { /* silently ignore — network/api not available */ });
     </script>
 </div><!-- /.admin-layout -->
 </body>

@@ -46,7 +46,7 @@
                 <span class="admin-sidebar__section-title">INTEGRATIONS</span>
                 <ul class="admin-sidebar__menu">
                     <li class="admin-sidebar__menu-item"><a href="ical-sync.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg><span>iCal Sync</span></a></li>
-                    <li class="admin-sidebar__menu-item"><a href="stripe-connect.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg><span>Stripe Connect</span></a></li>
+                    <li class="admin-sidebar__menu-item"><a href="stripe-connect.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg><span>Stripe Settings</span></a></li>
                 </ul>
             </div>
             <div class="admin-sidebar__section">
@@ -88,11 +88,11 @@
                     </div>
                 </div>
 
-                <!-- Stripe Connect Status Banner (dynamic) -->
+                <!-- Stripe status banner (dynamic) -->
                 <div id="stripeStatusBanner" style="margin-bottom:1.5rem;">
-                    <div class="admin-card" style="padding:1.25rem 1.5rem;display:flex;align-items:center;gap:0.75rem;color:#475569;">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;animation:spin 1s linear infinite"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
-                        <span style="font-size:0.875rem;">Checking Stripe Connect status…</span>
+                    <div class="admin-card" style="padding:1rem 1.5rem;display:flex;align-items:center;gap:0.75rem;color:#94a3b8;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;animation:spin 1s linear infinite"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+                        <span style="font-size:0.875rem;">Checking Stripe status…</span>
                     </div>
                 </div>
 
@@ -136,14 +136,14 @@
                     </div>
                     <div class="stat-card">
                         <div class="stat-card-header">
-                            <span class="stat-card-label">Stripe Balance</span>
+                            <span class="stat-card-label">Total Bookings</span>
                             <span class="stat-card-icon stat-card-icon--properties">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg>
                             </span>
                         </div>
-                        <div class="stat-card-value" id="statBalance">—</div>
+                        <div class="stat-card-value" id="statCount">0</div>
                         <div class="stat-card-change stat-card-change--neutral">
-                            <span class="stat-card-change-period">Available in Stripe</span>
+                            <span class="stat-card-change-period">All confirmed bookings</span>
                         </div>
                     </div>
                 </div>
@@ -163,13 +163,11 @@
                                     <th>Check-out</th>
                                     <th>Status</th>
                                     <th>Amount</th>
-                                    <th>Platform Fee</th>
-                                    <th>Net Payout</th>
                                 </tr>
                             </thead>
                             <tbody id="txBody">
                                 <tr id="txEmpty">
-                                    <td colspan="8" style="text-align:center;padding:2rem;color:#94a3b8;">
+                                    <td colspan="6" style="text-align:center;padding:2rem;color:#94a3b8;">
                                         No bookings yet. <a href="bookings.html" style="color:#0f2744;font-weight:500;">Create the first booking</a>
                                     </td>
                                 </tr>
@@ -181,44 +179,6 @@
                             View All Bookings
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="admin-card__footer-icon"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                         </a>
-                    </div>
-                </div>
-
-                <!-- Stripe Connect Info (shown when connected) -->
-                <div id="stripeDetailCard" style="display:none;" class="admin-card" style="margin-bottom:1.5rem;">
-                    <div class="admin-card__header" style="display:flex;align-items:center;justify-content:space-between;">
-                        <h2 class="admin-card__title">Stripe Connected Account</h2>
-                        <div style="display:flex;gap:0.5rem;">
-                            <a id="stripeDashLink" href="https://dashboard.stripe.com" target="_blank" class="btn btn-secondary" style="font-size:0.8125rem;padding:0.4rem 0.9rem;">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-                                Stripe Dashboard
-                            </a>
-                            <button id="disconnectBtn" class="btn" style="font-size:0.8125rem;padding:0.4rem 0.9rem;background:#fff;border:1px solid #fca5a5;color:#dc2626;" onclick="disconnectStripe()">Disconnect</button>
-                        </div>
-                    </div>
-                    <div class="admin-card__body">
-                        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;">
-                            <div style="background:#f8fafc;border-radius:8px;padding:12px 16px;">
-                                <div style="font-size:0.7rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Account ID</div>
-                                <div id="scAccountId" style="font-family:monospace;font-size:0.8rem;color:#1e293b;font-weight:600;">—</div>
-                            </div>
-                            <div style="background:#f8fafc;border-radius:8px;padding:12px 16px;">
-                                <div style="font-size:0.7rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Business Name</div>
-                                <div id="scDisplayName" style="font-size:0.875rem;color:#1e293b;font-weight:600;">—</div>
-                            </div>
-                            <div style="background:#f8fafc;border-radius:8px;padding:12px 16px;">
-                                <div style="font-size:0.7rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Charges</div>
-                                <div id="scCharges" style="font-size:0.875rem;font-weight:600;">—</div>
-                            </div>
-                            <div style="background:#f8fafc;border-radius:8px;padding:12px 16px;">
-                                <div style="font-size:0.7rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Payouts</div>
-                                <div id="scPayouts" style="font-size:0.875rem;font-weight:600;">—</div>
-                            </div>
-                            <div style="background:#f8fafc;border-radius:8px;padding:12px 16px;">
-                                <div style="font-size:0.7rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Fee Split</div>
-                                <div style="font-size:0.875rem;color:#1e293b;font-weight:600;">98.9% owner · 1.1% platform</div>
-                            </div>
-                        </div>
                     </div>
                 </div>
 
@@ -244,7 +204,7 @@
 
         // ── Stats from localStorage bookings ────────────────────────────
         var bookings = JSON.parse(localStorage.getItem('cascade6_bookings') || '[]');
-        var totalRevenue = 0, pendingRevenue = 0, monthRevenue = 0;
+        var totalRevenue = 0, pendingRevenue = 0, monthRevenue = 0, confirmedCount = 0;
         var now = new Date();
         var monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
 
@@ -252,6 +212,7 @@
             var amt = parseFloat(b.total) || 0;
             if (b.status === 'confirmed' || b.status === 'completed') {
                 totalRevenue += amt;
+                confirmedCount++;
                 var created = b.createdAt ? new Date(b.createdAt) : null;
                 if (created && created >= monthStart) monthRevenue += amt;
             } else if (b.status === 'pending') {
@@ -265,6 +226,7 @@
         document.getElementById('statRevenue').textContent = fmtAUD(totalRevenue);
         document.getElementById('statPending').textContent  = fmtAUD(pendingRevenue);
         document.getElementById('statMonth').textContent    = fmtAUD(monthRevenue);
+        document.getElementById('statCount').textContent    = confirmedCount;
         document.getElementById('statMonthLabel').textContent =
             now.toLocaleString('en-AU', { month: 'long' }) + ' ' + now.getFullYear() + ' (confirmed)';
 
@@ -280,125 +242,70 @@
             tbody.innerHTML = '';
             sorted.forEach(function (b) {
                 var amt       = parseFloat(b.total) || 0;
-                var fee       = +(amt * 0.011).toFixed(2);
-                var net       = +(amt * 0.989).toFixed(2);
                 var statusMap = {
                     confirmed: ['admin-badge--confirmed', 'Confirmed'],
                     pending:   ['admin-badge--pending',   'Pending'],
                     cancelled: ['admin-badge--cancelled', 'Cancelled'],
                     completed: ['admin-badge--completed', 'Completed'],
                 };
-                var sc         = (statusMap[b.status] || ['admin-badge--pending', 'Pending']);
-                var dateStr    = b.createdAt ? new Date(b.createdAt).toLocaleDateString('en-AU', {day:'2-digit',month:'short',year:'numeric'}) : '—';
+                var sc          = (statusMap[b.status] || ['admin-badge--pending', 'Pending']);
+                var dateStr     = b.createdAt ? new Date(b.createdAt).toLocaleDateString('en-AU', {day:'2-digit',month:'short',year:'numeric'}) : '—';
                 var checkinStr  = b.checkin  ? new Date(b.checkin  + 'T12:00:00').toLocaleDateString('en-AU', {day:'2-digit',month:'short'}) : '—';
                 var checkoutStr = b.checkout ? new Date(b.checkout + 'T12:00:00').toLocaleDateString('en-AU', {day:'2-digit',month:'short'}) : '—';
 
                 var tr = document.createElement('tr');
-                var isCancelled = b.status === 'cancelled';
                 tr.innerHTML =
                     '<td style="font-size:0.8125rem;color:#64748b;">' + dateStr + '</td>' +
                     '<td style="font-size:0.875rem;font-weight:500;">' + (b.name || '—') + '</td>' +
                     '<td style="font-size:0.8125rem;">' + checkinStr + '</td>' +
                     '<td style="font-size:0.8125rem;">' + checkoutStr + '</td>' +
                     '<td><span class="admin-badge ' + sc[0] + '">' + sc[1] + '</span></td>' +
-                    '<td style="font-weight:600;font-size:0.875rem;">' + fmtAUD(amt) + '</td>' +
-                    '<td style="font-size:0.8125rem;color:#94a3b8;">' + (isCancelled ? '—' : fmtAUD(fee)) + '</td>' +
-                    '<td style="font-size:0.875rem;font-weight:600;color:' + (isCancelled ? '#94a3b8' : '#059669') + ';">' +
-                        (isCancelled ? '—' : fmtAUD(net)) +
-                    '</td>';
+                    '<td style="font-weight:600;font-size:0.875rem;">' + fmtAUD(amt) + '</td>';
                 tbody.appendChild(tr);
             });
         }
 
-        // ── Stripe Connect status ───────────────────────────────────────
+        // ── Stripe status ────────────────────────────────────────────────
         var banner = document.getElementById('stripeStatusBanner');
 
         fetch('/api/stripe-connect-status')
             .then(function (r) { return r.json(); })
             .then(function (d) {
                 if (!d.configured) {
-                    banner.innerHTML = renderNotConfigured();
-                } else if (!d.connected) {
-                    banner.innerHTML = renderNotConnected(d.error);
+                    banner.innerHTML =
+                        '<div class="admin-card" style="padding:1rem 1.5rem;border-left:4px solid #f59e0b;background:#fff7ed;display:flex;align-items:center;gap:0.75rem;">' +
+                            '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" style="flex-shrink:0;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>' +
+                            '<span style="font-size:0.875rem;color:#92400e;font-weight:500;">Stripe not configured — add <code style="background:#fde68a;padding:1px 4px;border-radius:3px;">STRIPE_SECRET_KEY</code> to your environment variables.</span>' +
+                            '<a href="stripe-connect.html" style="margin-left:auto;white-space:nowrap;font-size:0.8125rem;font-weight:600;color:#92400e;text-decoration:underline;">Stripe Settings →</a>' +
+                        '</div>';
+                } else if (!d.working) {
+                    banner.innerHTML =
+                        '<div class="admin-card" style="padding:1rem 1.5rem;border-left:4px solid #dc2626;background:#fef2f2;display:flex;align-items:center;gap:0.75rem;">' +
+                            '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2" style="flex-shrink:0;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>' +
+                            '<span style="font-size:0.875rem;color:#991b1b;font-weight:500;">Stripe key invalid — ' + (d.error || 'check your STRIPE_SECRET_KEY') + '</span>' +
+                            '<a href="stripe-connect.html" style="margin-left:auto;white-space:nowrap;font-size:0.8125rem;font-weight:600;color:#991b1b;text-decoration:underline;">Stripe Settings →</a>' +
+                        '</div>';
                 } else {
-                    banner.innerHTML = renderConnected(d);
-                    renderDetailCard(d);
+                    var isLive = d.mode === 'live';
+                    var modeColour = isLive ? '#166534' : '#92400e';
+                    var modeBg     = isLive ? '#f0fdf4' : '#fff7ed';
+                    var modeBorder = isLive ? '#22c55e' : '#f59e0b';
+                    banner.innerHTML =
+                        '<div class="admin-card" style="padding:1rem 1.5rem;border-left:4px solid ' + modeBorder + ';background:' + modeBg + ';display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">' +
+                            '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="' + modeBorder + '" stroke-width="2.5" style="flex-shrink:0;"><polyline points="20 6 9 17 4 12"/></svg>' +
+                            '<span style="font-weight:600;font-size:0.875rem;color:' + modeColour + ';">Stripe active</span>' +
+                            '<span style="font-size:0.8125rem;color:' + modeColour + ';">' + (d.email || d.accountId || '') + '</span>' +
+                            '<span style="font-size:0.75rem;font-weight:600;padding:2px 8px;border-radius:99px;background:' + modeBorder + ';color:#fff;">' + (isLive ? 'Live' : 'Test mode') + '</span>' +
+                            '<a href="stripe-connect.html" style="margin-left:auto;white-space:nowrap;font-size:0.8125rem;font-weight:600;color:' + modeColour + ';text-decoration:underline;">Stripe Settings →</a>' +
+                        '</div>';
+                    if (d.balance) {
+                        document.getElementById('statBalance').textContent = fmtAUD(d.balance.available / 100);
+                    }
                 }
             })
             .catch(function () {
-                banner.innerHTML = '<div class="admin-card" style="padding:1rem 1.5rem;background:#fff7ed;border-left:4px solid #f59e0b;"><span style="font-size:0.875rem;color:#92400e;">Could not reach /api/stripe-connect-status — check your API configuration.</span></div>';
+                banner.innerHTML = '';  // silently hide on network error
             });
-
-        function renderNotConfigured() {
-            return '<div class="admin-card" style="padding:1.25rem 1.5rem;border-left:4px solid #f59e0b;background:#fff7ed;">' +
-                '<div style="display:flex;align-items:flex-start;gap:0.75rem;">' +
-                    '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>' +
-                    '<div>' +
-                        '<div style="font-weight:600;font-size:0.9375rem;color:#92400e;margin-bottom:4px;">Stripe not configured</div>' +
-                        '<div style="font-size:0.875rem;color:#92400e;line-height:1.5;">STRIPE_SECRET_KEY is not set. Add it to your environment variables, then connect your Stripe account.</div>' +
-                        '<a href="stripe-connect.html" style="display:inline-block;margin-top:0.75rem;padding:0.4rem 1rem;background:#635bff;color:#fff;border-radius:6px;font-size:0.8125rem;font-weight:600;text-decoration:none;">Set up Stripe Connect</a>' +
-                    '</div>' +
-                '</div>' +
-            '</div>';
-        }
-
-        function renderNotConnected(errMsg) {
-            return '<div class="admin-card" style="padding:1.25rem 1.5rem;border-left:4px solid #635bff;background:#f5f5ff;">' +
-                '<div style="display:flex;align-items:flex-start;gap:0.75rem;">' +
-                    '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#635bff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px;"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>' +
-                    '<div>' +
-                        '<div style="font-weight:600;font-size:0.9375rem;color:#4338ca;margin-bottom:4px;">Stripe Connect not set up' + (errMsg ? ' — account unreachable' : '') + '</div>' +
-                        '<div style="font-size:0.875rem;color:#4338ca;line-height:1.5;">Connect your Stripe account to start receiving payouts. Guests will be charged and 98.9% goes directly to your bank account.</div>' +
-                        '<a href="stripe-connect.html" style="display:inline-block;margin-top:0.75rem;padding:0.4rem 1rem;background:#635bff;color:#fff;border-radius:6px;font-size:0.8125rem;font-weight:600;text-decoration:none;">Connect Stripe Account →</a>' +
-                    '</div>' +
-                '</div>' +
-            '</div>';
-        }
-
-        function renderConnected(d) {
-            return '<div class="admin-card" style="padding:1rem 1.5rem;border-left:4px solid #22c55e;background:#f0fdf4;">' +
-                '<div style="display:flex;align-items:center;gap:0.75rem;">' +
-                    '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>' +
-                    '<span style="font-weight:600;font-size:0.9375rem;color:#166534;">Stripe Connected</span>' +
-                    '<span style="font-size:0.8125rem;color:#166534;font-family:monospace;">' + d.accountId + '</span>' +
-                    '<span style="flex:1;"></span>' +
-                    (d.balance ? '<span style="font-size:0.875rem;color:#166534;font-weight:600;">Available: ' + fmtAUD(d.balance.available / 100) + ' · Pending: ' + fmtAUD(d.balance.pending / 100) + '</span>' : '') +
-                '</div>' +
-            '</div>';
-        }
-
-        function renderDetailCard(d) {
-            var card = document.getElementById('stripeDetailCard');
-            card.style.display = '';
-            document.getElementById('scAccountId').textContent   = d.accountId || '—';
-            document.getElementById('scDisplayName').textContent = d.displayName || d.email || '(not set)';
-            var chargesEl = document.getElementById('scCharges');
-            chargesEl.textContent  = d.chargesEnabled ? 'Enabled' : 'Not enabled';
-            chargesEl.style.color  = d.chargesEnabled ? '#059669' : '#dc2626';
-            var payoutsEl = document.getElementById('scPayouts');
-            payoutsEl.textContent  = d.payoutsEnabled ? 'Enabled' : 'Not enabled';
-            payoutsEl.style.color  = d.payoutsEnabled ? '#059669' : '#dc2626';
-            if (d.balance) {
-                document.getElementById('statBalance').textContent = fmtAUD(d.balance.available / 100);
-            }
-        }
-
-        // ── Disconnect ──────────────────────────────────────────────────
-        window.disconnectStripe = function () {
-            if (!confirm('Disconnect your Stripe account? Payments will stop transferring to your bank account until you reconnect.')) return;
-            var btn = document.getElementById('disconnectBtn');
-            btn.disabled = true;
-            btn.textContent = 'Disconnecting…';
-            fetch('/api/stripe-connect-save', { method: 'DELETE' })
-                .then(function (r) { return r.json(); })
-                .then(function (d) {
-                    if (d.hasEnvVar) {
-                        alert(d.message);
-                    }
-                    location.reload();
-                })
-                .catch(function () { alert('Disconnect failed. Please try again.'); btn.disabled = false; btn.textContent = 'Disconnect'; });
-        };
     })();
     </script>
 </div><!-- /.admin-main -->

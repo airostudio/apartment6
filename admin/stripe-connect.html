@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <base href="/admin/">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stripe Connect — Cascade Apartment 6 Admin</title>
+    <title>Stripe Settings — Cascade Apartment 6 Admin</title>
     <meta name="robots" content="noindex,nofollow">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,64 +12,29 @@
     <link rel="stylesheet" href="../css/main.css">
     <link rel="stylesheet" href="../css/admin.css">
     <style>
-        /* ── Stripe brand colours ── */
-        :root { --stripe: #635bff; --stripe-dark: #4f46e5; --stripe-bg: rgba(99,91,255,.07); }
+        :root { --stripe: #635bff; --stripe-dark: #4f46e5; }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* ── Hero ── */
-        .sc-hero {
-            background: linear-gradient(135deg, var(--stripe) 0%, var(--stripe-dark) 100%);
-            border-radius: var(--radius-xl);
-            padding: var(--space-2xl);
-            color: #fff;
-            margin-bottom: var(--space-xl);
-            display: flex;
-            align-items: center;
-            gap: var(--space-xl);
-            flex-wrap: wrap;
-            justify-content: space-between;
-        }
-        .sc-hero__title  { font-size: var(--font-size-2xl); font-weight: 700; margin-bottom: 6px; }
-        .sc-hero__sub    { font-size: var(--font-size-sm); opacity: .88; line-height: 1.6; max-width: 520px; }
-        .sc-hero__logo   { font-size: 2.2rem; font-weight: 800; letter-spacing: -1px; opacity: .92; }
-
-        /* ── Setup wizard ── */
-        .setup-card {
+        .stripe-status-card {
             background: #fff;
             border: 1px solid var(--color-light);
             border-radius: var(--radius-xl);
-            padding: var(--space-2xl);
-            margin-bottom: var(--space-xl);
-        }
-        .setup-steps { display: flex; flex-direction: column; gap: var(--space-lg); margin: var(--space-xl) 0; }
-        .setup-step  { display: flex; gap: var(--space-lg); align-items: flex-start; }
-        .setup-step__num {
-            width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
-            display: flex; align-items: center; justify-content: center;
-            font-weight: 700; font-size: var(--font-size-sm);
-        }
-        .setup-step__num--done   { background: #d1fae5; color: #065f46; }
-        .setup-step__num--active { background: var(--stripe); color: #fff; }
-        .setup-step__num--todo   { background: var(--color-off-white); color: var(--color-gray); border: 2px solid var(--color-light); }
-        .setup-step__body { flex: 1; }
-        .setup-step__title { font-weight: 600; font-size: var(--font-size-base); color: var(--color-dark); margin-bottom: 3px; }
-        .setup-step__sub   { font-size: var(--font-size-xs); color: var(--color-gray); line-height: 1.5; }
-        .setup-connector   { width: 2px; height: 20px; background: var(--color-light); margin-left: 17px; }
-
-        /* ── Status panel ── */
-        .status-card {
-            background: #fff;
-            border: 1px solid var(--color-light);
-            border-radius: var(--radius-xl);
-            margin-bottom: var(--space-xl);
             overflow: hidden;
+            margin-bottom: var(--space-xl);
         }
-        .status-card__header {
-            display: flex; align-items: center; justify-content: space-between;
+        .stripe-status-card__header {
             padding: var(--space-lg) var(--space-xl);
             border-bottom: 1px solid var(--color-light);
             background: var(--color-off-white);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: var(--space-md);
+            flex-wrap: wrap;
         }
-        .status-card__title { font-weight: 600; font-size: var(--font-size-base); }
+        .stripe-status-card__title { font-weight: 600; font-size: var(--font-size-base); }
+        .stripe-status-card__body  { padding: var(--space-xl); }
+
         .status-pill {
             display: inline-flex; align-items: center; gap: 6px;
             padding: 4px 12px; border-radius: 99px;
@@ -79,77 +44,36 @@
         .status-pill--warn { background: #fef3c7; color: #92400e; }
         .status-pill--err  { background: #fee2e2; color: #991b1b; }
         .status-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
-        .status-grid {
+
+        .info-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: var(--space-md);
-            padding: var(--space-xl);
         }
-        .status-item { background: var(--color-off-white); border-radius: var(--radius-md); padding: 14px 18px; }
-        .status-item__label { font-size: 0.7rem; font-weight: 600; color: var(--color-gray); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 4px; }
-        .status-item__value { font-size: var(--font-size-sm); font-weight: 600; color: var(--color-dark); }
-        .status-item__value--mono { font-family: var(--font-mono, monospace); font-size: 0.78rem; }
-        .status-item__value--ok  { color: var(--color-success); }
-        .status-item__value--err { color: var(--color-danger); }
+        .info-tile {
+            background: var(--color-off-white);
+            border-radius: var(--radius-md);
+            padding: 14px 18px;
+        }
+        .info-tile__label {
+            font-size: 0.7rem; font-weight: 600; color: var(--color-gray);
+            text-transform: uppercase; letter-spacing: .5px; margin-bottom: 4px;
+        }
+        .info-tile__value {
+            font-size: var(--font-size-sm); font-weight: 600; color: var(--color-dark);
+        }
+        .info-tile__value--mono { font-family: var(--font-mono, monospace); font-size: 0.78rem; }
+        .info-tile__value--ok  { color: #059669; }
+        .info-tile__value--warn{ color: #d97706; }
 
-        /* ── Fee split ── */
-        .fee-split {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: var(--space-lg);
-            margin-bottom: var(--space-xl);
-        }
-        @media (max-width: 600px) { .fee-split { grid-template-columns: 1fr; } }
-        .fee-block {
-            border-radius: var(--radius-xl);
-            padding: var(--space-xl);
-            text-align: center;
-        }
-        .fee-block--owner    { background: #f0fdf4; border: 2px solid #bbf7d0; }
-        .fee-block--platform { background: var(--stripe-bg); border: 2px solid rgba(99,91,255,.25); }
-        .fee-block__pct  { font-size: 3rem; font-weight: 800; line-height: 1; margin-bottom: 6px; }
-        .fee-block__who  { font-size: var(--font-size-sm); font-weight: 600; margin-bottom: 4px; }
-        .fee-block__desc { font-size: var(--font-size-xs); color: var(--color-gray); line-height: 1.5; }
-        .fee-block--owner .fee-block__pct    { color: #059669; }
-        .fee-block--platform .fee-block__pct { color: var(--stripe); }
-
-        /* ── Success banner ── */
-        .success-banner {
-            background: #f0fdf4;
-            border: 1px solid #bbf7d0;
-            border-left: 4px solid #22c55e;
-            border-radius: var(--radius-lg);
-            padding: var(--space-xl);
-            margin-bottom: var(--space-xl);
-        }
-        .success-banner__title { font-weight: 700; font-size: var(--font-size-lg); color: #166534; margin-bottom: 6px; }
-        .success-banner__sub   { font-size: var(--font-size-sm); color: #166534; line-height: 1.6; }
-
-        /* ── Warning banner ── */
-        .warn-banner {
-            background: #fffbeb;
-            border: 1px solid #fde68a;
-            border-left: 4px solid #f59e0b;
-            border-radius: var(--radius-lg);
-            padding: var(--space-xl);
-            margin-bottom: var(--space-xl);
-        }
-        .warn-banner__title { font-weight: 700; font-size: var(--font-size-base); color: #92400e; margin-bottom: 6px; }
-        .warn-banner__sub   { font-size: var(--font-size-sm); color: #92400e; line-height: 1.6; }
-
-        /* ── Env var box ── */
         .envvar-box {
-            background: #1e1e2e;
-            border-radius: var(--radius-lg);
+            background: #1e1e2e; border-radius: var(--radius-lg);
             padding: var(--space-lg) var(--space-xl);
-            margin: var(--space-md) 0;
-            position: relative;
+            margin: var(--space-md) 0; position: relative;
         }
         .envvar-box code {
-            font-family: var(--font-mono, monospace);
-            font-size: 0.82rem;
-            color: #a6e3a1;
-            white-space: pre;
+            font-family: var(--font-mono, monospace); font-size: 0.82rem;
+            color: #a6e3a1; white-space: pre;
         }
         .envvar-box__copy {
             position: absolute; top: 10px; right: 12px;
@@ -158,84 +82,6 @@
             transition: background .15s;
         }
         .envvar-box__copy:hover { background: rgba(255,255,255,.2); }
-
-        /* ── Account ID display ── */
-        .account-id-display {
-            display: flex; align-items: center; gap: var(--space-md);
-            background: var(--color-off-white); border: 1px solid var(--color-light);
-            border-radius: var(--radius-md); padding: var(--space-md) var(--space-lg);
-            margin: var(--space-md) 0;
-        }
-        .account-id-display code {
-            font-family: var(--font-mono, monospace);
-            font-size: var(--font-size-sm); color: var(--stripe-dark); flex: 1;
-        }
-
-        /* ── Info section ── */
-        .info-section {
-            background: #fff; border: 1px solid var(--color-light);
-            border-radius: var(--radius-xl); margin-bottom: var(--space-xl); overflow: hidden;
-        }
-        .info-section__head {
-            padding: var(--space-lg) var(--space-xl);
-            border-bottom: 1px solid var(--color-light);
-            font-weight: 600; font-size: var(--font-size-base);
-            display: flex; align-items: center; justify-content: space-between;
-        }
-        .info-section__body { padding: var(--space-xl); }
-        .info-row {
-            display: flex; align-items: flex-start; justify-content: space-between;
-            padding: var(--space-md) 0; border-bottom: 1px solid var(--color-light);
-            gap: var(--space-md);
-        }
-        .info-row:last-child { border-bottom: none; padding-bottom: 0; }
-        .info-row__label { font-size: var(--font-size-sm); font-weight: 500; color: var(--color-dark); }
-        .info-row__sub   { font-size: var(--font-size-xs); color: var(--color-gray); margin-top: 2px; }
-        .info-row__val   { font-size: var(--font-size-sm); text-align: right; flex-shrink: 0; }
-
-        /* ── Loading skeleton ── */
-        .skeleton { background: linear-gradient(90deg,#f0f0f0 25%,#e0e0e0 50%,#f0f0f0 75%);
-            background-size: 200% 100%; animation: shimmer 1.4s infinite; border-radius: 4px; }
-        @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
-
-        /* ── Payout opts ── */
-        .payout-opts { display: flex; gap: var(--space-sm); flex-wrap: wrap; }
-        .payout-opt  {
-            flex: 1; min-width: 100px; padding: 12px 16px;
-            border: 2px solid var(--color-light); border-radius: var(--radius-md);
-            text-align: center; cursor: pointer; transition: all .15s;
-        }
-        .payout-opt:hover { border-color: #aba8ff; }
-        .payout-opt.sel  { border-color: var(--stripe); background: var(--stripe-bg); }
-        .payout-opt__lbl { font-size: var(--font-size-xs); font-weight: 700; color: var(--color-dark); }
-        .payout-opt__sub { font-size: 0.7rem; color: var(--color-gray); margin-top: 2px; }
-        .toggle { position:relative;width:44px;height:24px; }
-        .toggle input { opacity:0;width:0;height:0; }
-        .toggle-slider { position:absolute;inset:0;background:var(--color-muted);border-radius:24px;cursor:pointer;transition:background .15s; }
-        .toggle-slider::before { content:'';position:absolute;width:18px;height:18px;left:3px;top:3px;background:#fff;border-radius:50%;transition:transform .15s; }
-        .toggle input:checked + .toggle-slider { background:var(--color-success); }
-        .toggle input:checked + .toggle-slider::before { transform:translateX(20px); }
-
-        /* ── Transactions ── */
-        .txn-table { width:100%; border-collapse:collapse; }
-        .txn-table th { background:var(--color-off-white);padding:10px 16px;font-size:.7rem;font-weight:600;color:var(--color-gray);text-transform:uppercase;letter-spacing:.5px;text-align:left;border-bottom:1px solid var(--color-light); }
-        .txn-table td { padding:12px 16px;font-size:var(--font-size-sm);border-bottom:1px solid var(--color-light);vertical-align:middle; }
-        .txn-table tr:last-child td { border-bottom:none; }
-        .txn-table tr:hover td { background:var(--color-off-white); }
-        .pos { color:var(--color-success);font-weight:600; }
-        .neg { color:var(--color-danger);font-weight:600; }
-        .pfee { color:var(--stripe);font-weight:600; }
-
-        /* ── Save-status bar ── */
-        .save-status { display:flex; align-items:center; gap:10px; padding:12px 20px; border-radius:var(--radius-md); font-size:var(--font-size-sm); font-weight:500; margin-bottom:var(--space-lg); border:1px solid transparent; }
-        .save-status--loading { background:#eff6ff; border-color:#bfdbfe; color:#1e40af; }
-        .save-status--ok      { background:#f0fdf4; border-color:#bbf7d0; color:#065f46; }
-        .save-status--warn    { background:#fffbeb; border-color:#fde68a; color:#92400e; }
-        .save-status--err     { background:#fef2f2; border-color:#fecaca; color:#991b1b; }
-        @keyframes spin { to { transform:rotate(360deg); } }
-
-        /* ── Hidden ── */
-        [hidden] { display: none !important; }
     </style>
 </head>
 <body class="admin-body">
@@ -272,7 +118,7 @@
                 <span class="admin-sidebar__section-title">INTEGRATIONS</span>
                 <ul class="admin-sidebar__menu">
                     <li class="admin-sidebar__menu-item"><a href="ical-sync.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg><span>iCal Sync</span></a></li>
-                    <li class="admin-sidebar__menu-item admin-sidebar__menu-item--active"><a href="stripe-connect.html" class="admin-sidebar__menu-link admin-sidebar__menu-link--active"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg><span>Stripe Connect</span></a></li>
+                    <li class="admin-sidebar__menu-item admin-sidebar__menu-item--active"><a href="stripe-connect.html" class="admin-sidebar__menu-link admin-sidebar__menu-link--active"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg><span>Stripe Settings</span></a></li>
                 </ul>
             </div>
             <div class="admin-sidebar__section">
@@ -286,901 +132,195 @@
     </aside>
 
     <!-- ── Main ───────────────────────────────────────────── -->
-    <main class="admin-main">
+    <div class="admin-main">
         <header class="admin-topbar">
             <div class="admin-topbar__breadcrumb">
                 <a href="index.html" class="admin-topbar__breadcrumb-link">Dashboard</a>
                 <span class="admin-topbar__breadcrumb-separator">&rsaquo;</span>
-                <span class="admin-topbar__breadcrumb-current">Stripe Connect</span>
+                <span class="admin-topbar__breadcrumb-current">Stripe Settings</span>
             </div>
             <div class="admin-topbar__actions">
                 <div class="admin-topbar__user">
-                    <div class="admin-topbar__user-avatar">OW</div>
-                    <span class="admin-topbar__user-name">Owner</span>
+                    <div class="admin-topbar__user-avatar" id="userAvatar">AD</div>
+                    <span class="admin-topbar__user-name" id="userName">Admin</span>
                 </div>
             </div>
         </header>
 
-        <div class="admin-content">
+        <main class="admin-content">
 
-            <!-- ── Page header ─────────────────────────────── -->
             <div class="admin-page-header">
-                <div>
-                    <h1 class="admin-page-header__title">Stripe Connect</h1>
-                    <p class="admin-page-header__description">Connect your Stripe account to receive 98.9% of every booking payment automatically.</p>
+                <div class="admin-page-header-text">
+                    <h1 class="admin-page-title">Stripe Settings</h1>
+                    <p class="admin-page-subtitle">Stripe account status and API key configuration</p>
                 </div>
-                <div id="headerActions" class="admin-page-header__actions" style="display:flex;gap:10px;flex-wrap:wrap;">
-                    <a href="https://dashboard.stripe.com" target="_blank" rel="noopener noreferrer" class="admin-btn admin-btn--outline" style="font-size:var(--font-size-xs);">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-                        Stripe Dashboard
-                    </a>
-                </div>
+                <a href="https://dashboard.stripe.com" target="_blank" rel="noopener" class="btn btn-secondary admin-page-action">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="btn-icon"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                    Stripe Dashboard
+                </a>
             </div>
 
-            <!-- ── Hero banner ─────────────────────────────── -->
-            <div class="sc-hero">
-                <div>
-                    <div class="sc-hero__title">Accept Payments with Stripe</div>
-                    <p class="sc-hero__sub">
-                        Connect your Stripe account in under 5 minutes. When a guest pays,
-                        <strong>98.9% goes directly to your Stripe account</strong>
-                        and pays out to your bank on your chosen schedule.
-                        The platform retains just 1.1% as a service fee.
-                    </p>
+            <!-- ── Live status card ── -->
+            <div class="stripe-status-card">
+                <div class="stripe-status-card__header">
+                    <span class="stripe-status-card__title">Stripe Account Status</span>
+                    <span id="statusPill" class="status-pill status-pill--warn">
+                        <span class="status-dot"></span>Checking…
+                    </span>
                 </div>
-                <div class="sc-hero__logo">stripe</div>
-            </div>
-
-            <!-- ── Fee split ──────────────────────────────── -->
-            <div class="fee-split">
-                <div class="fee-block fee-block--owner">
-                    <div class="fee-block__pct">98.9%</div>
-                    <div class="fee-block__who">You receive</div>
-                    <div class="fee-block__desc">Transferred to your connected Stripe account after each confirmed booking. Pays out to your bank on your chosen schedule.</div>
-                </div>
-                <div class="fee-block fee-block--platform">
-                    <div class="fee-block__pct">1.1%</div>
-                    <div class="fee-block__who">Platform service fee</div>
-                    <div class="fee-block__desc">Retained by the booking platform as an application fee. This covers software, hosting, and payment infrastructure.</div>
-                </div>
-            </div>
-
-            <!-- ══════════════════════════════════════════════
-                 SUCCESS banner — shown after Stripe redirect
-                 ══════════════════════════════════════════════ -->
-            <div id="successBanner" hidden>
-                <div class="success-banner">
-                    <div class="success-banner__title">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="20" height="20" style="vertical-align:-4px;margin-right:6px;color:#22c55e;"><polyline points="20 6 9 17 4 12"/></svg>
-                        Your Stripe account is connected!
-                    </div>
-                    <p class="success-banner__sub">
-                        Stripe onboarding is complete. We're activating your connection now — once confirmed,
-                        save the account ID below as an environment variable for permanent activation.
-                    </p>
-                </div>
-
-                <!-- Activation status — populated by the auto-save fetch below -->
-                <div id="saveStatus" class="save-status save-status--loading" hidden>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;animation:spin 1s linear infinite;" aria-hidden="true"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-                    <span>Activating connection…</span>
-                </div>
-
-                <div class="info-section">
-                    <div class="info-section__head">
-                        <span>
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" style="vertical-align:-3px;margin-right:6px;color:var(--stripe);"></svg>
-                            Save Your Connected Account ID
-                        </span>
-                    </div>
-                    <div class="info-section__body">
-                        <p style="font-size:var(--font-size-sm);color:var(--color-gray);margin-bottom:var(--space-md);line-height:1.6;">
-                            Your Stripe connected account ID is shown below. Add it to your server environment variables so every booking payment is routed to your account.
-                        </p>
-
-                        <div class="account-id-display">
-                            <code id="returnedAccountId">acct_…</code>
-                            <button class="admin-btn admin-btn--outline" style="font-size:var(--font-size-xs);flex-shrink:0;" onclick="copyAccountId()">Copy</button>
-                        </div>
-
-                        <p style="font-size:var(--font-size-sm);font-weight:600;margin:var(--space-lg) 0 var(--space-sm);">Add this to your environment variables:</p>
-
-                        <div class="envvar-box">
-                            <code id="envVarLine">STRIPE_CONNECTED_ACCOUNT_ID=acct_…</code>
-                            <button class="envvar-box__copy" onclick="copyEnvVar()">Copy</button>
-                        </div>
-
-                        <div style="margin-top:var(--space-xl);display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:var(--space-md);">
-                            <div style="background:var(--color-off-white);border-radius:var(--radius-md);padding:var(--space-lg);">
-                                <div style="font-weight:600;font-size:var(--font-size-sm);margin-bottom:8px;">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14" style="vertical-align:-2px;margin-right:4px;"></svg>
-                                    Vercel
-                                </div>
-                                <ol style="font-size:var(--font-size-xs);color:var(--color-gray);padding-left:16px;line-height:1.8;margin:0;">
-                                    <li>Open your Vercel project → <strong>Settings → Environment Variables</strong></li>
-                                    <li>Add <code style="background:#e5e7eb;padding:1px 4px;border-radius:3px;font-size:0.7rem;">STRIPE_CONNECTED_ACCOUNT_ID</code></li>
-                                    <li>Paste the account ID as the value</li>
-                                    <li>Redeploy the project</li>
-                                </ol>
-                            </div>
-                            <div style="background:var(--color-off-white);border-radius:var(--radius-md);padding:var(--space-lg);">
-                                <div style="font-weight:600;font-size:var(--font-size-sm);margin-bottom:8px;">Local development</div>
-                                <p style="font-size:var(--font-size-xs);color:var(--color-gray);line-height:1.8;margin:0;">
-                                    Add the line below to your <code style="background:#e5e7eb;padding:1px 4px;border-radius:3px;font-size:0.7rem;">.env</code> file:
-                                </p>
-                                <div class="envvar-box" style="margin-top:8px;padding:10px 14px;">
-                                    <code id="envVarLineLocal" style="font-size:0.72rem;">STRIPE_CONNECTED_ACCOUNT_ID=acct_…</code>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Vercel API auto-save guide -->
-                        <details style="margin-top:var(--space-lg);border:1px solid var(--color-light);border-radius:var(--radius-md);overflow:hidden;">
-                            <summary style="padding:var(--space-md) var(--space-lg);font-size:var(--font-size-xs);font-weight:600;cursor:pointer;color:var(--stripe);list-style:none;display:flex;align-items:center;gap:6px;">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-                                Skip the manual step — auto-save via Vercel API (optional)
-                            </summary>
-                            <div style="padding:var(--space-lg);border-top:1px solid var(--color-light);background:var(--color-off-white);">
-                                <p style="font-size:var(--font-size-xs);color:var(--color-gray);line-height:1.7;margin:0 0 var(--space-md);">
-                                    Add these three variables to your <strong>current server deployment</strong>. On the next connection, the account ID is saved to Vercel automatically — no copy-paste needed.
-                                </p>
-                                <div class="envvar-box" style="padding:12px 16px;">
-                                    <code style="font-size:0.72rem;white-space:pre;">VERCEL_TOKEN=your-vercel-personal-access-token
-VERCEL_PROJECT_ID=your-vercel-project-id
-VERCEL_DEPLOY_HOOK=https://api.vercel.com/v1/integrations/deploy/…  # optional — triggers auto-redeploy</code>
-                                </div>
-                                <p style="font-size:var(--font-size-xs);color:var(--color-gray);margin-top:var(--space-sm);line-height:1.6;">
-                                    Get your token at <a href="https://vercel.com/account/tokens" target="_blank" rel="noopener noreferrer" style="color:var(--stripe);">vercel.com/account/tokens</a>. Find your Project ID in Vercel project → Settings → General. Create a deploy hook in Settings → Git.
-                                </p>
-                            </div>
-                        </details>
-
-                        <p style="font-size:var(--font-size-xs);color:var(--color-gray);margin-top:var(--space-lg);">
-                            Once the environment variable is set and the server restarts, this page will automatically show your live account status and balance.
-                        </p>
+                <div class="stripe-status-card__body" id="statusBody">
+                    <div style="display:flex;align-items:center;gap:0.6rem;color:#94a3b8;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin 1s linear infinite;flex-shrink:0;"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+                        <span style="font-size:0.875rem;">Loading account details…</span>
                     </div>
                 </div>
             </div>
 
-            <!-- ══════════════════════════════════════════════
-                 REFRESH banner — Stripe link expired
-                 ══════════════════════════════════════════════ -->
-            <div id="refreshBanner" hidden>
-                <div class="warn-banner">
-                    <div class="warn-banner__title">Onboarding link expired — restart required</div>
-                    <p class="warn-banner__sub">
-                        The Stripe setup link has expired. Click the button below to generate a new one and continue where you left off.
-                    </p>
-                    <button class="admin-btn admin-btn--primary" style="margin-top:var(--space-md);background:var(--stripe);border-color:var(--stripe);" id="restartOnboardingBtn">
-                        Restart Stripe Onboarding
-                    </button>
+            <!-- ── How to configure ── -->
+            <div class="admin-card" style="margin-bottom:var(--space-xl);">
+                <div class="admin-card__header">
+                    <h2 class="admin-card__title">API Key Configuration</h2>
                 </div>
-            </div>
-
-            <!-- ══════════════════════════════════════════════
-                 SETUP WIZARD — shown when not connected
-                 ══════════════════════════════════════════════ -->
-            <div id="setupSection" hidden>
-                <div class="setup-card">
-                    <h2 style="font-size:var(--font-size-lg);font-weight:700;margin-bottom:6px;">Get paid in 3 easy steps</h2>
-                    <p style="font-size:var(--font-size-sm);color:var(--color-gray);line-height:1.6;">
-                        Stripe Connect lets you receive payments directly from guests.
-                        Setup takes under 5 minutes — Stripe handles all compliance and verification.
+                <div class="admin-card__body">
+                    <p style="font-size:var(--font-size-sm);color:var(--color-gray);line-height:1.7;margin:0 0 var(--space-lg);">
+                        Stripe API keys are set as environment variables on the server — they are never stored in the browser.
+                        To update your keys, edit them in your hosting dashboard and redeploy.
                     </p>
 
-                    <div class="setup-steps">
-                        <!-- Step 1 -->
-                        <div class="setup-step">
-                            <div class="setup-step__num" id="step1Num">1</div>
-                            <div class="setup-step__body">
-                                <div class="setup-step__title">Platform configured</div>
-                                <div class="setup-step__sub" id="step1Sub">Checking Stripe platform credentials…</div>
-                            </div>
-                        </div>
-                        <div class="setup-connector"></div>
+                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:var(--space-lg);">
 
-                        <!-- Step 2 -->
-                        <div class="setup-step">
-                            <div class="setup-step__num setup-step__num--active" id="step2Num">2</div>
-                            <div class="setup-step__body">
-                                <div class="setup-step__title">Connect your Stripe account</div>
-                                <div class="setup-step__sub">Click the button below. You'll be taken to Stripe's secure onboarding — no Stripe experience required.</div>
+                        <!-- Secret key -->
+                        <div style="background:var(--color-off-white);border-radius:var(--radius-lg);padding:var(--space-lg);">
+                            <div style="font-weight:600;font-size:var(--font-size-sm);margin-bottom:6px;">
+                                Secret Key <span style="font-size:0.7rem;font-weight:400;color:var(--color-gray);">(server only)</span>
                             </div>
-                        </div>
-                        <div class="setup-connector"></div>
-
-                        <!-- Step 3 -->
-                        <div class="setup-step">
-                            <div class="setup-step__num setup-step__num--todo" id="step3Num">3</div>
-                            <div class="setup-step__body">
-                                <div class="setup-step__title">Save your account ID</div>
-                                <div class="setup-step__sub">After Stripe onboarding, you'll be returned here with your account ID to save as an environment variable.</div>
-                            </div>
-                        </div>
-                        <div class="setup-connector"></div>
-
-                        <!-- Step 4 -->
-                        <div class="setup-step">
-                            <div class="setup-step__num setup-step__num--todo" id="step4Num">4</div>
-                            <div class="setup-step__body">
-                                <div class="setup-step__title">Start receiving payments</div>
-                                <div class="setup-step__sub">Once connected, 98.9% of every booking is automatically transferred to your bank account on your chosen schedule.</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Stripe key warning -->
-                    <div id="noStripeKeyWarning" hidden>
-                        <div class="warn-banner" style="margin-bottom:0;">
-                            <div class="warn-banner__title">Platform Stripe key not configured</div>
-                            <p class="warn-banner__sub">
-                                Before connecting your account, the server needs a Stripe platform secret key.
-                                Add <code style="background:#fef3c7;padding:1px 5px;border-radius:3px;">STRIPE_SECRET_KEY</code> to your environment variables, then return here to connect.
+                            <p style="font-size:var(--font-size-xs);color:var(--color-gray);line-height:1.6;margin:0 0 10px;">
+                                Used by the API to create payment intents and process charges. Never expose this in the browser.
                             </p>
-                            <div class="envvar-box" style="margin-top:var(--space-md);">
+                            <div class="envvar-box">
                                 <code>STRIPE_SECRET_KEY=sk_live_…</code>
-                                <button class="envvar-box__copy" onclick="navigator.clipboard.writeText('STRIPE_SECRET_KEY=sk_live_…')">Copy</button>
+                                <button class="envvar-box__copy" onclick="copyText('STRIPE_SECRET_KEY=sk_live_…', this)">Copy</button>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Connect-not-enabled error (shown when platform hasn't enabled Stripe Connect) -->
-                    <div id="connectNotEnabledError" hidden style="margin-top:var(--space-xl);">
-                        <div class="warn-banner" style="margin-bottom:0;">
-                            <div class="warn-banner__title">Stripe Connect is not enabled on your platform account</div>
-                            <p class="warn-banner__sub" style="margin:6px 0 12px;">
-                                Your Stripe account needs Connect enabled before you can create sub-accounts for payouts.
-                                This is a one-time setup — it's free and usually approved immediately.
+                        <!-- Publishable key -->
+                        <div style="background:var(--color-off-white);border-radius:var(--radius-lg);padding:var(--space-lg);">
+                            <div style="font-weight:600;font-size:var(--font-size-sm);margin-bottom:6px;">
+                                Publishable Key <span style="font-size:0.7rem;font-weight:400;color:var(--color-gray);">(browser-safe)</span>
+                            </div>
+                            <p style="font-size:var(--font-size-xs);color:var(--color-gray);line-height:1.6;margin:0 0 10px;">
+                                Used in the guest checkout page to initialise Stripe Elements. Safe to include in front-end code.
                             </p>
-                            <ol style="font-size:var(--font-size-sm);color:#92400e;line-height:1.8;padding-left:1.25rem;margin:0 0 12px;">
-                                <li>Open your <a href="https://dashboard.stripe.com/settings/connect" target="_blank" rel="noopener" style="color:#92400e;font-weight:600;text-decoration:underline;">Stripe Dashboard → Settings → Connect</a></li>
-                                <li>Click <strong>Get started with Connect</strong> and complete the short form</li>
-                                <li>Return here and click <strong>Connect Stripe Account</strong> again</li>
-                            </ol>
-                            <a href="https://dashboard.stripe.com/settings/connect" target="_blank" rel="noopener"
-                               style="display:inline-block;padding:0.45rem 1rem;background:#f59e0b;color:#fff;border-radius:6px;font-size:0.8125rem;font-weight:600;text-decoration:none;">
-                                Open Stripe Connect Settings →
-                            </a>
-                        </div>
-                    </div>
-
-                    <!-- Connect button -->
-                    <div id="connectBtnWrap" style="margin-top:var(--space-xl);">
-                        <button class="admin-btn admin-btn--primary" id="connectBtn" style="background:var(--stripe);border-color:var(--stripe);font-size:var(--font-size-base);padding:14px 32px;gap:10px;">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-                            Connect Stripe Account
-                        </button>
-                        <p style="font-size:var(--font-size-xs);color:var(--color-gray);margin-top:var(--space-sm);">
-                            You'll be redirected to Stripe's secure onboarding. Takes approximately 3–5 minutes.
-                        </p>
-                    </div>
-                </div>
-
-                <!-- What Stripe will ask for -->
-                <div class="info-section">
-                    <div class="info-section__head">What Stripe will ask for during onboarding</div>
-                    <div class="info-section__body">
-                        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:var(--space-md);">
-                            <div style="display:flex;gap:var(--space-md);align-items:flex-start;">
-                                <div style="width:36px;height:36px;background:#ede9fe;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" width="18" height="18"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                                </div>
-                                <div>
-                                    <div style="font-weight:600;font-size:var(--font-size-sm);">Identity</div>
-                                    <div style="font-size:var(--font-size-xs);color:var(--color-gray);margin-top:2px;">Name, date of birth, address</div>
-                                </div>
-                            </div>
-                            <div style="display:flex;gap:var(--space-md);align-items:flex-start;">
-                                <div style="width:36px;height:36px;background:#d1fae5;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" width="18" height="18"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-                                </div>
-                                <div>
-                                    <div style="font-weight:600;font-size:var(--font-size-sm);">Bank account</div>
-                                    <div style="font-size:var(--font-size-xs);color:var(--color-gray);margin-top:2px;">BSB + account number for payouts</div>
-                                </div>
-                            </div>
-                            <div style="display:flex;gap:var(--space-md);align-items:flex-start;">
-                                <div style="width:36px;height:36px;background:#fff7ed;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2" width="18" height="18"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
-                                </div>
-                                <div>
-                                    <div style="font-weight:600;font-size:var(--font-size-sm);">ID verification</div>
-                                    <div style="font-size:var(--font-size-xs);color:var(--color-gray);margin-top:2px;">Passport or driver's licence</div>
-                                </div>
-                            </div>
-                            <div style="display:flex;gap:var(--space-md);align-items:flex-start;">
-                                <div style="width:36px;height:36px;background:#fef3c7;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2" width="18" height="18"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-                                </div>
-                                <div>
-                                    <div style="font-weight:600;font-size:var(--font-size-sm);">Tax details</div>
-                                    <div style="font-size:var(--font-size-xs);color:var(--color-gray);margin-top:2px;">ABN or TFN (for Australian accounts)</div>
-                                </div>
+                            <div class="envvar-box">
+                                <code>STRIPE_PUBLISHABLE_KEY=pk_live_…</code>
+                                <button class="envvar-box__copy" onclick="copyText('STRIPE_PUBLISHABLE_KEY=pk_live_…', this)">Copy</button>
                             </div>
                         </div>
-                        <p style="font-size:var(--font-size-xs);color:var(--color-gray);margin-top:var(--space-lg);">
-                            All information is collected and stored securely by Stripe. Cascade Apartment 6 never sees your banking credentials.
-                        </p>
+
+                    </div>
+
+                    <div style="margin-top:var(--space-lg);padding:var(--space-md) var(--space-lg);background:#f0f9ff;border:1px solid #bae6fd;border-radius:var(--radius-md);font-size:var(--font-size-xs);color:#0369a1;line-height:1.6;">
+                        <strong>Where to find your keys:</strong> Log in to
+                        <a href="https://dashboard.stripe.com/apikeys" target="_blank" rel="noopener" style="color:#0369a1;font-weight:600;">dashboard.stripe.com/apikeys</a>.
+                        Use <strong>live keys</strong> for production and <strong>test keys</strong> (prefix <code>sk_test_</code> / <code>pk_test_</code>) while developing.
+                    </div>
+
+                    <div style="margin-top:var(--space-md);padding:var(--space-md) var(--space-lg);background:#f0fdf4;border:1px solid #bbf7d0;border-radius:var(--radius-md);font-size:var(--font-size-xs);color:#166534;line-height:1.6;">
+                        <strong>Billing note:</strong> The 1.1% monthly maintenance fee will be invoiced separately each month alongside your hosting fee.
+                        No additional Stripe setup is required for this.
                     </div>
                 </div>
             </div>
 
-            <!-- ══════════════════════════════════════════════
-                 CONNECTED DASHBOARD — shown when live
-                 ══════════════════════════════════════════════ -->
-            <div id="connectedSection" hidden>
+        </main>
+    </div><!-- /.admin-main -->
 
-                <!-- Stats row -->
-                <div class="admin-stats-row" id="statsRow">
-                    <div class="admin-stat-card">
-                        <div class="admin-stat-card__content">
-                            <div class="admin-stat-card__label">Available Balance</div>
-                            <div class="admin-stat-card__value" id="statAvailable">
-                                <span class="skeleton" style="width:80px;height:28px;display:inline-block;">&nbsp;</span>
-                            </div>
-                            <div class="admin-stat-card__sublabel">Ready to pay out</div>
-                        </div>
-                        <div class="admin-stat-card__icon admin-stat-card__icon--green">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-                        </div>
-                    </div>
-                    <div class="admin-stat-card">
-                        <div class="admin-stat-card__content">
-                            <div class="admin-stat-card__label">Pending Balance</div>
-                            <div class="admin-stat-card__value" id="statPending">
-                                <span class="skeleton" style="width:80px;height:28px;display:inline-block;">&nbsp;</span>
-                            </div>
-                            <div class="admin-stat-card__sublabel">Awaiting settlement</div>
-                        </div>
-                        <div class="admin-stat-card__icon admin-stat-card__icon--blue">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                        </div>
-                    </div>
-                    <div class="admin-stat-card">
-                        <div class="admin-stat-card__content">
-                            <div class="admin-stat-card__label">Charges</div>
-                            <div class="admin-stat-card__value" id="statCharges">—</div>
-                            <div class="admin-stat-card__sublabel">Payments enabled</div>
-                        </div>
-                        <div class="admin-stat-card__icon admin-stat-card__icon--gold">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-                        </div>
-                    </div>
-                    <div class="admin-stat-card">
-                        <div class="admin-stat-card__content">
-                            <div class="admin-stat-card__label">Account Status</div>
-                            <div class="admin-stat-card__value" id="statStatus" style="font-size:var(--font-size-xl);color:var(--color-success);">Active</div>
-                            <div class="admin-stat-card__sublabel">Payouts enabled</div>
-                        </div>
-                        <div class="admin-stat-card__icon admin-stat-card__icon--green">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><polyline points="20 6 9 17 4 12"/></svg>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Connected account details -->
-                <div class="status-card">
-                    <div class="status-card__header">
-                        <span class="status-card__title">Connected Stripe Account</span>
-                        <span class="status-pill status-pill--ok" id="connectedPill">
-                            <span class="status-dot"></span> Connected
-                        </span>
-                    </div>
-                    <div class="status-grid" id="accountDetailsGrid">
-                        <div class="status-item">
-                            <div class="status-item__label">Account ID</div>
-                            <div class="status-item__value status-item__value--mono" id="detailAccountId">—</div>
-                        </div>
-                        <div class="status-item">
-                            <div class="status-item__label">Display Name</div>
-                            <div class="status-item__value" id="detailName">—</div>
-                        </div>
-                        <div class="status-item">
-                            <div class="status-item__label">Email</div>
-                            <div class="status-item__value" id="detailEmail">—</div>
-                        </div>
-                        <div class="status-item">
-                            <div class="status-item__label">Currency</div>
-                            <div class="status-item__value" id="detailCurrency">—</div>
-                        </div>
-                        <div class="status-item">
-                            <div class="status-item__label">Charges Enabled</div>
-                            <div class="status-item__value" id="detailCharges">—</div>
-                        </div>
-                        <div class="status-item">
-                            <div class="status-item__label">Payouts Enabled</div>
-                            <div class="status-item__value" id="detailPayouts">—</div>
-                        </div>
-                        <div class="status-item">
-                            <div class="status-item__label">Business Type</div>
-                            <div class="status-item__value" id="detailBizType">—</div>
-                        </div>
-                        <div class="status-item">
-                            <div class="status-item__label">Connected Since</div>
-                            <div class="status-item__value" id="detailCreated">—</div>
-                        </div>
-                    </div>
-                    <div style="padding:var(--space-lg) var(--space-xl);border-top:1px solid var(--color-light);display:flex;gap:var(--space-md);flex-wrap:wrap;">
-                        <button class="admin-btn admin-btn--outline" id="refreshStatusBtn">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-                            Refresh Status
-                        </button>
-                        <a id="stripeExpressDashLink" href="https://dashboard.stripe.com" target="_blank" rel="noopener noreferrer" class="admin-btn admin-btn--outline" style="font-size:var(--font-size-xs);">
-                            Open Express Dashboard →
-                        </a>
-                        <button id="disconnectBtn" class="admin-btn admin-btn--outline" style="margin-left:auto;color:#dc2626;border-color:#fca5a5;" title="Clear the session connection — set env var stays intact">
-                            Disconnect
-                        </button>
-                    </div>
-                </div>
-
-                <!-- How payment flows -->
-                <div class="info-section" style="border-left:4px solid var(--stripe);">
-                    <div class="info-section__head" style="color:var(--stripe);">Payment flow — example $1,000 booking</div>
-                    <div class="info-section__body">
-                        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:var(--space-md);margin-bottom:var(--space-lg);">
-                            <div style="background:#f5f4ff;border-radius:10px;padding:16px;border:1px solid rgba(99,91,255,.2);text-align:center;">
-                                <div style="font-size:.68rem;font-weight:700;color:var(--stripe);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Guest pays</div>
-                                <div style="font-size:1.6rem;font-weight:800;color:#1a1a2e;">$1,000</div>
-                                <div style="font-size:.75rem;color:#888;">Full booking amount</div>
-                            </div>
-                            <div style="display:flex;align-items:center;justify-content:center;font-size:1.4rem;color:var(--color-gray);">→</div>
-                            <div style="background:#f0fdf4;border-radius:10px;padding:16px;border:1px solid #bbf7d0;text-align:center;">
-                                <div style="font-size:.68rem;font-weight:700;color:#059669;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">You receive</div>
-                                <div style="font-size:1.6rem;font-weight:800;color:#065f46;">$989.00</div>
-                                <div style="font-size:.75rem;color:#888;">98.9% transferred to you</div>
-                            </div>
-                            <div style="display:flex;align-items:center;justify-content:center;font-size:1.4rem;color:var(--color-gray);">+</div>
-                            <div style="background:var(--stripe-bg);border-radius:10px;padding:16px;border:1px solid rgba(99,91,255,.2);text-align:center;">
-                                <div style="font-size:.68rem;font-weight:700;color:var(--stripe);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Platform fee</div>
-                                <div style="font-size:1.6rem;font-weight:800;color:var(--stripe-dark);">$11.00</div>
-                                <div style="font-size:.75rem;color:#888;">1.1% service fee</div>
-                            </div>
-                            <div style="display:flex;align-items:center;justify-content:center;font-size:1.4rem;color:var(--color-gray);">+</div>
-                            <div style="background:#f9fafb;border-radius:10px;padding:16px;border:1px solid #e5e7eb;text-align:center;">
-                                <div style="font-size:.68rem;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Stripe fee</div>
-                                <div style="font-size:1.6rem;font-weight:800;color:#555;">~$17.90</div>
-                                <div style="font-size:.75rem;color:#888;">1.75% + $0.40 (Stripe's own fee)</div>
-                            </div>
-                        </div>
-                        <p style="font-size:var(--font-size-xs);color:var(--color-gray);line-height:1.6;">
-                            Stripe's own processing fee (1.75% + $0.40 AUD per transaction) is deducted from your payout separately by Stripe. This is standard for all Stripe accounts and is not charged by this platform.
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Payout settings -->
-                <div class="info-section">
-                    <div class="info-section__head">Payout Settings</div>
-                    <div class="info-section__body">
-                        <div class="info-row">
-                            <div>
-                                <div class="info-row__label">Payout Schedule</div>
-                                <div class="info-row__sub">How often Stripe transfers your balance to your bank account</div>
-                            </div>
-                            <div class="payout-opts">
-                                <div class="payout-opt sel" data-freq="weekly">
-                                    <div class="payout-opt__lbl">Weekly</div>
-                                    <div class="payout-opt__sub">Every Friday</div>
-                                </div>
-                                <div class="payout-opt" data-freq="monthly">
-                                    <div class="payout-opt__lbl">Monthly</div>
-                                    <div class="payout-opt__sub">1st of month</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="info-row">
-                            <div>
-                                <div class="info-row__label">Automatic Payouts</div>
-                                <div class="info-row__sub">Automatically transfer available balance on schedule</div>
-                            </div>
-                            <label class="toggle">
-                                <input type="checkbox" checked id="autoPayoutToggle">
-                                <span class="toggle-slider"></span>
-                            </label>
-                        </div>
-                        <div class="info-row">
-                            <div>
-                                <div class="info-row__label">Instant Payouts</div>
-                                <div class="info-row__sub">Transfer funds in minutes — 1.5% fee applies (Stripe charge)</div>
-                            </div>
-                            <button class="admin-btn admin-btn--outline" id="instantPayoutBtn">Request Instant Payout</button>
-                        </div>
-                        <p style="font-size:var(--font-size-xs);color:var(--color-gray);margin-top:var(--space-md);line-height:1.6;background:var(--color-off-white);padding:var(--space-md);border-radius:var(--radius-md);">
-                            To change your payout schedule or bank account details, visit your
-                            <a id="expressLink2" href="https://dashboard.stripe.com" target="_blank" rel="noopener noreferrer" style="color:var(--stripe);">Stripe Express dashboard</a>.
-                            Changes take effect from your next payout.
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Accepted payment methods -->
-                <div class="info-section">
-                    <div class="info-section__head">Accepted Payment Methods</div>
-                    <div class="info-section__body">
-                        <div class="info-row">
-                            <div><div class="info-row__label">Credit &amp; Debit Cards</div><div class="info-row__sub">Visa, Mastercard, Amex, eftpos</div></div>
-                            <span class="admin-badge admin-badge--success">Enabled</span>
-                        </div>
-                        <div class="info-row">
-                            <div><div class="info-row__label">Apple Pay / Google Pay</div><div class="info-row__sub">Enabled automatically when using Stripe's payment element</div></div>
-                            <span class="admin-badge admin-badge--success">Enabled</span>
-                        </div>
-                        <div class="info-row">
-                            <div><div class="info-row__label">Buy Now Pay Later (Afterpay)</div><div class="info-row__sub">Available for bookings over $50 — enable in Stripe dashboard</div></div>
-                            <label class="toggle"><input type="checkbox"><span class="toggle-slider"></span></label>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Recent transactions (static demo — link to Stripe for live data) -->
-                <div class="info-section">
-                    <div class="info-section__head">
-                        <span>Recent Transactions</span>
-                        <a href="https://dashboard.stripe.com/payments" target="_blank" rel="noopener noreferrer" class="admin-btn admin-btn--outline" style="font-size:var(--font-size-xs);padding:5px 12px;">View all in Stripe →</a>
-                    </div>
-                    <div style="overflow-x:auto;">
-                        <table class="txn-table">
-                            <thead>
-                                <tr>
-                                    <th>Date</th>
-                                    <th>Guest</th>
-                                    <th>Booking</th>
-                                    <th>Gross</th>
-                                    <th title="1.1% application fee — credited to platform account">Platform (1.1%)</th>
-                                    <th>You receive (98.9%)</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody id="txnBody">
-                                <tr>
-                                    <td colspan="7" style="text-align:center;color:var(--color-gray);padding:24px;">
-                                        Live transaction data available in your
-                                        <a href="https://dashboard.stripe.com/payments" target="_blank" rel="noopener noreferrer" style="color:var(--stripe);">Stripe dashboard</a>.
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <p style="font-size:.72rem;color:#888;padding:10px 16px 4px;border-top:1px solid var(--color-light);">
-                        <strong>Platform fee</strong> = 1.1% application fee collected by the booking platform per transaction.
-                        <strong>You receive</strong> = 98.9% of the gross booking amount (Stripe's own processing fee of 1.75% + $0.40 is also deducted separately by Stripe from your payout).
-                    </p>
-                </div>
-
-            </div><!-- /#connectedSection -->
-
-        </div><!-- /.admin-content -->
-    </main>
 </div><!-- /.admin-layout -->
 
+<script src="../js/app.js"></script>
+<script src="../js/admin.js"></script>
 <script src="../js/admin-auth.js"></script>
 <script>
 (function () {
     'use strict';
 
-    // ── Helpers ───────────────────────────────────────────────────────────
-    var fmtAUD = function (cents) {
-        if (cents == null) return '—';
-        return '$' + (cents / 100).toLocaleString('en-AU', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    };
-    var fmtDate = function (ts) {
-        if (!ts) return '—';
-        return new Date(ts * 1000).toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' });
-    };
-    var show = function (id) { var el = document.getElementById(id); if (el) el.hidden = false; };
-    var hide = function (id) { var el = document.getElementById(id); if (el) el.hidden = true; };
-    var setText = function (id, txt) { var el = document.getElementById(id); if (el) el.textContent = txt; };
-
-    // ── URL param detection ───────────────────────────────────────────────
-    var params = new URLSearchParams(window.location.search);
-    var isSetupComplete = params.get('setup') === 'complete';
-    var returnedAcctId  = params.get('account') || '';
-    var isRefresh       = params.get('refresh')  === '1';
-
-    // ── Status-bar helper ─────────────────────────────────────────────────
-    function setStatusBar(cls, iconHtml, msg) {
-        var el = document.getElementById('saveStatus');
-        if (!el) return;
-        el.hidden = false;
-        el.className = 'save-status ' + cls;
-        el.innerHTML = iconHtml;
-        var span = document.createElement('span');
-        span.textContent = msg;
-        el.appendChild(span);
+    var session = JSON.parse(localStorage.getItem('trendaccom_admin_auth') || '{}');
+    if (session.name) {
+        var ini = session.name.split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2);
+        document.getElementById('userAvatar').textContent = ini || session.name.slice(0,2).toUpperCase();
+        document.getElementById('userName').textContent   = session.name;
     }
 
-    var ICON_SPIN  = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;animation:spin 1s linear infinite;" aria-hidden="true"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>';
-    var ICON_OK    = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="flex-shrink:0;" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>';
-    var ICON_WARN  = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
-    var ICON_ERR   = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>';
+    var pill = document.getElementById('statusPill');
+    var body = document.getElementById('statusBody');
 
-    // Show success or refresh banners before async status loads
-    if (isSetupComplete && returnedAcctId) {
-        show('successBanner');
-
-        // Populate account ID fields
-        setText('returnedAccountId', returnedAcctId);
-        var envLine = 'STRIPE_CONNECTED_ACCOUNT_ID=' + returnedAcctId;
-        var envLineEl = document.getElementById('envVarLine');
-        if (envLineEl) envLineEl.textContent = envLine;
-        var envLineLocal = document.getElementById('envVarLineLocal');
-        if (envLineLocal) envLineLocal.textContent = envLine;
-
-        // Clean query string so a page refresh doesn't re-trigger this block
-        history.replaceState({}, '', location.pathname);
-
-        // ── Auto-save the account ID to the server ────────────────────────
-        // This activates payments immediately on this server instance without
-        // requiring an env-var change or redeploy.
-        setStatusBar('save-status--loading', ICON_SPIN, 'Activating connection…');
-
-        fetch('/api/stripe-connect-save', {
-            method:  'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body:    JSON.stringify({ accountId: returnedAcctId }),
-        })
+    fetch('/api/stripe-connect-status')
         .then(function (r) { return r.json(); })
-        .then(function (data) {
-            if (data.saved) {
-                if (data.permanent) {
-                    setStatusBar('save-status--ok', ICON_OK, data.message);
-                } else {
-                    setStatusBar('save-status--warn', ICON_WARN, data.message);
-                }
-                // Reload status panel to show connected dashboard
-                setTimeout(loadStatus, 800);
-            } else {
-                setStatusBar('save-status--err', ICON_ERR,
-                    'Activation failed: ' + (data.error || 'Unknown error') + '. Set STRIPE_CONNECTED_ACCOUNT_ID manually.');
-            }
-        })
-        .catch(function (err) {
-            setStatusBar('save-status--warn', ICON_WARN,
-                'Could not auto-activate (' + err.message + '). Set STRIPE_CONNECTED_ACCOUNT_ID manually.');
+        .then(function (d) { renderStatus(d); })
+        .catch(function () {
+            pill.className = 'status-pill status-pill--err';
+            pill.innerHTML = '<span class="status-dot"></span>Unreachable';
+            body.innerHTML = '<p style="font-size:0.875rem;color:#dc2626;">Could not reach the Stripe status API. Check that your server is running and STRIPE_SECRET_KEY is set.</p>';
         });
-    }
-    if (isRefresh) {
-        show('refreshBanner');
-    }
 
-    // ── Fetch live account status ─────────────────────────────────────────
-    function loadStatus() {
-        fetch('/api/stripe-connect-status')
-            .then(function (r) { return r.json(); })
-            .then(function (data) { renderStatus(data); })
-            .catch(function () { renderStatus({ configured: false, reason: 'Could not reach server' }); });
-    }
-
-    function renderStatus(data) {
-        if (!data.configured) {
-            // Platform Stripe key not set
-            show('setupSection');
-            hide('connectedSection');
-            var step1 = document.getElementById('step1Num');
-            if (step1) { step1.className = 'setup-step__num setup-step__num--err'; step1.textContent = '!'; }
-            setText('step1Sub', 'STRIPE_SECRET_KEY not configured. Add it to your environment variables first.');
-            show('noStripeKeyWarning');
-            hide('connectBtnWrap');
+    function renderStatus(d) {
+        if (!d.configured) {
+            pill.className = 'status-pill status-pill--err';
+            pill.innerHTML = '<span class="status-dot"></span>Not configured';
+            body.innerHTML =
+                '<div style="padding:1rem 1.25rem;background:#fff7ed;border:1px solid #fde68a;border-radius:8px;">' +
+                    '<div style="font-weight:600;color:#92400e;margin-bottom:4px;">STRIPE_SECRET_KEY is not set</div>' +
+                    '<div style="font-size:0.875rem;color:#92400e;line-height:1.6;">Add your Stripe secret key as an environment variable on your hosting provider, then redeploy.</div>' +
+                '</div>';
+            return;
+        }
+        if (!d.working) {
+            pill.className = 'status-pill status-pill--err';
+            pill.innerHTML = '<span class="status-dot"></span>Key invalid';
+            body.innerHTML =
+                '<div style="padding:1rem 1.25rem;background:#fef2f2;border:1px solid #fecaca;border-radius:8px;">' +
+                    '<div style="font-weight:600;color:#991b1b;margin-bottom:4px;">Stripe returned an error</div>' +
+                    '<div style="font-size:0.875rem;color:#991b1b;font-family:monospace;">' + escHtml(d.error) + '</div>' +
+                '</div>';
             return;
         }
 
-        if (!data.connected) {
-            // Configured but no connected account yet (or setup just done — show wizard)
-            if (isSetupComplete) {
-                // Just returned from Stripe — the success banner is already shown
-                // Don't show the setup section, let the user read the instructions
-                hide('setupSection');
-                hide('connectedSection');
-            } else {
-                show('setupSection');
-                hide('connectedSection');
-                var s1 = document.getElementById('step1Num');
-                if (s1) s1.className = 'setup-step__num setup-step__num--done';
-                setText('step1Sub', 'Platform Stripe key is configured — ready to connect your account.');
-            }
-            return;
-        }
+        var isLive = d.mode === 'live';
+        pill.className = 'status-pill ' + (isLive ? 'status-pill--ok' : 'status-pill--warn');
+        pill.innerHTML = '<span class="status-dot"></span>' + (isLive ? 'Live' : 'Test mode');
 
-        // Fully connected — show the live dashboard
-        hide('setupSection');
-        show('connectedSection');
+        var tiles = [
+            { label: 'Account ID',    value: d.accountId,                        mono: true },
+            { label: 'Email',         value: d.email || '—' },
+            { label: 'Business name', value: d.displayName || '(not set)' },
+            { label: 'Country',       value: d.country || '—' },
+            { label: 'Mode',          value: isLive ? 'Live' : 'Test', cls: isLive ? 'ok' : 'warn' },
+            { label: 'Charges',       value: d.chargesEnabled ? 'Enabled' : 'Not enabled', cls: d.chargesEnabled ? 'ok' : 'warn' },
+        ];
 
-        // Stats
-        if (data.balance) {
-            setText('statAvailable', fmtAUD(data.balance.available));
-            setText('statPending',   fmtAUD(data.balance.pending));
-        } else {
-            setText('statAvailable', '—');
-            setText('statPending',   '—');
-        }
-        setText('statCharges', data.chargesEnabled ? '✓ Enabled' : '✗ Disabled');
-        setText('statStatus',  data.chargesEnabled && data.payoutsEnabled ? 'Active' : 'Restricted');
-
-        // Account details grid
-        setText('detailAccountId', data.accountId  || '—');
-        setText('detailName',      data.displayName || 'Not set');
-        setText('detailEmail',     data.email       || '—');
-        setText('detailCurrency',  (data.currency || 'AUD') + ' — Australian Dollar');
-        var chargesEl = document.getElementById('detailCharges');
-        if (chargesEl) {
-            chargesEl.textContent  = data.chargesEnabled ? 'Yes' : 'No';
-            chargesEl.className    = 'status-item__value ' + (data.chargesEnabled ? 'status-item__value--ok' : 'status-item__value--err');
-        }
-        var payoutsEl = document.getElementById('detailPayouts');
-        if (payoutsEl) {
-            payoutsEl.textContent = data.payoutsEnabled ? 'Yes' : 'No';
-            payoutsEl.className   = 'status-item__value ' + (data.payoutsEnabled ? 'status-item__value--ok' : 'status-item__value--err');
-        }
-        setText('detailBizType',  data.businessType ? data.businessType.charAt(0).toUpperCase() + data.businessType.slice(1) : '—');
-        setText('detailCreated',  fmtDate(data.created));
-
-        // Payout schedule
-        if (data.payoutSchedule) {
-            var freq   = data.payoutSchedule.interval || 'weekly';
-            var opts   = document.querySelectorAll('.payout-opt');
-            opts.forEach(function (o) {
-                o.classList.toggle('sel', o.dataset.freq === freq);
-            });
-        }
-
-        // Express dashboard link
-        var expLink  = document.getElementById('stripeExpressDashLink');
-        var expLink2 = document.getElementById('expressLink2');
-        var expUrl   = 'https://dashboard.stripe.com/express/' + (data.accountId || '');
-        if (expLink)  expLink.href  = expUrl;
-        if (expLink2) expLink2.href = expUrl;
+        body.innerHTML = '<div class="info-grid">' +
+            tiles.map(function (t) {
+                return '<div class="info-tile">' +
+                    '<div class="info-tile__label">' + t.label + '</div>' +
+                    '<div class="info-tile__value' + (t.mono ? ' info-tile__value--mono' : '') + (t.cls ? ' info-tile__value--' + t.cls : '') + '">' +
+                        escHtml(t.value) +
+                    '</div>' +
+                '</div>';
+            }).join('') +
+        '</div>';
     }
 
-    // Load on page open
-    loadStatus();
-
-    // ── Connect button ────────────────────────────────────────────────────
-    var connectBtn = document.getElementById('connectBtn');
-    if (connectBtn) {
-        connectBtn.addEventListener('click', function () {
-            connectBtn.disabled    = true;
-            connectBtn.textContent = 'Opening Stripe…';
-            fetch('/api/stripe-connect-url', {
-                method:  'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body:    JSON.stringify({ returnBaseUrl: window.location.origin }),
-            })
-            .then(function (r) { return r.json(); })
-            .then(function (data) {
-                if (data.url) {
-                    window.location.href = data.url;
-                } else if (data.error === 'CONNECT_NOT_ENABLED') {
-                    var errEl = document.getElementById('connectNotEnabledError');
-                    if (errEl) { errEl.hidden = false; errEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }
-                    connectBtn.disabled    = false;
-                    connectBtn.textContent = 'Connect Stripe Account';
-                } else {
-                    alert('Could not start Stripe onboarding: ' + (data.message || data.error || 'Unknown error'));
-                    connectBtn.disabled    = false;
-                    connectBtn.textContent = 'Connect Stripe Account';
-                }
-            })
-            .catch(function (err) {
-                alert('Network error: ' + err.message);
-                connectBtn.disabled    = false;
-                connectBtn.textContent = 'Connect Stripe Account';
-            });
-        });
+    function escHtml(s) {
+        return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     }
 
-    // Restart onboarding (refresh case)
-    var restartBtn = document.getElementById('restartOnboardingBtn');
-    if (restartBtn) {
-        restartBtn.addEventListener('click', function () {
-            restartBtn.disabled    = true;
-            restartBtn.textContent = 'Opening Stripe…';
-            fetch('/api/stripe-connect-url', {
-                method:  'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body:    JSON.stringify({ returnBaseUrl: window.location.origin }),
-            })
-            .then(function (r) { return r.json(); })
-            .then(function (data) {
-                if (data.url) { window.location.href = data.url; }
-                else { alert('Error: ' + (data.error || 'Unknown error')); restartBtn.disabled = false; restartBtn.textContent = 'Restart Stripe Onboarding'; }
-            })
-            .catch(function (err) {
-                alert('Network error: ' + err.message);
-                restartBtn.disabled    = false;
-                restartBtn.textContent = 'Restart Stripe Onboarding';
-            });
-        });
-    }
-
-    // ── Refresh status button ─────────────────────────────────────────────
-    var refreshBtn = document.getElementById('refreshStatusBtn');
-    if (refreshBtn) {
-        refreshBtn.addEventListener('click', function () {
-            refreshBtn.disabled    = true;
-            refreshBtn.textContent = 'Refreshing…';
-            loadStatus();
-            setTimeout(function () {
-                refreshBtn.disabled  = false;
-                refreshBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg> Refresh Status';
-            }, 1500);
-        });
-    }
-
-    // ── Payout opt toggle ─────────────────────────────────────────────────
-    document.querySelectorAll('.payout-opt').forEach(function (opt) {
-        opt.addEventListener('click', function () {
-            document.querySelectorAll('.payout-opt').forEach(function (o) { o.classList.remove('sel'); });
-            opt.classList.add('sel');
-            // Note: to actually change the payout schedule, update it via Stripe's API
-            // or direct the user to their Express dashboard.
-        });
-    });
-
-    // ── Instant payout ────────────────────────────────────────────────────
-    var instantBtn = document.getElementById('instantPayoutBtn');
-    if (instantBtn) {
-        instantBtn.addEventListener('click', function () {
-            var expLink = document.getElementById('stripeExpressDashLink');
-            if (expLink && expLink.href && expLink.href !== 'https://dashboard.stripe.com') {
-                window.open(expLink.href, '_blank');
-            } else {
-                window.open('https://dashboard.stripe.com/express', '_blank');
-            }
-        });
-    }
-
-    // ── Disconnect ────────────────────────────────────────────────────────
-    var disconnectBtn = document.getElementById('disconnectBtn');
-    if (disconnectBtn) {
-        disconnectBtn.addEventListener('click', function () {
-            if (!confirm(
-                'Disconnect this Stripe account?\n\n' +
-                'Guest payments will stop routing to the connected account until you reconnect. ' +
-                'If STRIPE_CONNECTED_ACCOUNT_ID is set as an env var you must also remove it and redeploy.'
-            )) return;
-
-            disconnectBtn.disabled    = true;
-            disconnectBtn.textContent = 'Disconnecting…';
-
-            fetch('/api/stripe-connect-save', { method: 'DELETE' })
-                .then(function (r) { return r.json(); })
-                .then(function (data) {
-                    if (data.cleared) {
-                        if (data.hasEnvVar) {
-                            alert('Session cleared.\n\n' + (data.message || ''));
-                        }
-                        window.location.reload();
-                    } else {
-                        alert('Error: ' + (data.error || 'Unknown error'));
-                        disconnectBtn.disabled    = false;
-                        disconnectBtn.textContent = 'Disconnect';
-                    }
-                })
-                .catch(function (err) {
-                    alert('Network error: ' + err.message);
-                    disconnectBtn.disabled    = false;
-                    disconnectBtn.textContent = 'Disconnect';
-                });
-        });
-    }
-
-    // ── Copy helpers ──────────────────────────────────────────────────────
-    window.copyAccountId = function () {
-        var el = document.getElementById('returnedAccountId');
-        if (el) navigator.clipboard.writeText(el.textContent).then(function () {
-            el.style.color = 'var(--color-success)';
-            setTimeout(function () { el.style.color = ''; }, 1500);
+    window.copyText = function (text, btn) {
+        navigator.clipboard.writeText(text).then(function () {
+            var orig = btn.textContent;
+            btn.textContent = 'Copied!';
+            setTimeout(function () { btn.textContent = orig; }, 1500);
         });
     };
-    window.copyEnvVar = function () {
-        var el = document.getElementById('envVarLine');
-        if (el) navigator.clipboard.writeText(el.textContent).then(function () {
-            var btn = el.parentNode.querySelector('.envvar-box__copy');
-            if (btn) { btn.textContent = 'Copied!'; setTimeout(function () { btn.textContent = 'Copy'; }, 2000); }
-        });
-    };
-
 })();
 </script>
 </body>
