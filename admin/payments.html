@@ -37,6 +37,7 @@
                 <span class="admin-sidebar__section-title">MANAGEMENT</span>
                 <ul class="admin-sidebar__menu">
                     <li class="admin-sidebar__menu-item"><a href="rates.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg><span>Rates &amp; Pricing</span></a></li>
+                    <li class="admin-sidebar__menu-item admin-sidebar__menu-item--active"><a href="payments.html" class="admin-sidebar__menu-link admin-sidebar__menu-link--active"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg><span>Payments</span></a></li>
                     <li class="admin-sidebar__menu-item"><a href="guests.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Guests</span></a></li>
                     <li class="admin-sidebar__menu-item"><a href="reviews.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><span>Reviews</span></a></li>
                 </ul>
@@ -59,423 +60,348 @@
     </aside>
 
         <!-- ===== Main Content ===== -->
-        <main class="admin-main">
+        <div class="admin-main">
 
             <!-- Topbar -->
-            <div class="admin-topbar">
-                <nav class="breadcrumb">
-                    <a href="index.html">Dashboard</a>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-                    <span class="current">Stripe Connect</span>
-                </nav>
-            </div>
+            <header class="admin-topbar">
+                <div class="admin-topbar__breadcrumb">
+                    <a href="index.html" class="admin-topbar__breadcrumb-link">Dashboard</a>
+                    <span class="admin-topbar__breadcrumb-separator">&rsaquo;</span>
+                    <span class="admin-topbar__breadcrumb-current">Payments</span>
+                </div>
+                <div class="admin-topbar__actions">
+                    <div class="admin-topbar__user">
+                        <div class="admin-topbar__user-avatar" id="userAvatar">AD</div>
+                        <span class="admin-topbar__user-name" id="userName">Admin</span>
+                    </div>
+                </div>
+            </header>
 
             <!-- Content -->
-            <div class="admin-content">
+            <main class="admin-content">
 
                 <!-- Page Header -->
-                <div class="page-header">
-                    <h1>Payments &amp; Stripe Connect</h1>
-                    <p>Manage your payment processing and payouts</p>
+                <div class="admin-page-header">
+                    <div class="admin-page-header-text">
+                        <h1 class="admin-page-title">Payments</h1>
+                        <p class="admin-page-subtitle">Revenue overview and Stripe Connect status</p>
+                    </div>
                 </div>
 
-                <!-- Stripe Connect Status -->
-                <div class="card stripe-status">
-                    <div class="card-header">
-                        <h2>Stripe Connect Status</h2>
-                    </div>
-                    <div class="card-body">
-                        <div class="stripe-info">
-                            <div class="stripe-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <rect x="1" y="4" width="22" height="16" rx="2"/>
-                                    <line x1="1" y1="10" x2="23" y2="10"/>
-                                </svg>
-                            </div>
-                            <div class="stripe-details">
-                                <h3>
-                                    Connected
-                                    <span class="badge badge-success">Connected</span>
-                                </h3>
-                                <div class="stripe-meta">
-                                    <span><strong>Business:</strong> Cascade Apartment 6 Properties Pty Ltd</span>
-                                    <span><strong>Account ID:</strong> acct_1234567890</span>
-                                    <span><strong>Connected since:</strong> 15 Jan 2026</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="stripe-actions">
-                            <a href="https://dashboard.stripe.com" target="_blank" class="btn btn-primary">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-                                View Stripe Dashboard
-                            </a>
-                            <button class="btn btn-danger-outline" onclick="disconnectStripe()">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg>
-                                Disconnect
-                            </button>
-                        </div>
+                <!-- Stripe Connect Status Banner (dynamic) -->
+                <div id="stripeStatusBanner" style="margin-bottom:1.5rem;">
+                    <div class="admin-card" style="padding:1.25rem 1.5rem;display:flex;align-items:center;gap:0.75rem;color:#475569;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;animation:spin 1s linear infinite"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+                        <span style="font-size:0.875rem;">Checking Stripe Connect status…</span>
                     </div>
                 </div>
 
                 <!-- Stats Grid -->
                 <div class="stats-grid">
                     <div class="stat-card">
-                        <div class="stat-icon green">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                        <div class="stat-card-header">
+                            <span class="stat-card-label">Total Revenue</span>
+                            <span class="stat-card-icon stat-card-icon--revenue">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                            </span>
                         </div>
-                        <div class="stat-label">Total Revenue</div>
-                        <div class="stat-value">$89,432</div>
+                        <div class="stat-card-value" id="statRevenue">$0</div>
+                        <div class="stat-card-change stat-card-change--neutral">
+                            <span class="stat-card-change-period">Confirmed bookings only</span>
+                        </div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-icon amber">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        <div class="stat-card-header">
+                            <span class="stat-card-label">Pending Revenue</span>
+                            <span class="stat-card-icon stat-card-icon--occupancy">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                            </span>
                         </div>
-                        <div class="stat-label">Pending Payouts</div>
-                        <div class="stat-value">$3,245</div>
+                        <div class="stat-card-value" id="statPending">$0</div>
+                        <div class="stat-card-change stat-card-change--neutral">
+                            <span class="stat-card-change-period">Awaiting confirmation</span>
+                        </div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-icon blue">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        <div class="stat-card-header">
+                            <span class="stat-card-label">This Month</span>
+                            <span class="stat-card-icon stat-card-icon--bookings">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                            </span>
                         </div>
-                        <div class="stat-label">This Month</div>
-                        <div class="stat-value">$12,890</div>
+                        <div class="stat-card-value" id="statMonth">$0</div>
+                        <div class="stat-card-change stat-card-change--neutral">
+                            <span class="stat-card-change-period" id="statMonthLabel">Confirmed this month</span>
+                        </div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-icon purple">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                        <div class="stat-card-header">
+                            <span class="stat-card-label">Stripe Balance</span>
+                            <span class="stat-card-icon stat-card-icon--properties">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg>
+                            </span>
                         </div>
-                        <div class="stat-label">Processing Fees</div>
-                        <div class="stat-value">$2,145</div>
+                        <div class="stat-card-value" id="statBalance">—</div>
+                        <div class="stat-card-change stat-card-change--neutral">
+                            <span class="stat-card-change-period">Available in Stripe</span>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Payment Settings -->
-                <div class="card">
-                    <div class="card-header">
-                        <h2>Payment Settings</h2>
+                <!-- Recent Bookings / Transactions -->
+                <div class="admin-card" style="margin-bottom:1.5rem;">
+                    <div class="admin-card__header">
+                        <h2 class="admin-card__title">Recent Transactions</h2>
                     </div>
-                    <div class="card-body">
-
-                        <!-- Currency -->
-                        <div class="settings-section">
-                            <h3>Currency</h3>
-                            <div class="form-group">
-                                <label for="currency">Default Currency</label>
-                                <select id="currency">
-                                    <option value="AUD" selected>AUD - Australian Dollar</option>
-                                    <option value="USD">USD - US Dollar</option>
-                                    <option value="GBP">GBP - British Pound</option>
-                                    <option value="EUR">EUR - Euro</option>
-                                    <option value="NZD">NZD - New Zealand Dollar</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <!-- Payment Methods -->
-                        <div class="settings-section">
-                            <h3>Payment Methods</h3>
-                            <div class="toggle-row">
-                                <div class="toggle-label">
-                                    <div>
-                                        <div class="label-text">Credit Card</div>
-                                        <div class="label-desc">Accept Visa, Mastercard, and American Express</div>
-                                    </div>
-                                </div>
-                                <label class="toggle-switch">
-                                    <input type="checkbox" checked>
-                                    <span class="toggle-slider"></span>
-                                </label>
-                            </div>
-                            <div class="toggle-row">
-                                <div class="toggle-label">
-                                    <div>
-                                        <div class="label-text">Apple Pay</div>
-                                        <div class="label-desc">Accept payments via Apple Pay</div>
-                                    </div>
-                                </div>
-                                <label class="toggle-switch">
-                                    <input type="checkbox" checked>
-                                    <span class="toggle-slider"></span>
-                                </label>
-                            </div>
-                            <div class="toggle-row">
-                                <div class="toggle-label">
-                                    <div>
-                                        <div class="label-text">Google Pay</div>
-                                        <div class="label-desc">Accept payments via Google Pay</div>
-                                    </div>
-                                </div>
-                                <label class="toggle-switch">
-                                    <input type="checkbox">
-                                    <span class="toggle-slider"></span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <!-- Deposit Settings -->
-                        <div class="settings-section">
-                            <h3>Deposit Settings</h3>
-                            <div class="toggle-row">
-                                <div class="toggle-label">
-                                    <div>
-                                        <div class="label-text">Require Deposit</div>
-                                        <div class="label-desc">Collect a partial payment at the time of booking</div>
-                                    </div>
-                                </div>
-                                <label class="toggle-switch">
-                                    <input type="checkbox" checked id="deposit-toggle">
-                                    <span class="toggle-slider"></span>
-                                </label>
-                            </div>
-                            <div class="deposit-row">
-                                <label for="deposit-pct">Deposit Percentage</label>
-                                <input type="number" id="deposit-pct" value="30" min="1" max="100">
-                                <span style="font-size: 0.875rem; color: #64748b;">%</span>
-                            </div>
-                        </div>
-
-                        <!-- Auto Payout -->
-                        <div class="settings-section">
-                            <h3>Automatic Payouts</h3>
-                            <div class="toggle-row">
-                                <div class="toggle-label">
-                                    <div>
-                                        <div class="label-text">Auto-Payout</div>
-                                        <div class="label-desc">Automatically transfer funds to your bank account</div>
-                                    </div>
-                                </div>
-                                <label class="toggle-switch">
-                                    <input type="checkbox" checked id="autopayout-toggle">
-                                    <span class="toggle-slider"></span>
-                                </label>
-                            </div>
-                            <div class="payout-row">
-                                <label for="payout-freq" style="font-size: 0.8125rem; font-weight: 500; color: #475569;">Payout Frequency</label>
-                                <select id="payout-freq">
-                                    <option value="daily">Daily</option>
-                                    <option value="weekly" selected>Weekly</option>
-                                    <option value="monthly">Monthly</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <!-- Info Box -->
-                        <div class="info-box">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-                            <span>Stripe Connect ensures secure payment processing. Funds are held until check-in and automatically transferred to your account.</span>
-                        </div>
-
+                    <div class="admin-card__body admin-card__body--no-padding">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Guest</th>
+                                    <th>Check-in</th>
+                                    <th>Check-out</th>
+                                    <th>Status</th>
+                                    <th>Amount</th>
+                                    <th>Platform Fee</th>
+                                    <th>Net Payout</th>
+                                </tr>
+                            </thead>
+                            <tbody id="txBody">
+                                <tr id="txEmpty">
+                                    <td colspan="8" style="text-align:center;padding:2rem;color:#94a3b8;">
+                                        No bookings yet. <a href="bookings.html" style="color:#0f2744;font-weight:500;">Create the first booking</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="admin-card__footer">
+                        <a href="bookings.html" class="admin-card__footer-link">
+                            View All Bookings
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="admin-card__footer-icon"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                        </a>
                     </div>
                 </div>
 
-                <!-- Two Column: Transactions + Payout Schedule -->
-                <div class="two-col">
-
-                    <!-- Recent Transactions -->
-                    <div class="card">
-                        <div class="card-header">
-                            <h2>Recent Transactions</h2>
-                        </div>
-                        <div class="table-responsive">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Date</th>
-                                        <th>Guest</th>
-                                        <th>Property</th>
-                                        <th>Type</th>
-                                        <th>Amount</th>
-                                        <th>Status</th>
-                                        <th>Stripe ID</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>18 Feb 2026</td>
-                                        <td>Sarah Mitchell</td>
-                                        <td>Bondi Beach House</td>
-                                        <td class="type-payment">Payment</td>
-                                        <td class="amount-positive">$2,450.00</td>
-                                        <td><span class="badge badge-success">Completed</span></td>
-                                        <td><span class="stripe-id">pi_3Nh7x2...</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td>17 Feb 2026</td>
-                                        <td>James Chen</td>
-                                        <td>Sydney CBD Apartment</td>
-                                        <td class="type-payment">Payment</td>
-                                        <td class="amount-positive">$1,890.00</td>
-                                        <td><span class="badge badge-success">Completed</span></td>
-                                        <td><span class="stripe-id">pi_3Nh6k1...</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td>16 Feb 2026</td>
-                                        <td>Emma Wilson</td>
-                                        <td>Manly Surf Retreat</td>
-                                        <td class="type-refund">Refund</td>
-                                        <td class="amount-negative">-$750.00</td>
-                                        <td><span class="badge badge-danger">Refunded</span></td>
-                                        <td><span class="stripe-id">re_1Nh5p9...</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td>15 Feb 2026</td>
-                                        <td>Michael Brown</td>
-                                        <td>Coogee Bay Villa</td>
-                                        <td class="type-payment">Payment</td>
-                                        <td class="amount-positive">$3,200.00</td>
-                                        <td><span class="badge badge-success">Completed</span></td>
-                                        <td><span class="stripe-id">pi_3Nh4m8...</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td>14 Feb 2026</td>
-                                        <td>—</td>
-                                        <td>—</td>
-                                        <td class="type-payout">Payout</td>
-                                        <td class="amount-positive">$8,540.00</td>
-                                        <td><span class="badge badge-success">Completed</span></td>
-                                        <td><span class="stripe-id">po_1Nh3j7...</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td>13 Feb 2026</td>
-                                        <td>Olivia Davis</td>
-                                        <td>Bondi Beach House</td>
-                                        <td class="type-payment">Payment</td>
-                                        <td class="amount-positive">$1,650.00</td>
-                                        <td><span class="badge badge-warning">Pending</span></td>
-                                        <td><span class="stripe-id">pi_3Nh2g6...</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td>12 Feb 2026</td>
-                                        <td>Liam Taylor</td>
-                                        <td>Cascade Apartment 6</td>
-                                        <td class="type-payment">Payment</td>
-                                        <td class="amount-positive">$2,100.00</td>
-                                        <td><span class="badge badge-success">Completed</span></td>
-                                        <td><span class="stripe-id">pi_3Nh1f5...</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td>11 Feb 2026</td>
-                                        <td>Sophia Martinez</td>
-                                        <td>Sydney CBD Apartment</td>
-                                        <td class="type-refund">Refund</td>
-                                        <td class="amount-negative">-$420.00</td>
-                                        <td><span class="badge badge-danger">Refunded</span></td>
-                                        <td><span class="stripe-id">re_1Nh0e4...</span></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="card-footer">
-                            <a href="#">View All Transactions</a>
+                <!-- Stripe Connect Info (shown when connected) -->
+                <div id="stripeDetailCard" style="display:none;" class="admin-card" style="margin-bottom:1.5rem;">
+                    <div class="admin-card__header" style="display:flex;align-items:center;justify-content:space-between;">
+                        <h2 class="admin-card__title">Stripe Connected Account</h2>
+                        <div style="display:flex;gap:0.5rem;">
+                            <a id="stripeDashLink" href="https://dashboard.stripe.com" target="_blank" class="btn btn-secondary" style="font-size:0.8125rem;padding:0.4rem 0.9rem;">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                                Stripe Dashboard
+                            </a>
+                            <button id="disconnectBtn" class="btn" style="font-size:0.8125rem;padding:0.4rem 0.9rem;background:#fff;border:1px solid #fca5a5;color:#dc2626;" onclick="disconnectStripe()">Disconnect</button>
                         </div>
                     </div>
-
-                    <!-- Payout Schedule -->
-                    <div class="card">
-                        <div class="card-header">
-                            <h2>Payout Schedule</h2>
-                        </div>
-                        <div class="card-body">
-                            <div class="next-payout">
-                                <div class="next-label">Next Payout</div>
-                                <div class="next-amount">$3,245.00</div>
-                                <div class="next-date">Scheduled for 21 Feb 2026</div>
+                    <div class="admin-card__body">
+                        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;">
+                            <div style="background:#f8fafc;border-radius:8px;padding:12px 16px;">
+                                <div style="font-size:0.7rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Account ID</div>
+                                <div id="scAccountId" style="font-family:monospace;font-size:0.8rem;color:#1e293b;font-weight:600;">—</div>
                             </div>
-
-                            <h3 style="font-size: 0.875rem; font-weight: 600; color: #0f172a; margin: 0 0 0.75rem;">Payout History</h3>
-                            <ul class="payout-history-list">
-                                <li>
-                                    <span class="payout-date">14 Feb 2026</span>
-                                    <span class="payout-amount">$8,540.00</span>
-                                    <span class="badge badge-success">Completed</span>
-                                    <span class="payout-bank">****4827</span>
-                                </li>
-                                <li>
-                                    <span class="payout-date">7 Feb 2026</span>
-                                    <span class="payout-amount">$6,320.00</span>
-                                    <span class="badge badge-success">Completed</span>
-                                    <span class="payout-bank">****4827</span>
-                                </li>
-                                <li>
-                                    <span class="payout-date">31 Jan 2026</span>
-                                    <span class="payout-amount">$9,875.00</span>
-                                    <span class="badge badge-success">Completed</span>
-                                    <span class="payout-bank">****4827</span>
-                                </li>
-                                <li>
-                                    <span class="payout-date">24 Jan 2026</span>
-                                    <span class="payout-amount">$5,210.00</span>
-                                    <span class="badge badge-success">Completed</span>
-                                    <span class="payout-bank">****4827</span>
-                                </li>
-                                <li>
-                                    <span class="payout-date">17 Jan 2026</span>
-                                    <span class="payout-amount">$7,690.00</span>
-                                    <span class="badge badge-success">Completed</span>
-                                    <span class="payout-bank">****4827</span>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-
-                </div>
-
-                <!-- ===== Connect with Stripe Onboarding (for properties not yet connected) =====
-                <div class="card">
-                    <div class="stripe-onboarding">
-                        <div class="onboarding-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <rect x="1" y="4" width="22" height="16" rx="2"/>
-                                <line x1="1" y1="10" x2="23" y2="10"/>
-                            </svg>
-                        </div>
-                        <h2>Connect with Stripe</h2>
-                        <p>Set up Stripe Connect to securely process payments for your vacation rental properties. Accept credit cards, Apple Pay, and more with industry-leading security.</p>
-
-                        <div class="onboarding-benefits">
-                            <div class="benefit">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="32" height="32"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                                <h4>Secure Payments</h4>
-                                <p>PCI-compliant processing with fraud protection built in</p>
+                            <div style="background:#f8fafc;border-radius:8px;padding:12px 16px;">
+                                <div style="font-size:0.7rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Business Name</div>
+                                <div id="scDisplayName" style="font-size:0.875rem;color:#1e293b;font-weight:600;">—</div>
                             </div>
-                            <div class="benefit">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="32" height="32"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                                <h4>Global Reach</h4>
-                                <p>Accept 135+ currencies from guests worldwide</p>
+                            <div style="background:#f8fafc;border-radius:8px;padding:12px 16px;">
+                                <div style="font-size:0.7rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Charges</div>
+                                <div id="scCharges" style="font-size:0.875rem;font-weight:600;">—</div>
                             </div>
-                            <div class="benefit">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="32" height="32"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-                                <h4>Instant Payouts</h4>
-                                <p>Get paid directly to your bank account on your schedule</p>
+                            <div style="background:#f8fafc;border-radius:8px;padding:12px 16px;">
+                                <div style="font-size:0.7rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Payouts</div>
+                                <div id="scPayouts" style="font-size:0.875rem;font-weight:600;">—</div>
+                            </div>
+                            <div style="background:#f8fafc;border-radius:8px;padding:12px 16px;">
+                                <div style="font-size:0.7rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Fee Split</div>
+                                <div style="font-size:0.875rem;color:#1e293b;font-weight:600;">98.9% owner · 1.1% platform</div>
                             </div>
                         </div>
-
-                        <button class="btn btn-stripe" onclick="connectStripe()">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-                            Connect with Stripe
-                        </button>
                     </div>
                 </div>
-                ===== End Connect with Stripe Onboarding ===== -->
 
-            </div>
-        </main>
+            </main>
 
+    <style>
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
     <script src="../js/app.js"></script>
     <script src="../js/admin.js"></script>
-    <script src="../js/stripe-connect.js"></script>
+    <script src="../js/admin-auth.js"></script>
     <script>
-        function disconnectStripe() {
-            if (confirm('Are you sure you want to disconnect your Stripe account? This will disable payment processing.')) {
-                alert('Stripe account disconnected.');
+    (function () {
+        'use strict';
+
+        // ── User display ────────────────────────────────────────────────
+        var session = JSON.parse(localStorage.getItem('trendaccom_admin_auth') || '{}');
+        if (session.name) {
+            var initials = session.name.split(' ').map(function(w){ return w[0]; }).join('').toUpperCase().slice(0,2);
+            document.getElementById('userAvatar').textContent = initials || session.name.slice(0,2).toUpperCase();
+            document.getElementById('userName').textContent = session.name;
+        }
+
+        // ── Stats from localStorage bookings ────────────────────────────
+        var bookings = JSON.parse(localStorage.getItem('cascade6_bookings') || '[]');
+        var totalRevenue = 0, pendingRevenue = 0, monthRevenue = 0;
+        var now = new Date();
+        var monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+
+        bookings.forEach(function (b) {
+            var amt = parseFloat(b.total) || 0;
+            if (b.status === 'confirmed' || b.status === 'completed') {
+                totalRevenue += amt;
+                var created = b.createdAt ? new Date(b.createdAt) : null;
+                if (created && created >= monthStart) monthRevenue += amt;
+            } else if (b.status === 'pending') {
+                pendingRevenue += amt;
+            }
+        });
+
+        function fmtAUD(v) {
+            return '$' + v.toLocaleString('en-AU', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+        }
+        document.getElementById('statRevenue').textContent = fmtAUD(totalRevenue);
+        document.getElementById('statPending').textContent  = fmtAUD(pendingRevenue);
+        document.getElementById('statMonth').textContent    = fmtAUD(monthRevenue);
+        document.getElementById('statMonthLabel').textContent =
+            now.toLocaleString('en-AU', { month: 'long' }) + ' ' + now.getFullYear() + ' (confirmed)';
+
+        // ── Transactions table ──────────────────────────────────────────
+        var sorted = bookings.slice().sort(function (a, b) {
+            return (b.createdAt || 0) - (a.createdAt || 0);
+        }).slice(0, 20);
+
+        var tbody = document.getElementById('txBody');
+        var empty = document.getElementById('txEmpty');
+
+        if (sorted.length > 0) {
+            tbody.innerHTML = '';
+            sorted.forEach(function (b) {
+                var amt       = parseFloat(b.total) || 0;
+                var fee       = +(amt * 0.011).toFixed(2);
+                var net       = +(amt * 0.989).toFixed(2);
+                var statusMap = {
+                    confirmed: ['admin-badge--confirmed', 'Confirmed'],
+                    pending:   ['admin-badge--pending',   'Pending'],
+                    cancelled: ['admin-badge--cancelled', 'Cancelled'],
+                    completed: ['admin-badge--completed', 'Completed'],
+                };
+                var sc         = (statusMap[b.status] || ['admin-badge--pending', 'Pending']);
+                var dateStr    = b.createdAt ? new Date(b.createdAt).toLocaleDateString('en-AU', {day:'2-digit',month:'short',year:'numeric'}) : '—';
+                var checkinStr  = b.checkin  ? new Date(b.checkin  + 'T12:00:00').toLocaleDateString('en-AU', {day:'2-digit',month:'short'}) : '—';
+                var checkoutStr = b.checkout ? new Date(b.checkout + 'T12:00:00').toLocaleDateString('en-AU', {day:'2-digit',month:'short'}) : '—';
+
+                var tr = document.createElement('tr');
+                var isCancelled = b.status === 'cancelled';
+                tr.innerHTML =
+                    '<td style="font-size:0.8125rem;color:#64748b;">' + dateStr + '</td>' +
+                    '<td style="font-size:0.875rem;font-weight:500;">' + (b.name || '—') + '</td>' +
+                    '<td style="font-size:0.8125rem;">' + checkinStr + '</td>' +
+                    '<td style="font-size:0.8125rem;">' + checkoutStr + '</td>' +
+                    '<td><span class="admin-badge ' + sc[0] + '">' + sc[1] + '</span></td>' +
+                    '<td style="font-weight:600;font-size:0.875rem;">' + fmtAUD(amt) + '</td>' +
+                    '<td style="font-size:0.8125rem;color:#94a3b8;">' + (isCancelled ? '—' : fmtAUD(fee)) + '</td>' +
+                    '<td style="font-size:0.875rem;font-weight:600;color:' + (isCancelled ? '#94a3b8' : '#059669') + ';">' +
+                        (isCancelled ? '—' : fmtAUD(net)) +
+                    '</td>';
+                tbody.appendChild(tr);
+            });
+        }
+
+        // ── Stripe Connect status ───────────────────────────────────────
+        var banner = document.getElementById('stripeStatusBanner');
+
+        fetch('/api/stripe-connect-status')
+            .then(function (r) { return r.json(); })
+            .then(function (d) {
+                if (!d.configured) {
+                    banner.innerHTML = renderNotConfigured();
+                } else if (!d.connected) {
+                    banner.innerHTML = renderNotConnected(d.error);
+                } else {
+                    banner.innerHTML = renderConnected(d);
+                    renderDetailCard(d);
+                }
+            })
+            .catch(function () {
+                banner.innerHTML = '<div class="admin-card" style="padding:1rem 1.5rem;background:#fff7ed;border-left:4px solid #f59e0b;"><span style="font-size:0.875rem;color:#92400e;">Could not reach /api/stripe-connect-status — check your API configuration.</span></div>';
+            });
+
+        function renderNotConfigured() {
+            return '<div class="admin-card" style="padding:1.25rem 1.5rem;border-left:4px solid #f59e0b;background:#fff7ed;">' +
+                '<div style="display:flex;align-items:flex-start;gap:0.75rem;">' +
+                    '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>' +
+                    '<div>' +
+                        '<div style="font-weight:600;font-size:0.9375rem;color:#92400e;margin-bottom:4px;">Stripe not configured</div>' +
+                        '<div style="font-size:0.875rem;color:#92400e;line-height:1.5;">STRIPE_SECRET_KEY is not set. Add it to your environment variables, then connect your Stripe account.</div>' +
+                        '<a href="stripe-connect.html" style="display:inline-block;margin-top:0.75rem;padding:0.4rem 1rem;background:#635bff;color:#fff;border-radius:6px;font-size:0.8125rem;font-weight:600;text-decoration:none;">Set up Stripe Connect</a>' +
+                    '</div>' +
+                '</div>' +
+            '</div>';
+        }
+
+        function renderNotConnected(errMsg) {
+            return '<div class="admin-card" style="padding:1.25rem 1.5rem;border-left:4px solid #635bff;background:#f5f5ff;">' +
+                '<div style="display:flex;align-items:flex-start;gap:0.75rem;">' +
+                    '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#635bff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px;"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>' +
+                    '<div>' +
+                        '<div style="font-weight:600;font-size:0.9375rem;color:#4338ca;margin-bottom:4px;">Stripe Connect not set up' + (errMsg ? ' — account unreachable' : '') + '</div>' +
+                        '<div style="font-size:0.875rem;color:#4338ca;line-height:1.5;">Connect your Stripe account to start receiving payouts. Guests will be charged and 98.9% goes directly to your bank account.</div>' +
+                        '<a href="stripe-connect.html" style="display:inline-block;margin-top:0.75rem;padding:0.4rem 1rem;background:#635bff;color:#fff;border-radius:6px;font-size:0.8125rem;font-weight:600;text-decoration:none;">Connect Stripe Account →</a>' +
+                    '</div>' +
+                '</div>' +
+            '</div>';
+        }
+
+        function renderConnected(d) {
+            return '<div class="admin-card" style="padding:1rem 1.5rem;border-left:4px solid #22c55e;background:#f0fdf4;">' +
+                '<div style="display:flex;align-items:center;gap:0.75rem;">' +
+                    '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>' +
+                    '<span style="font-weight:600;font-size:0.9375rem;color:#166534;">Stripe Connected</span>' +
+                    '<span style="font-size:0.8125rem;color:#166534;font-family:monospace;">' + d.accountId + '</span>' +
+                    '<span style="flex:1;"></span>' +
+                    (d.balance ? '<span style="font-size:0.875rem;color:#166534;font-weight:600;">Available: ' + fmtAUD(d.balance.available / 100) + ' · Pending: ' + fmtAUD(d.balance.pending / 100) + '</span>' : '') +
+                '</div>' +
+            '</div>';
+        }
+
+        function renderDetailCard(d) {
+            var card = document.getElementById('stripeDetailCard');
+            card.style.display = '';
+            document.getElementById('scAccountId').textContent   = d.accountId || '—';
+            document.getElementById('scDisplayName').textContent = d.displayName || d.email || '(not set)';
+            var chargesEl = document.getElementById('scCharges');
+            chargesEl.textContent  = d.chargesEnabled ? 'Enabled' : 'Not enabled';
+            chargesEl.style.color  = d.chargesEnabled ? '#059669' : '#dc2626';
+            var payoutsEl = document.getElementById('scPayouts');
+            payoutsEl.textContent  = d.payoutsEnabled ? 'Enabled' : 'Not enabled';
+            payoutsEl.style.color  = d.payoutsEnabled ? '#059669' : '#dc2626';
+            if (d.balance) {
+                document.getElementById('statBalance').textContent = fmtAUD(d.balance.available / 100);
             }
         }
 
-        function connectStripe() {
-            window.location.href = 'https://connect.stripe.com/oauth/authorize?response_type=code&client_id=ca_xxx&scope=read_write';
-        }
+        // ── Disconnect ──────────────────────────────────────────────────
+        window.disconnectStripe = function () {
+            if (!confirm('Disconnect your Stripe account? Payments will stop transferring to your bank account until you reconnect.')) return;
+            var btn = document.getElementById('disconnectBtn');
+            btn.disabled = true;
+            btn.textContent = 'Disconnecting…';
+            fetch('/api/stripe-connect-save', { method: 'DELETE' })
+                .then(function (r) { return r.json(); })
+                .then(function (d) {
+                    if (d.hasEnvVar) {
+                        alert(d.message);
+                    }
+                    location.reload();
+                })
+                .catch(function () { alert('Disconnect failed. Please try again.'); btn.disabled = false; btn.textContent = 'Disconnect'; });
+        };
+    })();
     </script>
-    <script src="../js/admin-auth.js"></script>
+</div><!-- /.admin-main -->
 </div><!-- /.admin-layout -->
 </body>
 </html>
