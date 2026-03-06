@@ -28,7 +28,10 @@ module.exports = async function handler(req, res) {
     }
 
     const paymentIntent = await stripe.paymentIntents.create(params);
-    return res.status(200).json({ clientSecret: paymentIntent.client_secret });
+    return res.status(200).json({
+      clientSecret:   paymentIntent.client_secret,
+      publishableKey: process.env.STRIPE_PUBLISHABLE_KEY || '',
+    });
   } catch (err) {
     console.error('Stripe PaymentIntent error:', err.message);
     return res.status(500).json({ error: err.message });

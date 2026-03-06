@@ -21,7 +21,9 @@
         cardElement: null,
 
         config: {
-            publishableKey: 'pk_test_51R90aVH4Fz8ujmcvLLzSFR1gbn30oN9qpk140e282tN6sPe4fr7HWFd7OBI1MYFhlx2CkvKQtJuzqotd6w5lFuVr00yPKpDnMG',
+            // Publishable key is resolved at runtime from the server response.
+            // Do NOT hardcode a key here — it must match the secret key on the server.
+            publishableKey: '',
             locale: 'en-AU',
             currency: 'aud',
             appearance: {
@@ -38,13 +40,25 @@
             }
         },
 
-        init() {
+        async init() {
             if (typeof Stripe === 'undefined') {
                 console.warn('Stripe.js not loaded. Showing placeholder card input.');
                 this.showPlaceholder();
                 return;
             }
             try {
+                // Resolve the publishable key from the server so it always matches
+                // the secret key — avoids "No such payment_intent" mismatches.
+                const res = await fetch('/api/stripe-config').catch(() => null);
+                if (res && res.ok) {
+                    const cfg = await res.json();
+                    if (cfg.publishableKey) this.config.publishableKey = cfg.publishableKey;
+                }
+                if (!this.config.publishableKey) {
+                    console.warn('Stripe publishable key not available. Showing placeholder.');
+                    this.showPlaceholder();
+                    return;
+                }
                 this.stripe = Stripe(this.config.publishableKey);
                 this.createElements();
             } catch (e) {
@@ -148,6 +162,14 @@
 
             const intentData = await intentRes.json();
             if (!intentRes.ok) throw new Error(intentData.error || 'Could not create payment intent.');
+
+            // If the server returned a publishable key that differs from the one we
+            // used to initialise (e.g. key was unavailable at init time), re-init now.
+            if (intentData.publishableKey && intentData.publishableKey !== this.config.publishableKey) {
+                this.config.publishableKey = intentData.publishableKey;
+                this.stripe = Stripe(this.config.publishableKey);
+                this.createElements();
+            }
 
             const { paymentIntent, error } = await this.stripe.confirmCardPayment(
                 intentData.clientSecret,
