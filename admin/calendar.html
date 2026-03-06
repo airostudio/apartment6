@@ -4,581 +4,272 @@
     <meta charset="UTF-8">
     <base href="/admin/">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Availability Calendar — Cascade Apartment 6 Admin</title>
+    <title>Calendar — Cascade Apartment 6 Admin</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/main.css">
     <link rel="stylesheet" href="../css/admin.css">
     <style>
-    /* ── HBook-style availability timeline ─────────────────────────── */
-
-    /* Scroll container */
-    .cal-outer {
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        border-radius: 0 0 12px 12px;
-        border-top: 1px solid #e2e8f0;
+    /* ── View toggle ──────────────────────────────────────────────────── */
+    .cal-view-tabs { display:flex; gap:4px; }
+    .cal-view-tab {
+        padding:7px 16px; border-radius:8px;
+        border:1.5px solid #e2e8f0; background:#fff;
+        font-size:0.8125rem; font-weight:500; color:#64748b;
+        cursor:pointer; transition:all 0.14s; font-family:inherit;
+    }
+    .cal-view-tab:hover { border-color:#0f2744; color:#0f2744; }
+    .cal-view-tab.active {
+        background:#0f2744; color:#fff; border-color:#0f2744;
     }
 
-    /* Shared: fixed-width left label pad */
-    .cal-lpad {
-        flex: 0 0 190px;
-        min-width: 190px;
-        border-right: 2px solid #e2e8f0;
-        box-sizing: border-box;
-    }
-
-    /* Row 1: month name strip */
-    .cal-month-strip {
-        display: flex;
-        background: #f8fafc;
-        border-bottom: 1px solid #e2e8f0;
-        min-width: max-content;
-    }
-    .cal-month-strip .cal-lpad {
-        display: flex;
-        align-items: center;
-        padding: 0 14px;
-        font-size: 0.6875rem;
-        font-weight: 600;
-        color: #94a3b8;
-        text-transform: uppercase;
-        letter-spacing: 0.07em;
-    }
-    .cal-month-chunk {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 8px 0;
-        font-size: 0.8125rem;
-        font-weight: 700;
-        color: #0f2744;
-        letter-spacing: 0.02em;
-        border-right: 2px solid #e2e8f0;
-        flex-shrink: 0;
-    }
-
-    /* Row 2: day header strip */
-    .cal-day-strip {
-        display: flex;
-        border-bottom: 2px solid #0f2744;
-        background: #fff;
-        min-width: max-content;
-    }
-    .cal-day-strip .cal-lpad { background: #f8fafc; }
-    .cal-dh {
-        flex: 0 0 38px;
-        min-width: 38px;
-        padding: 5px 0 4px;
-        text-align: center;
-        border-right: 1px solid #f1f5f9;
-        box-sizing: border-box;
-    }
-    .cal-dh .dow {
-        display: block;
-        font-size: 0.5625rem;
-        color: #94a3b8;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        line-height: 1;
-    }
-    .cal-dh .dn {
-        display: block;
-        font-size: 0.8125rem;
-        font-weight: 600;
-        color: #334155;
-        line-height: 1.9;
-    }
-    .cal-dh.weekend { background: #f8fafc; }
-    .cal-dh.is-today { background: rgba(201,168,76,0.12); }
-    .cal-dh.is-today .dn {
-        background: #c9a84c;
-        color: #fff;
-        border-radius: 50%;
-        width: 24px;
-        height: 24px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 0.75rem;
-        margin: 0 auto;
-    }
-    .cal-dh.is-past .dn, .cal-dh.is-past .dow { opacity: 0.4; }
-    .cal-dh.month-start { border-left: 2px solid #cbd5e1; }
-
-    /* Row 3: booking row */
-    .cal-brow {
-        display: flex;
-        border-bottom: 1px solid #f1f5f9;
-        min-width: max-content;
-    }
-    .cal-row-lbl {
-        flex: 0 0 190px;
-        min-width: 190px;
-        min-height: 64px;
-        padding: 0 14px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        font-size: 0.8125rem;
-        font-weight: 600;
-        color: #0f2744;
-        background: #f8fafc;
-        border-right: 2px solid #e2e8f0;
-        position: sticky;
-        left: 0;
-        z-index: 10;
-        box-shadow: 4px 0 8px rgba(0,0,0,0.05);
-        box-sizing: border-box;
-    }
-    .cal-row-lbl small {
-        display: block;
-        font-size: 0.6875rem;
-        font-weight: 400;
-        color: #94a3b8;
-        margin-top: 2px;
-    }
-
-    /* Cells wrapper — contains bg cells + overlaid bars */
-    .cal-cells-wrap {
-        position: relative;
-        display: flex;
-        flex: 1;
-        min-height: 64px;
-    }
-    .cal-cell {
-        flex: 0 0 38px;
-        min-width: 38px;
-        min-height: 64px;
-        border-right: 1px solid #f1f5f9;
-        box-sizing: border-box;
-    }
-    .cal-cell.weekend { background: rgba(248,250,252,0.9); }
-    .cal-cell.is-today {
-        background: rgba(201,168,76,0.05);
-        border-right-color: rgba(201,168,76,0.3);
-    }
-    .cal-cell.month-start { border-left: 2px solid #cbd5e1; }
-
-    /* Today vertical marker */
-    .cal-today-mark {
-        position: absolute;
-        top: 0; bottom: 0;
-        width: 2px;
-        background: #c9a84c;
-        z-index: 7;
-        pointer-events: none;
-    }
-    .cal-today-mark::after {
-        content: '';
-        position: absolute;
-        top: 0; left: 50%;
-        transform: translateX(-50%);
-        border-left: 5px solid transparent;
-        border-right: 5px solid transparent;
-        border-top: 6px solid #c9a84c;
-    }
-
-    /* Booking bars */
-    .cal-bar {
-        position: absolute;
-        height: 34px;
-        top: 50%;
-        transform: translateY(-50%);
-        border-radius: 6px;
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        padding: 0 10px;
-        font-size: 0.6875rem;
-        font-weight: 600;
-        color: #fff;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        cursor: pointer;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-        transition: filter 0.12s, box-shadow 0.12s;
-        z-index: 5;
-        user-select: none;
-    }
-    .cal-bar:hover {
-        filter: brightness(1.1);
-        box-shadow: 0 4px 14px rgba(0,0,0,0.28);
-        z-index: 6;
-    }
-    .cal-bar--confirmed { background: linear-gradient(90deg,#0f2744,#1e4070); }
-    .cal-bar--pending   { background: linear-gradient(90deg,#a07820,#c9a84c); }
-    .cal-bar--cancelled { background: linear-gradient(90deg,#a93226,#e74c3c); }
-    .cal-bar--blocked {
-        background: repeating-linear-gradient(
-            45deg,
-            #7f8c9a 0px, #7f8c9a 5px,
-            #9aabb8 5px, #9aabb8 12px
-        );
-        color: #2d3748;
-    }
-    .cal-bar-icon { width: 11px; height: 11px; flex-shrink: 0; opacity: 0.8; }
-
-    /* Tooltip */
-    .cal-tooltip {
-        position: fixed;
-        z-index: 9999;
-        background: #1e293b;
-        color: #f8fafc;
-        border-radius: 10px;
-        padding: 12px 15px;
-        font-size: 0.8125rem;
-        line-height: 1.55;
-        box-shadow: 0 8px 28px rgba(0,0,0,0.35);
-        pointer-events: none;
-        max-width: 240px;
-        display: none;
-    }
-    .cal-tooltip .t-name {
-        font-weight: 700;
-        font-size: 0.875rem;
-        margin-bottom: 6px;
-        padding-bottom: 6px;
-        border-bottom: 1px solid rgba(255,255,255,0.12);
-    }
-    .cal-tooltip .t-row { color: #94a3b8; font-size: 0.75rem; }
-    .cal-tooltip .t-row span { color: #f8fafc; font-weight: 500; }
-    .cal-tooltip .t-status {
-        display: inline-block;
-        margin-top: 5px;
-        padding: 2px 8px;
-        border-radius: 20px;
-        font-size: 0.6875rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-    }
-    .cal-tooltip .t-status--confirmed { background: rgba(39,174,96,0.25); color: #5dde8f; }
-    .cal-tooltip .t-status--pending   { background: rgba(201,168,76,0.25); color: #e8c56a; }
-    .cal-tooltip .t-status--blocked   { background: rgba(148,163,184,0.2); color: #cbd5e1; }
-    .cal-tooltip .t-status--cancelled { background: rgba(231,76,60,0.25); color: #fc8a7f; }
-
-    /* ── Booking Detail Panel (HBook-style slide-in) ─── */
-    .bdp-overlay {
-        display: none;
-        position: fixed;
-        inset: 0;
-        background: rgba(15,23,42,0.45);
-        z-index: 980;
-        justify-content: flex-end;
-        align-items: stretch;
-    }
-    .bdp-overlay.open { display: flex; }
-    .bdp-panel {
-        width: 400px;
-        max-width: 100vw;
-        background: #fff;
-        box-shadow: -8px 0 40px rgba(0,0,0,0.18);
-        display: flex;
-        flex-direction: column;
-        overflow-y: auto;
-        transform: translateX(100%);
-        transition: transform 0.22s cubic-bezier(0.4,0,0.2,1);
-    }
-    .bdp-overlay.open .bdp-panel { transform: translateX(0); }
-    .bdp-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 16px 20px;
-        background: #0f2744;
-        color: #fff;
-        flex-shrink: 0;
-        gap: 10px;
-    }
-    .bdp-header-title { font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; opacity: 0.75; }
-    .bdp-close {
-        background: rgba(255,255,255,0.12); border: none; color: #fff;
-        width: 30px; height: 30px; border-radius: 8px;
-        display: flex; align-items: center; justify-content: center;
-        cursor: pointer; font-size: 1.125rem; line-height: 1; flex-shrink: 0;
-        transition: background 0.14s;
-    }
-    .bdp-close:hover { background: rgba(255,255,255,0.22); }
-    .bdp-hero {
-        padding: 20px 20px 16px;
-        border-bottom: 1px solid #e2e8f0;
-        background: #f8fafc;
-    }
-    .bdp-name { font-size: 1.1875rem; font-weight: 700; color: #0f2744; margin-bottom: 4px; }
-    .bdp-ref  { font-size: 0.775rem; color: #94a3b8; font-family: monospace; letter-spacing: 0.06em; }
-    .bdp-status-row { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
-    .bdp-badge {
-        display: inline-flex; align-items: center; gap: 5px;
-        padding: 3px 10px; border-radius: 20px;
-        font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
-    }
-    .bdp-badge--confirmed { background: #dcfce7; color: #166534; }
-    .bdp-badge--pending   { background: #fef9c3; color: #854d0e; }
-    .bdp-badge--blocked   { background: #f1f5f9; color: #64748b; }
-    .bdp-badge--cancelled { background: #fee2e2; color: #991b1b; }
-    .bdp-booked-at { font-size: 0.75rem; color: #94a3b8; }
-    .bdp-section { padding: 16px 20px; border-bottom: 1px solid #f1f5f9; }
-    .bdp-section-label {
-        font-size: 0.6875rem; font-weight: 700; text-transform: uppercase;
-        letter-spacing: 0.08em; color: #94a3b8; margin-bottom: 12px;
-    }
-    .bdp-row {
-        display: flex; align-items: flex-start; gap: 10px;
-        font-size: 0.875rem; margin-bottom: 8px; color: #334155;
-    }
-    .bdp-row:last-child { margin-bottom: 0; }
-    .bdp-row-icon { width: 16px; flex-shrink: 0; margin-top: 1px; color: #94a3b8; }
-    .bdp-row-val  { flex: 1; line-height: 1.4; }
-    .bdp-row-val strong { font-weight: 600; }
-    .bdp-dates-grid {
-        display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 10px;
-    }
-    .bdp-date-card {
-        background: #f8fafc; border: 1px solid #e2e8f0;
-        border-radius: 10px; padding: 10px 14px;
-    }
-    .bdp-date-card__label { font-size: 0.6875rem; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; }
-    .bdp-date-card__val   { font-size: 0.9rem; font-weight: 700; color: #0f2744; margin-top: 3px; }
-    .bdp-date-card__sub   { font-size: 0.75rem; color: #64748b; margin-top: 1px; }
-    .bdp-nights-pill {
-        display: inline-flex; align-items: center; gap: 6px;
-        background: #e0f2fe; color: #075985;
-        padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600;
-    }
-    .bdp-price-row {
-        display: flex; justify-content: space-between;
-        font-size: 0.875rem; color: #475569; padding: 4px 0;
-    }
-    .bdp-price-row--addon { color: #7c3aed; }
-    .bdp-price-row--total {
-        font-size: 1rem; font-weight: 700; color: #0f2744;
-        padding-top: 10px; margin-top: 6px;
-        border-top: 2px solid #e2e8f0;
-    }
-    .bdp-notes {
-        font-size: 0.875rem; color: #475569; font-style: italic;
-        background: #fffbeb; border-left: 3px solid #f59e0b;
-        padding: 10px 14px; border-radius: 0 8px 8px 0; line-height: 1.5;
-    }
-    .bdp-actions {
-        padding: 16px 20px;
-        display: flex; gap: 10px; flex-shrink: 0;
-        border-top: 1px solid #e2e8f0; margin-top: auto; background: #fff;
-    }
-    .bdp-btn-cancel {
-        flex: 1; padding: 10px; border-radius: 8px;
-        border: 1.5px solid #fecaca; background: #fff; color: #dc2626;
-        font-size: 0.875rem; font-weight: 600; cursor: pointer;
-        transition: all 0.14s; font-family: inherit;
-    }
-    .bdp-btn-cancel:hover { background: #fee2e2; }
-    .bdp-btn-close {
-        flex: 1; padding: 10px; border-radius: 8px;
-        border: none; background: #0f2744; color: #fff;
-        font-size: 0.875rem; font-weight: 600; cursor: pointer;
-        transition: background 0.14s; font-family: inherit;
-    }
-    .bdp-btn-close:hover { background: #1a3a5c; }
-
-    /* Nav controls */
-    .cal-controls {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        flex-wrap: wrap;
-    }
+    /* ── Nav controls ─────────────────────────────────────────────────── */
+    .cal-controls { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
     .cal-nav-btn {
-        width: 34px; height: 34px;
-        border: 1.5px solid #e2e8f0;
-        border-radius: 8px;
-        background: #fff;
-        color: #64748b;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: all 0.14s;
-        flex-shrink: 0;
-        font-family: inherit;
-        font-size: 1rem;
+        width:34px; height:34px; border:1.5px solid #e2e8f0;
+        border-radius:8px; background:#fff; color:#64748b;
+        display:flex; align-items:center; justify-content:center;
+        cursor:pointer; transition:all 0.14s; flex-shrink:0; font-family:inherit;
     }
-    .cal-nav-btn:hover { background: #0f2744; color: #fff; border-color: #0f2744; }
+    .cal-nav-btn:hover { background:#0f2744; color:#fff; border-color:#0f2744; }
     .cal-period-label {
-        font-weight: 600;
-        font-size: 0.9375rem;
-        color: #0f2744;
-        min-width: 230px;
-        text-align: center;
+        font-weight:700; font-size:1rem; color:#0f2744;
+        min-width:180px; text-align:center;
     }
-    .cal-jump-today {
-        padding: 7px 14px;
-        border-radius: 8px;
-        border: 1.5px solid #e2e8f0;
-        background: #fff;
-        font-size: 0.8125rem;
-        font-weight: 500;
-        color: #64748b;
-        cursor: pointer;
-        transition: all 0.14s;
-        font-family: inherit;
+    .cal-today-btn {
+        padding:7px 14px; border-radius:8px; border:1.5px solid #e2e8f0;
+        background:#fff; font-size:0.8125rem; font-weight:500;
+        color:#64748b; cursor:pointer; transition:all 0.14s; font-family:inherit;
     }
-    .cal-jump-today:hover { border-color: #0f2744; color: #0f2744; background: #f8fafc; }
+    .cal-today-btn:hover { border-color:#0f2744; color:#0f2744; }
 
-    /* Legend */
+    /* ── MONTH VIEW grid ──────────────────────────────────────────────── */
+    .mcal { padding:0 20px 20px; }
+    .mcal-dow-row {
+        display:grid; grid-template-columns:repeat(7,1fr);
+        border-bottom:2px solid #0f2744; margin-bottom:0;
+    }
+    .mcal-dow {
+        padding:8px 4px 6px; text-align:center;
+        font-size:0.6875rem; font-weight:700;
+        color:#94a3b8; text-transform:uppercase; letter-spacing:0.06em;
+    }
+    .mcal-dow.weekend { color:#c9a84c; }
+    .mcal-grid {
+        display:grid; grid-template-columns:repeat(7,1fr);
+        border-left:1px solid #e2e8f0;
+        border-top:1px solid #e2e8f0;
+    }
+    .mcal-cell {
+        min-height:90px; border-right:1px solid #e2e8f0;
+        border-bottom:1px solid #e2e8f0; padding:6px 6px 4px;
+        position:relative; cursor:default; background:#fff;
+        transition:background 0.12s; box-sizing:border-box;
+    }
+    .mcal-cell:hover { background:#f8fafc; }
+    .mcal-cell.other-month { background:#fafafa; }
+    .mcal-cell.other-month .mcal-day-num { color:#d1d5db; }
+    .mcal-cell.is-today { background:rgba(201,168,76,0.07); }
+    .mcal-cell.is-today .mcal-day-num {
+        background:#c9a84c; color:#fff; border-radius:50%;
+        width:24px; height:24px;
+        display:inline-flex; align-items:center; justify-content:center;
+    }
+    .mcal-cell.weekend { background:rgba(248,250,252,0.7); }
+    .mcal-cell.weekend.is-today { background:rgba(201,168,76,0.1); }
+    .mcal-cell.is-past .mcal-day-num { opacity:0.45; }
+    .mcal-cell.has-booking { cursor:pointer; }
+    .mcal-day-num {
+        font-size:0.8125rem; font-weight:600; color:#334155;
+        display:inline-block; width:24px; height:24px;
+        line-height:24px; text-align:center; margin-bottom:3px;
+    }
+    /* Booking bars inside day cells */
+    .mcal-booking {
+        display:flex; align-items:center; gap:4px;
+        border-radius:4px; padding:2px 6px;
+        font-size:0.6875rem; font-weight:600; color:#fff;
+        cursor:pointer; margin-bottom:2px;
+        white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+        max-width:100%; transition:filter 0.12s;
+    }
+    .mcal-booking:hover { filter:brightness(1.15); }
+    .mcal-booking.confirmed { background:#0f2744; }
+    .mcal-booking.pending   { background:#a07820; }
+    .mcal-booking.blocked   {
+        background:repeating-linear-gradient(45deg,#7f8c9a 0,#7f8c9a 4px,#9aabb8 4px,#9aabb8 9px);
+        color:#fff;
+    }
+    .mcal-booking.cancelled { background:#b91c1c; opacity:0.7; }
+    /* Start/end/middle spans */
+    .mcal-booking.span-start { border-radius:4px 0 0 4px; margin-right:0; padding-right:2px; }
+    .mcal-booking.span-mid   { border-radius:0; margin-left:0; margin-right:0; padding-left:2px; padding-right:2px; }
+    .mcal-booking.span-end   { border-radius:0 4px 4px 0; margin-left:0; padding-left:2px; }
+    .mcal-booking.span-start.span-end { border-radius:4px; }
+    /* show +N more if overflow */
+    .mcal-more {
+        font-size:0.6875rem; color:#94a3b8; font-weight:500;
+        padding:1px 4px; cursor:pointer;
+    }
+    .mcal-more:hover { color:#0f2744; }
+
+    /* ── YEAR VIEW ────────────────────────────────────────────────────── */
+    .ycal { padding:20px; display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:20px; }
+    .ycal-month { border:1px solid #e2e8f0; border-radius:12px; overflow:hidden; cursor:pointer; transition:box-shadow 0.15s; }
+    .ycal-month:hover { box-shadow:0 4px 16px rgba(15,39,68,0.15); }
+    .ycal-month-title {
+        background:#0f2744; color:#fff; text-align:center;
+        font-size:0.8125rem; font-weight:700; padding:8px;
+        letter-spacing:0.03em;
+    }
+    .ycal-dow-row {
+        display:grid; grid-template-columns:repeat(7,1fr);
+        background:#f8fafc; border-bottom:1px solid #e2e8f0;
+    }
+    .ycal-dow {
+        text-align:center; padding:4px 0;
+        font-size:0.5rem; font-weight:700;
+        color:#94a3b8; text-transform:uppercase;
+    }
+    .ycal-grid { display:grid; grid-template-columns:repeat(7,1fr); }
+    .ycal-cell {
+        text-align:center; padding:3px 0; font-size:0.6875rem;
+        color:#475569; position:relative;
+    }
+    .ycal-cell.other-month { color:#e2e8f0; }
+    .ycal-cell.is-today { font-weight:700; }
+    .ycal-cell.is-today span {
+        background:#c9a84c; color:#fff; border-radius:50%;
+        width:18px; height:18px; display:inline-flex;
+        align-items:center; justify-content:center; font-size:0.6rem;
+    }
+    .ycal-cell.has-booking { background:rgba(15,39,68,0.08); font-weight:600; color:#0f2744; }
+    .ycal-cell.has-blocked { background:rgba(127,140,154,0.15); }
+
+    /* ── DAY VIEW ─────────────────────────────────────────────────────── */
+    .dcal { padding:20px; }
+    .dcal-date-header {
+        font-size:1.25rem; font-weight:700; color:#0f2744;
+        margin-bottom:16px; display:flex; align-items:center; gap:10px;
+    }
+    .dcal-empty { color:#94a3b8; font-size:0.875rem; text-align:center; padding:40px 0; }
+    .dcal-booking-card {
+        background:#fff; border:1.5px solid #e2e8f0; border-radius:12px;
+        padding:16px 20px; margin-bottom:12px; cursor:pointer;
+        transition:all 0.14s; display:flex; align-items:center; gap:14px;
+    }
+    .dcal-booking-card:hover { border-color:#0f2744; box-shadow:0 4px 16px rgba(15,39,68,0.1); }
+    .dcal-booking-dot {
+        width:12px; height:12px; border-radius:50%; flex-shrink:0;
+    }
+    .dcal-booking-dot.confirmed { background:#0f2744; }
+    .dcal-booking-dot.pending   { background:#c9a84c; }
+    .dcal-booking-dot.blocked   { background:#7f8c9a; }
+    .dcal-booking-info { flex:1; min-width:0; }
+    .dcal-booking-name { font-weight:600; font-size:0.9375rem; color:#0f172a; }
+    .dcal-booking-sub  { font-size:0.8125rem; color:#94a3b8; margin-top:2px; }
+    .dcal-booking-badge {
+        font-size:0.6875rem; font-weight:700; text-transform:uppercase;
+        letter-spacing:0.05em; padding:3px 10px; border-radius:20px; flex-shrink:0;
+    }
+    .dcal-booking-badge.confirmed { background:#dcfce7; color:#166534; }
+    .dcal-booking-badge.pending   { background:#fef9c3; color:#854d0e; }
+    .dcal-booking-badge.blocked   { background:#f1f5f9; color:#64748b; }
+    .dcal-booking-badge.cancelled { background:#fee2e2; color:#991b1b; }
+
+    /* ── Legend ───────────────────────────────────────────────────────── */
     .cal-legend {
-        display: flex;
-        gap: 18px;
-        flex-wrap: wrap;
-        align-items: center;
-        padding: 12px 20px;
-        background: #f8fafc;
-        border-top: 1px solid #e2e8f0;
-        border-radius: 0 0 12px 12px;
+        display:flex; gap:18px; flex-wrap:wrap; align-items:center;
+        padding:12px 20px; background:#f8fafc;
+        border-top:1px solid #e2e8f0; border-radius:0 0 12px 12px;
     }
-    .cal-legend-item {
-        display: flex;
-        align-items: center;
-        gap: 7px;
-        font-size: 0.8125rem;
-        color: #64748b;
+    .cal-legend-item { display:flex; align-items:center; gap:7px; font-size:0.8125rem; color:#64748b; }
+    .cal-legend-sw { width:28px; height:12px; border-radius:3px; flex-shrink:0; }
+    .cal-legend-sw.confirmed { background:#0f2744; }
+    .cal-legend-sw.pending   { background:#a07820; }
+    .cal-legend-sw.blocked   {
+        background:repeating-linear-gradient(45deg,#7f8c9a 0,#7f8c9a 3px,#9aabb8 3px,#9aabb8 7px);
     }
-    .cal-legend-sw {
-        width: 30px; height: 13px;
-        border-radius: 4px;
-        flex-shrink: 0;
-    }
-    .cal-legend-sw--avail { background: #f1f5f9; border: 1px solid #e2e8f0; }
-    .cal-legend-sw--confirmed { background: linear-gradient(90deg,#0f2744,#1e4070); }
-    .cal-legend-sw--pending { background: linear-gradient(90deg,#a07820,#c9a84c); }
-    .cal-legend-sw--blocked {
-        background: repeating-linear-gradient(
-            45deg, #7f8c9a 0, #7f8c9a 3px, #9aabb8 3px, #9aabb8 7px
-        );
-    }
-    .cal-legend-sw--today {
-        background: #c9a84c;
-        width: 3px;
-        border-radius: 2px;
-        height: 13px;
-    }
+    .cal-legend-sw.today     { background:#c9a84c; width:3px; border-radius:2px; }
 
-    /* Block dates modal */
-    .bm-overlay {
-        display: none;
-        position: fixed;
-        inset: 0;
-        background: rgba(15,23,42,0.55);
-        z-index: 990;
-        align-items: center;
-        justify-content: center;
-    }
-    .bm-overlay.open { display: flex; }
-    .bm-box {
-        background: #fff;
-        border-radius: 16px;
-        padding: 28px;
-        width: 420px;
-        max-width: calc(100vw - 32px);
-        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-    }
-    .bm-head {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 22px;
-    }
-    .bm-head h3 { font-size: 1.0625rem; font-weight: 700; color: #0f2744; }
-    .bm-x {
-        background: none; border: none; cursor: pointer;
-        color: #94a3b8; width: 30px; height: 30px;
-        border-radius: 8px; display: flex; align-items: center; justify-content: center;
-        font-size: 1.25rem; line-height: 1; transition: all 0.14s; padding: 0;
-    }
-    .bm-x:hover { background: #f1f5f9; color: #475569; }
-    .bm-row-pair { display: flex; gap: 12px; }
-    .bm-field { margin-bottom: 14px; flex: 1; }
-    .bm-field label {
-        display: block;
-        font-size: 0.8125rem;
-        font-weight: 500;
-        color: #475569;
-        margin-bottom: 5px;
-    }
-    .bm-field input, .bm-field textarea {
-        width: 100%;
-        box-sizing: border-box;
-        padding: 9px 12px;
-        border: 1.5px solid #e2e8f0;
-        border-radius: 8px;
-        font-size: 0.875rem;
-        font-family: inherit;
-        color: #334155;
-        transition: border-color 0.14s;
-    }
-    .bm-field input:focus, .bm-field textarea:focus {
-        outline: none;
-        border-color: #0f2744;
-        box-shadow: 0 0 0 3px rgba(15,39,68,0.1);
-    }
-    .bm-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 6px; }
-    .bm-cancel {
-        padding: 9px 18px; border-radius: 8px;
-        border: 1.5px solid #e2e8f0; background: #fff;
-        font-size: 0.875rem; font-family: inherit; color: #64748b; cursor: pointer;
-        transition: all 0.14s;
-    }
-    .bm-cancel:hover { border-color: #cbd5e1; background: #f8fafc; }
-    .bm-save {
-        padding: 9px 20px; border-radius: 8px;
-        border: none; background: #7f8c9a;
-        font-size: 0.875rem; font-family: inherit;
-        font-weight: 600; color: #fff; cursor: pointer;
-        transition: background 0.14s;
-    }
-    .bm-save:hover { background: #5d6d7e; }
+    /* ── Block dates modal ─────────────────────────────────────────────── */
+    .bm-overlay { display:none; position:fixed; inset:0; background:rgba(15,23,42,0.55); z-index:990; align-items:center; justify-content:center; }
+    .bm-overlay.open { display:flex; }
+    .bm-box { background:#fff; border-radius:16px; padding:28px; width:420px; max-width:calc(100vw - 32px); box-shadow:0 20px 60px rgba(0,0,0,0.3); }
+    .bm-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:22px; }
+    .bm-head h3 { font-size:1.0625rem; font-weight:700; color:#0f2744; }
+    .bm-x { background:none; border:none; cursor:pointer; color:#94a3b8; width:30px; height:30px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:1.25rem; line-height:1; transition:all 0.14s; padding:0; }
+    .bm-x:hover { background:#f1f5f9; color:#475569; }
+    .bm-row-pair { display:flex; gap:12px; }
+    .bm-field { margin-bottom:14px; flex:1; }
+    .bm-field label { display:block; font-size:0.8125rem; font-weight:500; color:#475569; margin-bottom:5px; }
+    .bm-field input { width:100%; box-sizing:border-box; padding:9px 12px; border:1.5px solid #e2e8f0; border-radius:8px; font-size:0.875rem; font-family:inherit; color:#334155; transition:border-color 0.14s; }
+    .bm-field input:focus { outline:none; border-color:#0f2744; box-shadow:0 0 0 3px rgba(15,39,68,0.1); }
+    .bm-actions { display:flex; gap:10px; justify-content:flex-end; margin-top:6px; }
+    .bm-cancel { padding:9px 18px; border-radius:8px; border:1.5px solid #e2e8f0; background:#fff; font-size:0.875rem; font-family:inherit; color:#64748b; cursor:pointer; transition:all 0.14s; }
+    .bm-cancel:hover { background:#f8fafc; }
+    .bm-save { padding:9px 20px; border-radius:8px; border:none; background:#7f8c9a; font-size:0.875rem; font-family:inherit; font-weight:600; color:#fff; cursor:pointer; transition:background 0.14s; }
+    .bm-save:hover { background:#5d6d7e; }
 
-    /* Upcoming stays list */
-    .upcoming-item {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        padding: 12px 0;
-        border-bottom: 1px solid #f1f5f9;
-    }
-    .upcoming-item:last-child { border-bottom: none; }
-    .upcoming-datebox {
-        flex: 0 0 46px;
-        height: 46px;
-        background: #0f2744;
-        border-radius: 10px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        color: #fff;
-        flex-shrink: 0;
-    }
-    .upcoming-datebox.is-today { background: #c9a84c; }
-    .upcoming-datebox .ud-d { font-size: 1.0625rem; font-weight: 700; line-height: 1; }
-    .upcoming-datebox .ud-m { font-size: 0.5625rem; text-transform: uppercase; letter-spacing: 0.06em; opacity: 0.85; }
-    .upcoming-info { flex: 1; min-width: 0; }
-    .upcoming-name { font-weight: 600; font-size: 0.875rem; color: #0f172a; }
-    .upcoming-sub { font-size: 0.75rem; color: #94a3b8; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .upcoming-nights {
-        font-size: 0.75rem; font-weight: 600; color: #0f2744;
-        background: rgba(15,39,68,0.07); border-radius: 6px;
-        padding: 3px 9px; flex-shrink: 0;
-    }
+    /* ── Booking Detail Panel ─────────────────────────────────────────── */
+    .bdp-overlay { display:none; position:fixed; inset:0; background:rgba(15,23,42,0.45); z-index:980; justify-content:flex-end; align-items:stretch; }
+    .bdp-overlay.open { display:flex; }
+    .bdp-panel { width:400px; max-width:100vw; background:#fff; box-shadow:-8px 0 40px rgba(0,0,0,0.18); display:flex; flex-direction:column; overflow-y:auto; transform:translateX(100%); transition:transform 0.22s cubic-bezier(0.4,0,0.2,1); }
+    .bdp-overlay.open .bdp-panel { transform:translateX(0); }
+    .bdp-header { display:flex; align-items:center; justify-content:space-between; padding:16px 20px; background:#0f2744; color:#fff; flex-shrink:0; gap:10px; }
+    .bdp-header-title { font-size:0.8125rem; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; opacity:0.75; }
+    .bdp-close { background:rgba(255,255,255,0.12); border:none; color:#fff; width:30px; height:30px; border-radius:8px; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:1.125rem; line-height:1; flex-shrink:0; transition:background 0.14s; }
+    .bdp-close:hover { background:rgba(255,255,255,0.22); }
+    .bdp-hero { padding:20px 20px 16px; border-bottom:1px solid #e2e8f0; background:#f8fafc; }
+    .bdp-name { font-size:1.1875rem; font-weight:700; color:#0f2744; margin-bottom:4px; }
+    .bdp-ref  { font-size:0.775rem; color:#94a3b8; font-family:monospace; letter-spacing:0.06em; }
+    .bdp-status-row { display:flex; align-items:center; gap:8px; margin-top:8px; }
+    .bdp-badge { display:inline-flex; align-items:center; gap:5px; padding:3px 10px; border-radius:20px; font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; }
+    .bdp-badge.confirmed { background:#dcfce7; color:#166534; }
+    .bdp-badge.pending   { background:#fef9c3; color:#854d0e; }
+    .bdp-badge.blocked   { background:#f1f5f9; color:#64748b; }
+    .bdp-badge.cancelled { background:#fee2e2; color:#991b1b; }
+    .bdp-booked-at { font-size:0.75rem; color:#94a3b8; }
+    .bdp-section { padding:16px 20px; border-bottom:1px solid #f1f5f9; }
+    .bdp-section-label { font-size:0.6875rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:#94a3b8; margin-bottom:12px; }
+    .bdp-row { display:flex; align-items:flex-start; gap:10px; font-size:0.875rem; margin-bottom:8px; color:#334155; }
+    .bdp-row:last-child { margin-bottom:0; }
+    .bdp-row-icon { width:16px; flex-shrink:0; margin-top:1px; color:#94a3b8; }
+    .bdp-row-val  { flex:1; line-height:1.4; }
+    .bdp-dates-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:10px; }
+    .bdp-date-card { background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:10px 14px; }
+    .bdp-date-card__label { font-size:0.6875rem; font-weight:600; color:#94a3b8; text-transform:uppercase; letter-spacing:0.05em; }
+    .bdp-date-card__val   { font-size:0.9rem; font-weight:700; color:#0f2744; margin-top:3px; }
+    .bdp-date-card__sub   { font-size:0.75rem; color:#64748b; margin-top:1px; }
+    .bdp-nights-pill { display:inline-flex; align-items:center; gap:6px; background:#e0f2fe; color:#075985; padding:4px 12px; border-radius:20px; font-size:0.8rem; font-weight:600; }
+    .bdp-price-row { display:flex; justify-content:space-between; font-size:0.875rem; color:#475569; padding:4px 0; }
+    .bdp-price-row.total { font-size:1rem; font-weight:700; color:#0f2744; padding-top:10px; margin-top:6px; border-top:2px solid #e2e8f0; }
+    .bdp-notes { font-size:0.875rem; color:#475569; font-style:italic; background:#fffbeb; border-left:3px solid #f59e0b; padding:10px 14px; border-radius:0 8px 8px 0; line-height:1.5; }
+    .bdp-actions { padding:16px 20px; display:flex; gap:10px; flex-shrink:0; border-top:1px solid #e2e8f0; margin-top:auto; background:#fff; }
+    .bdp-btn-cancel { flex:1; padding:10px; border-radius:8px; border:1.5px solid #fecaca; background:#fff; color:#dc2626; font-size:0.875rem; font-weight:600; cursor:pointer; transition:all 0.14s; font-family:inherit; }
+    .bdp-btn-cancel:hover { background:#fee2e2; }
+    .bdp-btn-close { flex:1; padding:10px; border-radius:8px; border:none; background:#0f2744; color:#fff; font-size:0.875rem; font-weight:600; cursor:pointer; transition:background 0.14s; font-family:inherit; }
+    .bdp-btn-close:hover { background:#1a3a5c; }
+
+    /* ── Upcoming stays ────────────────────────────────────────────────── */
+    .upcoming-item { display:flex; align-items:center; gap:14px; padding:12px 0; border-bottom:1px solid #f1f5f9; }
+    .upcoming-item:last-child { border-bottom:none; }
+    .upcoming-datebox { flex:0 0 46px; height:46px; background:#0f2744; border-radius:10px; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#fff; flex-shrink:0; }
+    .upcoming-datebox.is-today { background:#c9a84c; }
+    .upcoming-datebox .ud-d { font-size:1.0625rem; font-weight:700; line-height:1; }
+    .upcoming-datebox .ud-m { font-size:0.5625rem; text-transform:uppercase; letter-spacing:0.06em; opacity:0.85; }
+    .upcoming-info { flex:1; min-width:0; }
+    .upcoming-name { font-weight:600; font-size:0.875rem; color:#0f172a; }
+    .upcoming-sub { font-size:0.75rem; color:#94a3b8; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .upcoming-nights { font-size:0.75rem; font-weight:600; color:#0f2744; background:rgba(15,39,68,0.07); border-radius:6px; padding:3px 9px; flex-shrink:0; }
     </style>
 </head>
 <body class="admin-body">
 
 <div class="admin-layout">
 
-    <!-- ============ SIDEBAR ============ -->
+    <!-- SIDEBAR -->
     <aside class="admin-sidebar">
         <div class="admin-sidebar__header">
             <a href="index.html" class="admin-sidebar__logo">
@@ -621,15 +312,13 @@
         </nav>
     </aside>
 
-    <!-- ============ MAIN CONTENT ============ -->
+    <!-- MAIN -->
     <div class="admin-main">
-
-        <!-- Top Bar -->
         <header class="admin-topbar">
             <div class="admin-topbar__breadcrumb">
                 <a href="index.html" class="admin-topbar__breadcrumb-link">Dashboard</a>
                 <span class="admin-topbar__breadcrumb-separator">&rsaquo;</span>
-                <span class="admin-topbar__breadcrumb-current">Availability Calendar</span>
+                <span class="admin-topbar__breadcrumb-current">Calendar</span>
             </div>
             <div class="admin-topbar__actions">
                 <div class="admin-topbar__user">
@@ -639,14 +328,11 @@
             </div>
         </header>
 
-        <!-- Page Content -->
         <main class="admin-content">
-
-            <!-- Page Header -->
             <div class="admin-page-header">
                 <div>
-                    <h1 class="admin-page-title">Availability Calendar</h1>
-                    <p class="admin-page-subtitle">Cascade Apartment 6 — live availability from your bookings</p>
+                    <h1 class="admin-page-title">Calendar</h1>
+                    <p class="admin-page-subtitle">Cascade Apartment 6 — bookings and availability</p>
                 </div>
                 <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
                     <button class="btn-primary" id="blockDatesBtn" style="display:inline-flex;align-items:center;gap:7px;padding:9px 16px;font-size:0.8125rem;">
@@ -663,62 +349,38 @@
             <!-- Calendar Card -->
             <div class="admin-card" style="overflow:hidden;padding:0;">
 
-                <!-- Nav Bar -->
-                <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid #e2e8f0;flex-wrap:wrap;gap:10px;">
+                <!-- Toolbar -->
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid #e2e8f0;flex-wrap:wrap;gap:12px;">
+                    <!-- View tabs -->
+                    <div class="cal-view-tabs">
+                        <button class="cal-view-tab" data-view="year" id="tabYear">Year</button>
+                        <button class="cal-view-tab active" data-view="month" id="tabMonth">Month</button>
+                        <button class="cal-view-tab" data-view="day" id="tabDay">Day</button>
+                    </div>
+                    <!-- Nav -->
                     <div class="cal-controls">
-                        <button class="cal-nav-btn" id="calPrev" aria-label="Previous period">
+                        <button class="cal-nav-btn" id="calPrev" aria-label="Previous">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16"><polyline points="15 18 9 12 15 6"/></svg>
                         </button>
-                        <span class="cal-period-label" id="calNavLabel">Loading…</span>
-                        <button class="cal-nav-btn" id="calNext" aria-label="Next period">
+                        <span class="cal-period-label" id="calLabel">Loading…</span>
+                        <button class="cal-nav-btn" id="calNext" aria-label="Next">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16"><polyline points="9 18 15 12 9 6"/></svg>
                         </button>
-                        <button class="cal-jump-today" id="calTodayBtn">Today</button>
-                    </div>
-                    <div style="font-size:0.8125rem;color:#94a3b8;display:flex;align-items:center;gap:6px;">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
-                        Showing 3 months · Scroll to navigate
+                        <button class="cal-today-btn" id="calTodayBtn">Today</button>
                     </div>
                 </div>
 
-                <!-- Timeline -->
-                <div id="calOuter" class="cal-outer">
-                    <!-- Month strip -->
-                    <div class="cal-month-strip" id="calMonthStrip"></div>
-                    <!-- Day header strip -->
-                    <div class="cal-day-strip" id="calDayStrip"></div>
-                    <!-- Booking row -->
-                    <div class="cal-brow">
-                        <div class="cal-row-lbl">
-                            Cascade Apartment 6
-                            <small>Mt Baw Baw Alpine Resort</small>
-                        </div>
-                        <div class="cal-cells-wrap" id="calCells"></div>
-                    </div>
-                </div>
+                <!-- View containers -->
+                <div id="viewMonth"></div>
+                <div id="viewYear"  style="display:none;"></div>
+                <div id="viewDay"   style="display:none;"></div>
 
                 <!-- Legend -->
                 <div class="cal-legend">
-                    <div class="cal-legend-item">
-                        <div class="cal-legend-sw cal-legend-sw--avail"></div>
-                        Available
-                    </div>
-                    <div class="cal-legend-item">
-                        <div class="cal-legend-sw cal-legend-sw--confirmed"></div>
-                        Confirmed booking
-                    </div>
-                    <div class="cal-legend-item">
-                        <div class="cal-legend-sw cal-legend-sw--pending"></div>
-                        Pending booking
-                    </div>
-                    <div class="cal-legend-item">
-                        <div class="cal-legend-sw cal-legend-sw--blocked"></div>
-                        Blocked / unavailable
-                    </div>
-                    <div class="cal-legend-item">
-                        <div class="cal-legend-sw cal-legend-sw--today"></div>
-                        Today
-                    </div>
+                    <div class="cal-legend-item"><div class="cal-legend-sw confirmed"></div>Confirmed booking</div>
+                    <div class="cal-legend-item"><div class="cal-legend-sw pending"></div>Pending / unpaid</div>
+                    <div class="cal-legend-item"><div class="cal-legend-sw blocked"></div>Blocked / unavailable</div>
+                    <div class="cal-legend-item"><div class="cal-legend-sw today"></div>Today</div>
                 </div>
             </div>
 
@@ -735,131 +397,97 @@
                     <div id="upcomingList"></div>
                 </div>
             </div>
-
         </main>
-    </div><!-- /.admin-main -->
-
-</div><!-- /.admin-layout -->
+    </div>
+</div>
 
 <!-- Block Dates Modal -->
 <div class="bm-overlay" id="bmOverlay">
     <div class="bm-box">
         <div class="bm-head">
-            <h3>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" style="vertical-align:-3px;margin-right:6px;color:#7f8c9a;"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
-                Block Dates
-            </h3>
-            <button class="bm-x" id="bmClose" aria-label="Close">&times;</button>
+            <h3>Block Dates</h3>
+            <button class="bm-x" id="bmClose">&times;</button>
         </div>
-        <p style="font-size:0.8125rem;color:#64748b;margin-bottom:20px;margin-top:-10px;">
-            Mark dates as unavailable to prevent bookings (e.g. maintenance, personal use, iCal blocks).
-        </p>
+        <p style="font-size:0.8125rem;color:#64748b;margin-bottom:20px;margin-top:-10px;">Mark dates as unavailable (e.g. maintenance, personal use).</p>
         <div class="bm-row-pair">
-            <div class="bm-field">
-                <label for="bmFrom">From (check-in)</label>
-                <input type="date" id="bmFrom">
-            </div>
-            <div class="bm-field">
-                <label for="bmTo">To (check-out)</label>
-                <input type="date" id="bmTo">
-            </div>
+            <div class="bm-field"><label for="bmFrom">From (check-in)</label><input type="date" id="bmFrom"></div>
+            <div class="bm-field"><label for="bmTo">To (check-out)</label><input type="date" id="bmTo"></div>
         </div>
-        <div class="bm-field">
-            <label for="bmReason">Reason (optional)</label>
-            <input type="text" id="bmReason" placeholder="e.g. Maintenance, Owner stay, iCal block…">
-        </div>
+        <div class="bm-field"><label for="bmReason">Reason (optional)</label><input type="text" id="bmReason" placeholder="e.g. Maintenance, Owner stay…"></div>
         <div class="bm-actions">
             <button class="bm-cancel" id="bmCancel">Cancel</button>
-            <button class="bm-save" id="bmSave">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" style="vertical-align:-2px;margin-right:4px;"><path d="M18 6L6 18M6 6l12 12"/></svg>
-                Block Dates
-            </button>
+            <button class="bm-save" id="bmSave">Block Dates</button>
         </div>
     </div>
 </div>
 
-<!-- Hover Tooltip -->
-<div class="cal-tooltip" id="calTooltip"></div>
-
-<!-- Booking Detail Panel (HBook-style) -->
+<!-- Booking Detail Panel -->
 <div class="bdp-overlay" id="bdpOverlay">
-  <div class="bdp-panel" id="bdpPanel">
-    <div class="bdp-header">
-      <span class="bdp-header-title">Booking Details</span>
-      <button class="bdp-close" id="bdpClose" aria-label="Close">&times;</button>
-    </div>
-
-    <!-- Hero: name + ref + status -->
-    <div class="bdp-hero">
-      <div class="bdp-name" id="bdpName">—</div>
-      <div class="bdp-ref"  id="bdpRef"></div>
-      <div class="bdp-status-row">
-        <span class="bdp-badge" id="bdpBadge"></span>
-        <span class="bdp-booked-at" id="bdpBookedAt"></span>
-      </div>
-    </div>
-
-    <!-- Dates + nights -->
-    <div class="bdp-section">
-      <div class="bdp-section-label">Stay</div>
-      <div class="bdp-dates-grid">
-        <div class="bdp-date-card">
-          <div class="bdp-date-card__label">Check-in</div>
-          <div class="bdp-date-card__val" id="bdpCiVal">—</div>
-          <div class="bdp-date-card__sub" id="bdpCiDay"></div>
+    <div class="bdp-panel" id="bdpPanel">
+        <div class="bdp-header">
+            <span class="bdp-header-title">Booking Details</span>
+            <button class="bdp-close" id="bdpClose">&times;</button>
         </div>
-        <div class="bdp-date-card">
-          <div class="bdp-date-card__label">Check-out</div>
-          <div class="bdp-date-card__val" id="bdpCoVal">—</div>
-          <div class="bdp-date-card__sub" id="bdpCoDay"></div>
+        <div class="bdp-hero">
+            <div class="bdp-name" id="bdpName">—</div>
+            <div class="bdp-ref"  id="bdpRef"></div>
+            <div class="bdp-status-row">
+                <span class="bdp-badge" id="bdpBadge"></span>
+                <span class="bdp-booked-at" id="bdpBookedAt"></span>
+            </div>
         </div>
-      </div>
-      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-        <span class="bdp-nights-pill">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-          <span id="bdpNights">— nights</span>
-        </span>
-        <span class="bdp-nights-pill" id="bdpGuests">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-          <span id="bdpGuestsVal">— guests</span>
-        </span>
-      </div>
+        <div class="bdp-section">
+            <div class="bdp-section-label">Stay</div>
+            <div class="bdp-dates-grid">
+                <div class="bdp-date-card">
+                    <div class="bdp-date-card__label">Check-in</div>
+                    <div class="bdp-date-card__val" id="bdpCiVal">—</div>
+                    <div class="bdp-date-card__sub" id="bdpCiDay"></div>
+                </div>
+                <div class="bdp-date-card">
+                    <div class="bdp-date-card__label">Check-out</div>
+                    <div class="bdp-date-card__val" id="bdpCoVal">—</div>
+                    <div class="bdp-date-card__sub" id="bdpCoDay"></div>
+                </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                <span class="bdp-nights-pill">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                    <span id="bdpNights">—</span>
+                </span>
+                <span class="bdp-nights-pill" style="background:#f0fdf4;color:#166534;">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    <span id="bdpGuestsVal">—</span>
+                </span>
+            </div>
+        </div>
+        <div class="bdp-section" id="bdpGuestSection">
+            <div class="bdp-section-label">Guest</div>
+            <div class="bdp-row" id="bdpEmailRow" style="display:none;">
+                <svg class="bdp-row-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                <span class="bdp-row-val" id="bdpEmail"></span>
+            </div>
+            <div class="bdp-row" id="bdpPhoneRow" style="display:none;">
+                <svg class="bdp-row-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.5 19.79 19.79 0 0 1 1.61 4.93 2 2 0 0 1 3.58 2.73h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 10.09a16 16 0 0 0 6 6l1.42-1.42a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                <span class="bdp-row-val" id="bdpPhone"></span>
+            </div>
+            <div class="bdp-row" id="bdpNoContactRow" style="display:none;">
+                <span style="font-size:0.8125rem;color:#94a3b8;font-style:italic;">No contact details recorded</span>
+            </div>
+        </div>
+        <div class="bdp-section" id="bdpPriceSection">
+            <div class="bdp-section-label">Price Breakdown</div>
+            <div id="bdpPriceRows"></div>
+        </div>
+        <div class="bdp-section" id="bdpNotesSection" style="display:none;">
+            <div class="bdp-section-label">Special Requests</div>
+            <div class="bdp-notes" id="bdpNotes"></div>
+        </div>
+        <div class="bdp-actions">
+            <button class="bdp-btn-cancel" id="bdpMarkCancelled">Mark Cancelled</button>
+            <button class="bdp-btn-close"  id="bdpCloseBtn">Close</button>
+        </div>
     </div>
-
-    <!-- Guest details -->
-    <div class="bdp-section" id="bdpGuestSection">
-      <div class="bdp-section-label">Guest</div>
-      <div class="bdp-row" id="bdpEmailRow" style="display:none;">
-        <svg class="bdp-row-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-        <span class="bdp-row-val" id="bdpEmail"></span>
-      </div>
-      <div class="bdp-row" id="bdpPhoneRow" style="display:none;">
-        <svg class="bdp-row-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.5 19.79 19.79 0 0 1 1.61 4.93 2 2 0 0 1 3.58 2.73h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 10.09a16 16 0 0 0 6 6l1.42-1.42a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-        <span class="bdp-row-val" id="bdpPhone"></span>
-      </div>
-      <div class="bdp-row" id="bdpNoContactRow" style="display:none;">
-        <span style="font-size:0.8125rem;color:#94a3b8;font-style:italic;">No contact details recorded</span>
-      </div>
-    </div>
-
-    <!-- Price breakdown -->
-    <div class="bdp-section" id="bdpPriceSection">
-      <div class="bdp-section-label">Price Breakdown</div>
-      <div id="bdpPriceRows"></div>
-    </div>
-
-    <!-- Special requests -->
-    <div class="bdp-section" id="bdpNotesSection" style="display:none;">
-      <div class="bdp-section-label">Special Requests</div>
-      <div class="bdp-notes" id="bdpNotes"></div>
-    </div>
-
-    <!-- Actions -->
-    <div class="bdp-actions">
-      <button class="bdp-btn-cancel" id="bdpMarkCancelled">Mark Cancelled</button>
-      <button class="bdp-btn-close"  id="bdpCloseBtn">Close</button>
-    </div>
-  </div>
 </div>
 
 <script src="../js/app.js"></script>
@@ -867,588 +495,582 @@
 <script src="../js/admin-auth.js"></script>
 <script>
 (function () {
-    'use strict';
+'use strict';
 
-    // ── Constants ──────────────────────────────────────────────────────────────
-    var CELL_W       = 38;    // px per day column — must match CSS .cal-dh width
-    var MONTHS_SHOWN = 3;
-    var MONTH_NAMES  = ['January','February','March','April','May','June',
-                        'July','August','September','October','November','December'];
-    var SHORT_MON    = ['Jan','Feb','Mar','Apr','May','Jun',
-                        'Jul','Aug','Sep','Oct','Nov','Dec'];
-    var DOW_ABR      = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+// ── Constants ────────────────────────────────────────────────────────────────
+var MONTH_NAMES = ['January','February','March','April','May','June',
+                   'July','August','September','October','November','December'];
+var DOW_FULL    = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+var DOW_SHORT   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+var MON_SHORT   = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
-    // ── Today (normalised to midnight) ─────────────────────────────────────────
-    var today = new Date();
-    today.setHours(0, 0, 0, 0);
+// ── State ────────────────────────────────────────────────────────────────────
+var today = new Date(); today.setHours(0,0,0,0);
+var view  = 'month';   // 'year' | 'month' | 'day'
+var cursor = new Date(today.getFullYear(), today.getMonth(), 1); // first of shown month
+var dayDate = new Date(today); // for day view
+var currentBookingId = null;
 
-    // ── Date helpers ───────────────────────────────────────────────────────────
-    function ymd(d) {
-        return d.getFullYear() + '-'
-            + String(d.getMonth() + 1).padStart(2, '0') + '-'
-            + String(d.getDate()).padStart(2, '0');
+// ── Data helpers ─────────────────────────────────────────────────────────────
+function loadBookings() {
+    try { return JSON.parse(localStorage.getItem('cascade6_bookings') || '[]'); }
+    catch(e) { return []; }
+}
+function loadBlocked() {
+    try { return JSON.parse(localStorage.getItem('cascade6_blocked_dates') || '[]'); }
+    catch(e) { return []; }
+}
+function saveBlocked(arr) {
+    localStorage.setItem('cascade6_blocked_dates', JSON.stringify(arr));
+}
+
+function ymd(d) {
+    return d.getFullYear() + '-' +
+           String(d.getMonth()+1).padStart(2,'0') + '-' +
+           String(d.getDate()).padStart(2,'0');
+}
+function parseYMD(s) {
+    if (!s) return null;
+    var p = String(s).split(/[-\/]/);
+    if (p.length < 3) return null;
+    var d = new Date(+p[0], +p[1]-1, +p[2], 0,0,0,0);
+    return isNaN(d) ? null : d;
+}
+function nightsBetween(a, b) {
+    return Math.round((b - a) / 86400000);
+}
+function fmtDate(d) {
+    if (!d) return '—';
+    return d.getDate() + ' ' + MON_SHORT[d.getMonth()] + ' ' + d.getFullYear();
+}
+function fmtMoney(n) {
+    return '$' + Number(n||0).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,',');
+}
+
+// Build a map of ymd → [booking, …] for fast day lookup
+function buildDayMap(bookings, blocked) {
+    var map = {};
+    function addToMap(dateStr, entry) {
+        if (!map[dateStr]) map[dateStr] = [];
+        map[dateStr].push(entry);
     }
+    bookings.forEach(function(b) {
+        var ci = parseYMD(b.checkIn || b.checkin || b.check_in);
+        var co = parseYMD(b.checkOut || b.checkout || b.check_out);
+        if (!ci || !co) return;
+        var d = new Date(ci);
+        while (d < co) {
+            addToMap(ymd(d), { type: 'booking', booking: b });
+            d.setDate(d.getDate()+1);
+        }
+    });
+    blocked.forEach(function(bl) {
+        var from = parseYMD(bl.from);
+        var to   = parseYMD(bl.to);
+        if (!from || !to) return;
+        var d = new Date(from);
+        while (d <= to) {
+            addToMap(ymd(d), { type: 'blocked', block: bl });
+            d.setDate(d.getDate()+1);
+        }
+    });
+    return map;
+}
 
-    function parseYMD(s) {
-        if (!s) return null;
-        var p = String(s).split(/[-\/]/);
-        if (p.length < 3) return null;
-        var d = new Date(+p[0], +p[1] - 1, +p[2], 0, 0, 0, 0);
-        return isNaN(d.getTime()) ? null : d;
-    }
-
-    function daysDiff(a, b) {
-        return Math.round((b.getTime() - a.getTime()) / 86400000);
-    }
-
-    function daysInMonth(yr, mo) {
-        return new Date(yr, mo + 1, 0).getDate();
-    }
-
-    function fmtDate(d) {
-        return d.getDate() + ' ' + SHORT_MON[d.getMonth()] + ' ' + d.getFullYear();
-    }
-
-    function esc(s) {
-        return String(s)
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;');
-    }
-
-    // ── Load / save bookings ───────────────────────────────────────────────────
-    function loadBookings() {
-        try {
-            var raw = JSON.parse(localStorage.getItem('cascade6_bookings') || '[]');
-            return raw.map(function (b) {
-                return {
-                    id:              b.id       || ('bk-' + Math.random().toString(36).slice(2)),
-                    ref:             b.ref      || '',
-                    name:            b.name     || b.guestName || b.guest || 'Guest',
-                    email:           b.email    || '',
-                    phone:           b.phone    || '',
-                    checkin:         b.checkin  || b.checkIn  || b.check_in  || '',
-                    checkout:        b.checkout || b.checkOut || b.check_out || '',
-                    nights:          b.nights   || 0,
-                    guests:          b.guests   || 2,
-                    total:           b.total    || '',
-                    accom:           b.accom    || 0,
-                    addons:          b.addons   || [],
-                    extraGuestTotal: b.extraGuestTotal || 0,
-                    cleaning:        b.cleaning || 0,
-                    service:         b.service  || 0,
-                    tax:             b.tax      || 0,
-                    specialRequests: b.specialRequests || '',
-                    bookedAt:        b.bookedAt || '',
-                    status:          (b.status  || 'confirmed').toLowerCase()
-                };
-            }).filter(function (b) { return b.checkin && b.checkout; });
-        } catch (e) { return []; }
-    }
-
-    function saveBookings(arr) {
-        try { localStorage.setItem('cascade6_bookings', JSON.stringify(arr)); } catch (e) {}
-    }
-
+// ── Render ───────────────────────────────────────────────────────────────────
+function render() {
     var bookings = loadBookings();
+    var blocked  = loadBlocked();
+    var dayMap   = buildDayMap(bookings, blocked);
 
-    // ── View state ─────────────────────────────────────────────────────────────
-    var viewStart = new Date(today.getFullYear(), today.getMonth(), 1);
+    document.getElementById('viewMonth').style.display = view === 'month' ? '' : 'none';
+    document.getElementById('viewYear').style.display  = view === 'year'  ? '' : 'none';
+    document.getElementById('viewDay').style.display   = view === 'day'   ? '' : 'none';
 
-    // ── Build date list for current view ──────────────────────────────────────
-    function getViewDays() {
-        var days = [];
-        for (var m = 0; m < MONTHS_SHOWN; m++) {
-            var mo = (viewStart.getMonth() + m) % 12;
-            var yr = viewStart.getFullYear() + Math.floor((viewStart.getMonth() + m) / 12);
-            var dim = daysInMonth(yr, mo);
-            for (var d = 1; d <= dim; d++) {
-                days.push(new Date(yr, mo, d));
-            }
-        }
-        return days;
-    }
-
-    // ── Main render ────────────────────────────────────────────────────────────
-    function render(scrollTodayFlag) {
-        var days    = getViewDays();
-        var nDays   = days.length;
-        var todayStr = ymd(today);
-
-        // 1. Nav label
-        var veMonthRaw = viewStart.getMonth() + MONTHS_SHOWN - 1;
-        var veMonth    = veMonthRaw % 12;
-        var veYear     = viewStart.getFullYear() + Math.floor(veMonthRaw / 12);
-        document.getElementById('calNavLabel').textContent =
-            MONTH_NAMES[viewStart.getMonth()] + ' ' + viewStart.getFullYear() +
-            ' – ' +
-            MONTH_NAMES[veMonth] + ' ' + veYear;
-
-        // 2. Month strip
-        var msEl = document.getElementById('calMonthStrip');
-        msEl.innerHTML = '<div class="cal-lpad" style="background:#f8fafc;"><span style="font-size:0.6875rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.07em;padding-left:14px;">Property</span></div>';
-
-        var mGroups = [], cur = null;
-        days.forEach(function (d) {
-            var key = d.getFullYear() + '-' + d.getMonth();
-            if (!cur || cur.key !== key) {
-                cur = { key: key, month: d.getMonth(), year: d.getFullYear(), count: 0 };
-                mGroups.push(cur);
-            }
-            cur.count++;
-        });
-        mGroups.forEach(function (g) {
-            var el = document.createElement('div');
-            el.className = 'cal-month-chunk';
-            el.style.cssText = 'width:' + (g.count * CELL_W) + 'px;';
-            el.textContent = MONTH_NAMES[g.month].slice(0, 3).toUpperCase() + ' ' + g.year;
-            msEl.appendChild(el);
-        });
-
-        // 3. Day header strip
-        var dsEl = document.getElementById('calDayStrip');
-        dsEl.innerHTML = '<div class="cal-lpad" style="background:#f8fafc;"></div>';
-        days.forEach(function (d, i) {
-            var dow = d.getDay();
-            var dk  = ymd(d);
-            var cls = ['cal-dh'];
-            if (dow === 0 || dow === 6) cls.push('weekend');
-            if (dk === todayStr)        cls.push('is-today');
-            if (d < today)             cls.push('is-past');
-            if (d.getDate() === 1 && i > 0) cls.push('month-start');
-            var el = document.createElement('div');
-            el.className = cls.join(' ');
-            el.innerHTML = '<span class="dow">' + DOW_ABR[dow] + '</span>'
-                         + '<span class="dn">' + d.getDate() + '</span>';
-            dsEl.appendChild(el);
-        });
-
-        // 4. Cells background (day columns)
-        var cellsEl = document.getElementById('calCells');
-        cellsEl.innerHTML = '';
-
-        days.forEach(function (d, i) {
-            var dow = d.getDay();
-            var dk  = ymd(d);
-            var cls = ['cal-cell'];
-            if (dow === 0 || dow === 6) cls.push('weekend');
-            if (dk === todayStr)        cls.push('is-today');
-            if (d.getDate() === 1 && i > 0) cls.push('month-start');
-            var el = document.createElement('div');
-            el.className = cls.join(' ');
-            cellsEl.appendChild(el);
-        });
-
-        // 5. Today vertical marker
-        var todayIdx = daysDiff(viewStart, today);
-        if (todayIdx >= 0 && todayIdx < nDays) {
-            var tMark = document.createElement('div');
-            tMark.className = 'cal-today-mark';
-            tMark.style.left = (todayIdx * CELL_W + Math.round(CELL_W / 2)) + 'px';
-            cellsEl.appendChild(tMark);
-        }
-
-        // 6. Booking bars
-        var viewEnd = days[nDays - 1];
-        bookings.forEach(function (b) {
-            var ci = parseYMD(b.checkin);
-            var co = parseYMD(b.checkout);
-            if (!ci || !co || co <= viewStart || ci > viewEnd) return;
-
-            var si = Math.max(0, daysDiff(viewStart, ci));
-            var ei = Math.min(nDays, daysDiff(viewStart, co));
-            if (ei <= si) return;
-
-            // Border-radius: square on clipped edges, rounded on natural start/end
-            var rl = (si === daysDiff(viewStart, ci)) ? '6px' : '0';
-            var rr = (ei === daysDiff(viewStart, co)) ? '6px' : '0';
-
-            var bar = document.createElement('div');
-            bar.className = 'cal-bar cal-bar--' + b.status;
-            bar.style.left         = (si * CELL_W + 2) + 'px';
-            bar.style.width        = ((ei - si) * CELL_W - 4) + 'px';
-            bar.style.borderRadius = rl + ' ' + rr + ' ' + rr + ' ' + rl;
-
-            if (b.status !== 'blocked') {
-                bar.innerHTML =
-                    '<svg class="cal-bar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">'
-                    + '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>'
-                    + '<circle cx="12" cy="7" r="4"/></svg>'
-                    + esc(b.name);
-            } else {
-                bar.textContent = b.name || 'Blocked';
-            }
-
-            // Data attributes (used by tooltip + detail panel)
-            bar.dataset.name    = b.name;
-            bar.dataset.ci      = b.checkin;
-            bar.dataset.co      = b.checkout;
-            bar.dataset.nights  = b.nights || daysDiff(ci, co);
-            bar.dataset.status  = b.status;
-            bar.dataset.total   = b.total || '';
-            bar.dataset.bid     = b.id;
-            bar.dataset.ref     = b.ref    || '';
-            bar.dataset.email   = b.email  || '';
-            bar.dataset.phone   = b.phone  || '';
-            bar.dataset.guests  = b.guests || 2;
-            bar.dataset.accom   = b.accom  || 0;
-            bar.dataset.addons  = JSON.stringify(b.addons || []);
-            bar.dataset.extraGuestTotal = b.extraGuestTotal || 0;
-            bar.dataset.cleaning= b.cleaning || 0;
-            bar.dataset.service = b.service  || 0;
-            bar.dataset.tax     = b.tax      || 0;
-            bar.dataset.specialRequests = b.specialRequests || '';
-            bar.dataset.bookedAt= b.bookedAt || '';
-            bar.style.cursor    = 'pointer';
-
-            cellsEl.appendChild(bar);
-        });
-
-        // 7. Scroll today into view
-        if (scrollTodayFlag !== false) {
-            var tIdx = daysDiff(viewStart, today);
-            if (tIdx >= 0 && tIdx < nDays) {
-                var outer = document.getElementById('calOuter');
-                setTimeout(function () {
-                    var labelW = 190;
-                    var target = labelW + tIdx * CELL_W - (outer.offsetWidth - labelW) / 2;
-                    outer.scrollLeft = Math.max(0, target);
-                }, 40);
-            }
-        }
-
-        // 8. Upcoming stays
-        renderUpcoming();
-    }
-
-    // ── Upcoming stays ─────────────────────────────────────────────────────────
-    function renderUpcoming() {
-        var now = new Date(today);
-        var upcoming = bookings
-            .filter(function (b) {
-                var co = parseYMD(b.checkout);
-                return co && co >= now && b.status !== 'blocked';
-            })
-            .sort(function (a, b) {
-                return parseYMD(a.checkin).getTime() - parseYMD(b.checkin).getTime();
-            })
-            .slice(0, 6);
-
-        var list = document.getElementById('upcomingList');
-
-        if (upcoming.length === 0) {
-            list.innerHTML =
-                '<div style="padding:28px 0;text-align:center;color:#94a3b8;font-size:0.875rem;">'
-                + 'No upcoming stays. '
-                + '<a href="bookings.html" style="color:#0f2744;font-weight:600;">Create a booking</a>'
-                + '</div>';
-            return;
-        }
-
-        list.innerHTML = '';
-        upcoming.forEach(function (b) {
-            var ci  = parseYMD(b.checkin);
-            var co  = parseYMD(b.checkout);
-            var nts = parseInt(b.nights) || daysDiff(ci, co);
-            var isToday = ymd(ci) === ymd(today);
-
-            var stClass = {
-                confirmed: 'admin-badge--confirmed',
-                pending:   'admin-badge--pending',
-                cancelled: 'admin-badge--cancelled'
-            }[b.status] || 'admin-badge--primary';
-            var stLabel = b.status.charAt(0).toUpperCase() + b.status.slice(1);
-
-            var item = document.createElement('div');
-            item.className = 'upcoming-item';
-            item.innerHTML =
-                '<div class="upcoming-datebox' + (isToday ? ' is-today' : '') + '">'
-                    + '<span class="ud-d">' + String(ci.getDate()).padStart(2, '0') + '</span>'
-                    + '<span class="ud-m">' + SHORT_MON[ci.getMonth()] + '</span>'
-                + '</div>'
-                + '<div class="upcoming-info">'
-                    + '<div class="upcoming-name">' + esc(b.name) + '</div>'
-                    + '<div class="upcoming-sub">Check-in ' + fmtDate(ci) + ' &rsaquo; Check-out ' + fmtDate(co) + '</div>'
-                + '</div>'
-                + '<span class="upcoming-nights">' + nts + ' night' + (nts !== 1 ? 's' : '') + '</span>'
-                + '<span class="admin-badge ' + stClass + '">' + stLabel + '</span>';
-
-            list.appendChild(item);
-        });
-    }
-
-    // ── Navigation ─────────────────────────────────────────────────────────────
-    document.getElementById('calPrev').addEventListener('click', function () {
-        var m = viewStart.getMonth() - MONTHS_SHOWN;
-        var y = viewStart.getFullYear() + Math.floor(m / 12);
-        m = ((m % 12) + 12) % 12;
-        viewStart = new Date(y, m, 1);
-        render(false);
+    document.querySelectorAll('.cal-view-tab').forEach(function(btn) {
+        btn.classList.toggle('active', btn.dataset.view === view);
     });
 
-    document.getElementById('calNext').addEventListener('click', function () {
-        var m = viewStart.getMonth() + MONTHS_SHOWN;
-        var y = viewStart.getFullYear() + Math.floor(m / 12);
-        m = m % 12;
-        viewStart = new Date(y, m, 1);
-        render(false);
+    if (view === 'month') renderMonth(bookings, blocked, dayMap);
+    if (view === 'year')  renderYear(dayMap);
+    if (view === 'day')   renderDay(dayMap, bookings, blocked);
+
+    updateLabel();
+    renderUpcoming(bookings);
+}
+
+// ── Month view ───────────────────────────────────────────────────────────────
+function renderMonth(bookings, blocked, dayMap) {
+    var year  = cursor.getFullYear();
+    var month = cursor.getMonth();
+    var firstDay = new Date(year, month, 1);
+    var lastDay  = new Date(year, month+1, 0);
+
+    // Grid starts on Sunday of the week containing the 1st
+    var startCell = new Date(firstDay);
+    startCell.setDate(firstDay.getDate() - firstDay.getDay());
+
+    // Build booking spans for this month view
+    var spans = buildMonthSpans(bookings, blocked, year, month);
+
+    var html = '<div class="mcal">';
+    // DOW header
+    html += '<div class="mcal-dow-row">';
+    DOW_SHORT.forEach(function(d, i) {
+        html += '<div class="mcal-dow' + (i===0||i===6?' weekend':'') + '">' + d + '</div>';
     });
+    html += '</div>';
+    html += '<div class="mcal-grid">';
 
-    document.getElementById('calTodayBtn').addEventListener('click', function () {
-        viewStart = new Date(today.getFullYear(), today.getMonth(), 1);
-        render(true);
-    });
+    var d = new Date(startCell);
+    for (var row = 0; row < 6; row++) {
+        for (var col = 0; col < 7; col++) {
+            var dm  = ymd(d);
+            var isOther  = d.getMonth() !== month;
+            var isToday  = dm === ymd(today);
+            var isPast   = d < today && !isToday;
+            var isWeekend = col === 0 || col === 6;
+            var dayEntries = dayMap[dm] || [];
+            var hasBooking = dayEntries.length > 0;
 
-    // ── Tooltip ────────────────────────────────────────────────────────────────
-    var tooltip = document.getElementById('calTooltip');
+            var cls = 'mcal-cell';
+            if (isOther) cls += ' other-month';
+            if (isToday) cls += ' is-today';
+            if (isPast)  cls += ' is-past';
+            if (isWeekend && !isToday) cls += ' weekend';
+            if (hasBooking) cls += ' has-booking';
 
-    document.getElementById('calCells').addEventListener('mouseover', function (e) {
-        var bar = e.target.closest('.cal-bar');
-        if (!bar || !bar.dataset.ci) return;
+            html += '<div class="' + cls + '" data-date="' + dm + '">';
+            html += '<span class="mcal-day-num">' + d.getDate() + '</span>';
 
-        var ci  = parseYMD(bar.dataset.ci);
-        var co  = parseYMD(bar.dataset.co);
-        var st  = bar.dataset.status || 'confirmed';
-        var nts = parseInt(bar.dataset.nights) || 0;
-        var tot = bar.dataset.total;
+            // Render booking bars for this cell
+            var cellSpans = (spans[dm] || []);
+            var shown = 0;
+            cellSpans.forEach(function(sp) {
+                if (shown >= 3) return;
+                shown++;
+                var posCls = '';
+                if (sp.isStart && sp.isEnd) posCls = 'span-start span-end';
+                else if (sp.isStart) posCls = 'span-start';
+                else if (sp.isEnd)   posCls = 'span-end';
+                else                 posCls = 'span-mid';
 
-        tooltip.innerHTML =
-            '<div class="t-name">' + esc(bar.dataset.name) + '</div>'
-            + '<div class="t-row">Check-in:&nbsp;&nbsp;<span>' + fmtDate(ci) + '</span></div>'
-            + '<div class="t-row">Check-out: <span>' + fmtDate(co) + '</span></div>'
-            + '<div class="t-row">Nights:&nbsp;&nbsp;&nbsp;&nbsp;<span>' + nts + '</span></div>'
-            + (tot ? '<div class="t-row">Total:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>$' + esc(tot) + '</span></div>' : '')
-            + '<div><span class="t-status t-status--' + st + '">' + st + '</span></div>';
-
-        tooltip.style.display = 'block';
-        posTooltip(e);
-    });
-
-    document.getElementById('calCells').addEventListener('mousemove', function (e) {
-        if (tooltip.style.display === 'block') posTooltip(e);
-    });
-
-    document.getElementById('calCells').addEventListener('mouseleave', function () {
-        tooltip.style.display = 'none';
-    });
-
-    document.getElementById('calCells').addEventListener('mouseout', function (e) {
-        if (!e.relatedTarget || !e.relatedTarget.closest || !e.relatedTarget.closest('.cal-bar')) {
-            tooltip.style.display = 'none';
-        }
-    });
-
-    function posTooltip(e) {
-        var x = e.clientX + 16;
-        var y = e.clientY - 12;
-        if (x + 250 > window.innerWidth)  x = e.clientX - 254;
-        if (y + 150 > window.innerHeight) y = window.innerHeight - 155;
-        tooltip.style.left = x + 'px';
-        tooltip.style.top  = y + 'px';
-    }
-
-    // ── Booking Detail Panel (HBook-style) ────────────────────────────────────
-    var bdpOverlay = document.getElementById('bdpOverlay');
-    var LONG_DAYS  = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-    var LONG_MONTHS= ['January','February','March','April','May','June',
-                      'July','August','September','October','November','December'];
-
-    function fmtDateLong(d) {
-        return LONG_DAYS[d.getDay()] + ' ' + d.getDate() + ' ' + LONG_MONTHS[d.getMonth()];
-    }
-    function fmtMoney(n) {
-        var v = parseFloat(n) || 0;
-        return '$' + v.toLocaleString('en-AU', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    }
-    function bdpSet(id, val) { var el = document.getElementById(id); if (el) el.textContent = val; }
-    function bdpShow(id)  { var el = document.getElementById(id); if (el) el.style.display = ''; }
-    function bdpHide(id)  { var el = document.getElementById(id); if (el) el.style.display = 'none'; }
-
-    function openDetailPanel(bar) {
-        var st   = bar.dataset.status || 'confirmed';
-        var ci   = parseYMD(bar.dataset.ci);
-        var co   = parseYMD(bar.dataset.co);
-        var nts  = parseInt(bar.dataset.nights) || (ci && co ? daysDiff(ci, co) : 0);
-
-        // Header
-        bdpSet('bdpName', bar.dataset.name || 'Guest');
-        var ref = bar.dataset.ref;
-        bdpSet('bdpRef', ref ? 'Ref: ' + ref : (bar.dataset.bid ? 'ID: ' + bar.dataset.bid : ''));
-
-        // Status badge
-        var badge = document.getElementById('bdpBadge');
-        if (badge) {
-            badge.textContent = st.charAt(0).toUpperCase() + st.slice(1);
-            badge.className   = 'bdp-badge bdp-badge--' + st;
-        }
-
-        // Booked at
-        var ba = bar.dataset.bookedAt;
-        if (ba) {
-            try {
-                var d = new Date(ba);
-                bdpSet('bdpBookedAt', 'Booked ' + d.getDate() + ' ' + LONG_MONTHS[d.getMonth()] + ' ' + d.getFullYear());
-                bdpShow('bdpBookedAt');
-            } catch(e) {}
-        } else { bdpHide('bdpBookedAt'); }
-
-        // Dates
-        if (ci) {
-            bdpSet('bdpCiVal', ci.getDate() + ' ' + LONG_MONTHS[ci.getMonth()] + ' ' + ci.getFullYear());
-            bdpSet('bdpCiDay', LONG_DAYS[ci.getDay()]);
-        }
-        if (co) {
-            bdpSet('bdpCoVal', co.getDate() + ' ' + LONG_MONTHS[co.getMonth()] + ' ' + co.getFullYear());
-            bdpSet('bdpCoDay', LONG_DAYS[co.getDay()]);
-        }
-        bdpSet('bdpNights', nts + ' night' + (nts !== 1 ? 's' : ''));
-        var guests = parseInt(bar.dataset.guests) || 2;
-        bdpSet('bdpGuestsVal', guests + ' Guest' + (guests !== 1 ? 's' : ''));
-
-        // Guest contact
-        var email = bar.dataset.email, phone = bar.dataset.phone;
-        if (email) { bdpSet('bdpEmail', email); bdpShow('bdpEmailRow'); } else { bdpHide('bdpEmailRow'); }
-        if (phone) { bdpSet('bdpPhone', phone); bdpShow('bdpPhoneRow'); } else { bdpHide('bdpPhoneRow'); }
-        if (!email && !phone && st !== 'blocked') bdpShow('bdpNoContactRow'); else bdpHide('bdpNoContactRow');
-
-        // Price breakdown
-        var priceRows = document.getElementById('bdpPriceRows');
-        if (priceRows) {
-            var html = '';
-            var accom   = parseFloat(bar.dataset.accom)   || 0;
-            var cleaning= parseFloat(bar.dataset.cleaning) || 0;
-            var service = parseFloat(bar.dataset.service)  || 0;
-            var tax     = parseFloat(bar.dataset.tax)      || 0;
-            var tot     = parseFloat(bar.dataset.total)    || 0;
-            var egTotal = parseFloat(bar.dataset.extraGuestTotal) || 0;
-            var addons  = [];
-            try { addons = JSON.parse(bar.dataset.addons || '[]'); } catch(e) {}
-
-            if (accom > 0) {
-                html += '<div class="bdp-price-row"><span>Accommodation (' + nts + ' night' + (nts !== 1 ? 's' : '') + ')</span><span>' + fmtMoney(accom) + '</span></div>';
-            }
-            if (egTotal > 0) {
-                html += '<div class="bdp-price-row bdp-price-row--addon"><span>Extra guests</span><span>' + fmtMoney(egTotal) + '</span></div>';
-            }
-            addons.forEach(function(a) {
-                html += '<div class="bdp-price-row bdp-price-row--addon"><span>' + esc(a.label || '') + '</span><span>' + fmtMoney(a.price || 0) + '</span></div>';
-            });
-            if (cleaning > 0) html += '<div class="bdp-price-row"><span>Cleaning fee</span><span>' + fmtMoney(cleaning) + '</span></div>';
-            if (service  > 0) html += '<div class="bdp-price-row"><span>Service fee</span><span>'  + fmtMoney(service)  + '</span></div>';
-            if (tax      > 0) html += '<div class="bdp-price-row"><span>GST (10%)</span><span>'    + fmtMoney(tax)      + '</span></div>';
-
-            if (tot > 0) {
-                html += '<div class="bdp-price-row bdp-price-row--total"><span>Total Paid</span><span>' + fmtMoney(tot) + '</span></div>';
-            } else if (bar.dataset.total) {
-                html += '<div class="bdp-price-row bdp-price-row--total"><span>Total Paid</span><span>$' + esc(bar.dataset.total) + '</span></div>';
-            }
-
-            priceRows.innerHTML = html || '<div style="font-size:0.8125rem;color:#94a3b8;font-style:italic;">No pricing data</div>';
-        }
-
-        // Notes
-        var notes = bar.dataset.specialRequests;
-        if (notes) {
-            bdpSet('bdpNotes', notes);
-            bdpShow('bdpNotesSection');
-        } else { bdpHide('bdpNotesSection'); }
-
-        // Mark cancelled button: only show for non-blocked, non-cancelled
-        var cancelBtn = document.getElementById('bdpMarkCancelled');
-        if (cancelBtn) {
-            if (st === 'blocked' || st === 'cancelled') cancelBtn.style.display = 'none';
-            else cancelBtn.style.display = '';
-            cancelBtn.onclick = function() {
-                if (!confirm('Mark this booking as cancelled?')) return;
-                var idx = bookings.findIndex ? bookings.findIndex(function(b) { return b.id === bar.dataset.bid; })
-                    : (function() { for (var i = 0; i < bookings.length; i++) if (bookings[i].id === bar.dataset.bid) return i; return -1; })();
-                if (idx !== -1) {
-                    bookings[idx].status = 'cancelled';
-                    saveBookings(bookings);
-                    closeBdp();
-                    render(false);
+                var label = '';
+                if (sp.isStart) {
+                    if (sp.type === 'booking') {
+                        label = sp.booking.guestName || sp.booking.guest_name || 'Guest';
+                    } else {
+                        label = sp.block.reason || 'Blocked';
+                    }
                 }
-            };
-        }
+                var typeCls = sp.type === 'blocked' ? 'blocked' : (sp.booking ? (sp.booking.status || 'confirmed') : 'confirmed');
+                var bid = sp.type === 'booking' ? ('data-booking-id="' + (sp.booking.id||'') + '"') : '';
 
-        bdpOverlay.classList.add('open');
+                html += '<div class="mcal-booking ' + typeCls + ' ' + posCls + '" ' + bid + '>' + escHtml(label) + '</div>';
+            });
+
+            var total = cellSpans.length;
+            if (total > 3) {
+                html += '<div class="mcal-more">+' + (total - 3) + ' more</div>';
+            }
+
+            html += '</div>';
+            d.setDate(d.getDate()+1);
+        }
+        // Don't render extra rows if we've passed the month
+        if (d.getMonth() !== month && row >= 4) break;
+    }
+    html += '</div></div>';
+
+    document.getElementById('viewMonth').innerHTML = html;
+
+    // Events: click booking bars
+    document.querySelectorAll('.mcal-booking[data-booking-id]').forEach(function(el) {
+        el.addEventListener('click', function(e) {
+            e.stopPropagation();
+            openBookingPanel(el.dataset.bookingId);
+        });
+    });
+    // Events: click day cell → day view
+    document.querySelectorAll('.mcal-cell').forEach(function(cell) {
+        cell.addEventListener('click', function() {
+            var dt = parseYMD(cell.dataset.date);
+            if (!dt) return;
+            dayDate = dt;
+            setView('day');
+        });
+    });
+}
+
+// Build a map of ymd → [{isStart, isEnd, type, booking?, block?}, …]
+function buildMonthSpans(bookings, blocked, year, month) {
+    var spans = {};
+    function addSpan(dateStr, entry) {
+        if (!spans[dateStr]) spans[dateStr] = [];
+        spans[dateStr].push(entry);
+    }
+    var monthStart = new Date(year, month, 1);
+    var monthEnd   = new Date(year, month+1, 0);
+
+    function processRange(from, to, type, data) {
+        if (!from || !to) return;
+        var d = new Date(from);
+        while (d < to || (type === 'blocked' && d <= to)) {
+            var dm = ymd(d);
+            addSpan(dm, {
+                isStart: ymd(d) === ymd(from),
+                isEnd:   type === 'blocked' ? ymd(d) === ymd(to) : ymd(new Date(d.getTime() + 86400000)) === ymd(to),
+                type:    type,
+                booking: data.booking || null,
+                block:   data.block   || null
+            });
+            d.setDate(d.getDate()+1);
+        }
     }
 
-    function closeBdp() { bdpOverlay.classList.remove('open'); }
-
-    // Click on a booking bar opens the detail panel
-    document.getElementById('calCells').addEventListener('click', function(e) {
-        var bar = e.target.closest('.cal-bar');
-        if (!bar || !bar.dataset.ci) return;
-        tooltip.style.display = 'none'; // hide tooltip first
-        openDetailPanel(bar);
+    bookings.forEach(function(b) {
+        var ci = parseYMD(b.checkIn || b.checkin || b.check_in);
+        var co = parseYMD(b.checkOut || b.checkout || b.check_out);
+        processRange(ci, co, 'booking', { booking: b });
     });
-
-    document.getElementById('bdpClose').addEventListener('click', closeBdp);
-    document.getElementById('bdpCloseBtn').addEventListener('click', closeBdp);
-    bdpOverlay.addEventListener('click', function(e) { if (e.target === bdpOverlay) closeBdp(); });
-
-    // ── Block Dates Modal ──────────────────────────────────────────────────────
-    var bmOverlay = document.getElementById('bmOverlay');
-
-    document.getElementById('blockDatesBtn').addEventListener('click', function () {
-        var tmr = new Date(today);
-        tmr.setDate(tmr.getDate() + 1);
-        document.getElementById('bmFrom').value   = ymd(today);
-        document.getElementById('bmTo').value     = ymd(tmr);
-        document.getElementById('bmReason').value = '';
-        document.getElementById('bmFrom').min     = ymd(today);
-        bmOverlay.classList.add('open');
+    blocked.forEach(function(bl) {
+        var from = parseYMD(bl.from);
+        var to   = parseYMD(bl.to);
+        processRange(from, to, 'blocked', { block: bl });
     });
+    return spans;
+}
 
-    function closeBm() { bmOverlay.classList.remove('open'); }
-    document.getElementById('bmClose').addEventListener('click', closeBm);
-    document.getElementById('bmCancel').addEventListener('click', closeBm);
-    bmOverlay.addEventListener('click', function (e) { if (e.target === bmOverlay) closeBm(); });
+// ── Year view ────────────────────────────────────────────────────────────────
+function renderYear(dayMap) {
+    var year = cursor.getFullYear();
+    var html = '<div class="ycal">';
 
-    document.getElementById('bmFrom').addEventListener('change', function () {
-        var toEl = document.getElementById('bmTo');
-        if (!toEl.value || toEl.value <= this.value) {
-            var next = new Date(parseYMD(this.value));
-            next.setDate(next.getDate() + 1);
-            toEl.value = ymd(next);
+    for (var m = 0; m < 12; m++) {
+        html += '<div class="ycal-month" data-month="' + m + '">';
+        html += '<div class="ycal-month-title">' + MONTH_NAMES[m] + ' ' + year + '</div>';
+        html += '<div class="ycal-dow-row">';
+        DOW_SHORT.forEach(function(d) { html += '<div class="ycal-dow">' + d[0] + '</div>'; });
+        html += '</div>';
+        html += '<div class="ycal-grid">';
+
+        var first = new Date(year, m, 1);
+        var last  = new Date(year, m+1, 0);
+        var start = new Date(first);
+        start.setDate(1 - first.getDay());
+
+        var d = new Date(start);
+        for (var i = 0; i < 42; i++) {
+            var dm = ymd(d);
+            var isOther = d.getMonth() !== m;
+            var isToday = dm === ymd(today);
+            var entries = dayMap[dm] || [];
+            var hasB    = entries.some(function(e){ return e.type==='booking'; });
+            var hasBl   = entries.some(function(e){ return e.type==='blocked'; });
+
+            var cls = 'ycal-cell';
+            if (isOther) cls += ' other-month';
+            if (isToday) cls += ' is-today';
+            if (hasB)    cls += ' has-booking';
+            else if (hasBl) cls += ' has-blocked';
+
+            var num = isToday ? '<span>' + d.getDate() + '</span>' : d.getDate();
+            html += '<div class="' + cls + '">' + num + '</div>';
+            d.setDate(d.getDate()+1);
         }
-        toEl.min = this.value;
+        html += '</div></div>';
+    }
+    html += '</div>';
+    document.getElementById('viewYear').innerHTML = html;
+
+    // Click a mini month → go to month view
+    document.querySelectorAll('.ycal-month').forEach(function(el) {
+        el.addEventListener('click', function() {
+            cursor = new Date(cursor.getFullYear(), +el.dataset.month, 1);
+            setView('month');
+        });
     });
+}
 
-    document.getElementById('bmSave').addEventListener('click', function () {
-        var from   = document.getElementById('bmFrom').value;
-        var to     = document.getElementById('bmTo').value;
-        var reason = document.getElementById('bmReason').value.trim() || 'Blocked';
+// ── Day view ─────────────────────────────────────────────────────────────────
+function renderDay(dayMap, bookings, blocked) {
+    var dm = ymd(dayDate);
+    var entries = dayMap[dm] || [];
+    var dow = DOW_FULL[dayDate.getDay()];
+    var label = dow + ', ' + dayDate.getDate() + ' ' + MONTH_NAMES[dayDate.getMonth()] + ' ' + dayDate.getFullYear();
 
-        if (!from || !to || from >= to) {
-            alert('Please choose a valid date range — check-out must be after check-in.');
-            return;
-        }
+    var html = '<div class="dcal">';
+    html += '<div class="dcal-date-header">';
+    html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20" style="color:#0f2744;flex-shrink:0;"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>';
+    html += escHtml(label);
+    html += '</div>';
 
-        var block = {
-            id:       'blk-' + Date.now(),
-            name:     reason,
-            email:    '',
-            phone:    '',
-            checkin:  from,
-            checkout: to,
-            nights:   daysDiff(parseYMD(from), parseYMD(to)),
-            total:    '',
-            status:   'blocked'
-        };
-        bookings.push(block);
-        saveBookings(bookings);
-        closeBm();
-        render(false);
+    if (entries.length === 0) {
+        html += '<div class="dcal-empty">No bookings or blocks on this date.</div>';
+    } else {
+        // Deduplicate bookings by id
+        var seen = {};
+        entries.forEach(function(entry) {
+            if (entry.type === 'booking') {
+                var bid = entry.booking.id || JSON.stringify(entry.booking);
+                if (seen[bid]) return;
+                seen[bid] = true;
+                var b = entry.booking;
+                var status = (b.status || 'confirmed').toLowerCase();
+                var name = b.guestName || b.guest_name || 'Guest';
+                var ci   = parseYMD(b.checkIn || b.checkin || b.check_in);
+                var co   = parseYMD(b.checkOut || b.checkout || b.check_out);
+                var nights = (ci && co) ? nightsBetween(ci, co) : '?';
+                html += '<div class="dcal-booking-card" data-booking-id="' + escHtml(b.id||'') + '">';
+                html += '<div class="dcal-booking-dot ' + status + '"></div>';
+                html += '<div class="dcal-booking-info">';
+                html += '<div class="dcal-booking-name">' + escHtml(name) + '</div>';
+                html += '<div class="dcal-booking-sub">' + fmtDate(ci) + ' → ' + fmtDate(co) + ' · ' + nights + ' night' + (nights===1?'':'s') + '</div>';
+                html += '</div>';
+                html += '<span class="dcal-booking-badge ' + status + '">' + status + '</span>';
+                html += '</div>';
+            } else {
+                var bl = entry.block;
+                html += '<div class="dcal-booking-card" style="cursor:default;">';
+                html += '<div class="dcal-booking-dot blocked"></div>';
+                html += '<div class="dcal-booking-info">';
+                html += '<div class="dcal-booking-name">Blocked / Unavailable</div>';
+                html += '<div class="dcal-booking-sub">' + escHtml(bl.reason || 'No reason given') + '</div>';
+                html += '</div>';
+                html += '<span class="dcal-booking-badge blocked">blocked</span>';
+                html += '</div>';
+            }
+        });
+    }
+    html += '</div>';
+    document.getElementById('viewDay').innerHTML = html;
+
+    document.querySelectorAll('.dcal-booking-card[data-booking-id]').forEach(function(el) {
+        el.addEventListener('click', function() {
+            openBookingPanel(el.dataset.bookingId);
+        });
     });
+}
 
-    // ── Initial render ─────────────────────────────────────────────────────────
-    render(true);
+// ── Update label ─────────────────────────────────────────────────────────────
+function updateLabel() {
+    var lbl = document.getElementById('calLabel');
+    if (view === 'year') {
+        lbl.textContent = cursor.getFullYear();
+    } else if (view === 'month') {
+        lbl.textContent = MONTH_NAMES[cursor.getMonth()] + ' ' + cursor.getFullYear();
+    } else {
+        lbl.textContent = DOW_SHORT[dayDate.getDay()] + ' ' + dayDate.getDate() + ' ' + MON_SHORT[dayDate.getMonth()] + ' ' + dayDate.getFullYear();
+    }
+}
 
+// ── Navigation ───────────────────────────────────────────────────────────────
+function navigate(dir) {
+    if (view === 'year') {
+        cursor.setFullYear(cursor.getFullYear() + dir);
+    } else if (view === 'month') {
+        cursor.setMonth(cursor.getMonth() + dir);
+    } else {
+        dayDate.setDate(dayDate.getDate() + dir);
+    }
+    render();
+}
+
+function setView(v) {
+    view = v;
+    if (v === 'month') {
+        // Sync cursor to dayDate month if coming from day view
+        cursor = new Date(dayDate.getFullYear(), dayDate.getMonth(), 1);
+    }
+    render();
+}
+
+document.getElementById('calPrev').addEventListener('click', function(){ navigate(-1); });
+document.getElementById('calNext').addEventListener('click', function(){ navigate(1); });
+document.getElementById('calTodayBtn').addEventListener('click', function(){
+    dayDate = new Date(today);
+    cursor  = new Date(today.getFullYear(), today.getMonth(), 1);
+    render();
+});
+document.querySelectorAll('.cal-view-tab').forEach(function(btn) {
+    btn.addEventListener('click', function(){ setView(btn.dataset.view); });
+});
+
+// ── Booking Detail Panel ──────────────────────────────────────────────────────
+function openBookingPanel(bookingId) {
+    var bookings = loadBookings();
+    var b = bookings.find(function(x){ return x.id === bookingId; });
+    if (!b) return;
+    currentBookingId = bookingId;
+
+    var ci = parseYMD(b.checkIn || b.checkin || b.check_in);
+    var co = parseYMD(b.checkOut || b.checkout || b.check_out);
+    var nights = (ci && co) ? nightsBetween(ci, co) : 0;
+    var status = (b.status || 'confirmed').toLowerCase();
+
+    document.getElementById('bdpName').textContent    = b.guestName || b.guest_name || 'Guest';
+    document.getElementById('bdpRef').textContent     = b.reference || b.id || '';
+    document.getElementById('bdpBookedAt').textContent = b.bookedAt ? 'Booked ' + new Date(b.bookedAt).toLocaleDateString('en-AU') : '';
+
+    var badge = document.getElementById('bdpBadge');
+    badge.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+    badge.className = 'bdp-badge ' + status;
+
+    document.getElementById('bdpCiVal').textContent = ci ? fmtDate(ci) : '—';
+    document.getElementById('bdpCiDay').textContent = ci ? DOW_FULL[ci.getDay()] : '';
+    document.getElementById('bdpCoVal').textContent = co ? fmtDate(co) : '—';
+    document.getElementById('bdpCoDay').textContent = co ? DOW_FULL[co.getDay()] : '';
+    document.getElementById('bdpNights').textContent   = nights + ' night' + (nights===1?'':'s');
+    document.getElementById('bdpGuestsVal').textContent = (b.guests||b.guestCount||1) + ' guest' + ((b.guests||b.guestCount||1)===1?'':'s');
+
+    // Guest contact
+    var emailRow  = document.getElementById('bdpEmailRow');
+    var phoneRow  = document.getElementById('bdpPhoneRow');
+    var noContact = document.getElementById('bdpNoContactRow');
+    emailRow.style.display  = 'none';
+    phoneRow.style.display  = 'none';
+    noContact.style.display = 'none';
+    if (b.guestEmail || b.email) {
+        emailRow.style.display = 'flex';
+        document.getElementById('bdpEmail').textContent = b.guestEmail || b.email;
+    }
+    if (b.guestPhone || b.phone) {
+        phoneRow.style.display = 'flex';
+        document.getElementById('bdpPhone').textContent = b.guestPhone || b.phone;
+    }
+    if (!b.guestEmail && !b.email && !b.guestPhone && !b.phone) {
+        noContact.style.display = 'flex';
+    }
+
+    // Price rows
+    var priceRows = document.getElementById('bdpPriceRows');
+    var priceHtml = '';
+    if (b.priceBreakdown) {
+        var pb = b.priceBreakdown;
+        if (pb.baseRate) priceHtml += '<div class="bdp-price-row"><span>' + (nights||'') + ' night' + (nights===1?'':'s') + ' × ' + fmtMoney(pb.nightly||0) + '</span><span>' + fmtMoney(pb.baseRate) + '</span></div>';
+        if (pb.cleaningFee) priceHtml += '<div class="bdp-price-row"><span>Cleaning fee</span><span>' + fmtMoney(pb.cleaningFee) + '</span></div>';
+        if (pb.extraGuestFee) priceHtml += '<div class="bdp-price-row"><span>Extra guest fee</span><span>' + fmtMoney(pb.extraGuestFee) + '</span></div>';
+        priceHtml += '<div class="bdp-price-row total"><span>Total</span><span>' + fmtMoney(pb.total||b.totalAmount||b.amount||0) + '</span></div>';
+    } else if (b.totalAmount || b.amount) {
+        priceHtml += '<div class="bdp-price-row total"><span>Total</span><span>' + fmtMoney(b.totalAmount||b.amount) + '</span></div>';
+    }
+    priceRows.innerHTML = priceHtml;
+
+    // Notes
+    var notesSection = document.getElementById('bdpNotesSection');
+    if (b.specialRequests || b.notes) {
+        notesSection.style.display = '';
+        document.getElementById('bdpNotes').textContent = b.specialRequests || b.notes;
+    } else {
+        notesSection.style.display = 'none';
+    }
+
+    document.getElementById('bdpOverlay').classList.add('open');
+}
+
+function closeBookingPanel() {
+    document.getElementById('bdpOverlay').classList.remove('open');
+    currentBookingId = null;
+}
+
+document.getElementById('bdpClose').addEventListener('click', closeBookingPanel);
+document.getElementById('bdpCloseBtn').addEventListener('click', closeBookingPanel);
+document.getElementById('bdpOverlay').addEventListener('click', function(e) {
+    if (e.target === this) closeBookingPanel();
+});
+document.getElementById('bdpMarkCancelled').addEventListener('click', function() {
+    if (!currentBookingId) return;
+    var bookings = loadBookings();
+    var idx = bookings.findIndex(function(b){ return b.id === currentBookingId; });
+    if (idx === -1) return;
+    if (!confirm('Mark this booking as cancelled?')) return;
+    bookings[idx].status = 'cancelled';
+    localStorage.setItem('cascade6_bookings', JSON.stringify(bookings));
+    closeBookingPanel();
+    render();
+});
+
+// ── Block dates modal ─────────────────────────────────────────────────────────
+document.getElementById('blockDatesBtn').addEventListener('click', function() {
+    document.getElementById('bmOverlay').classList.add('open');
+    // Pre-fill with selected day if in day view
+    if (view === 'day') {
+        document.getElementById('bmFrom').value = ymd(dayDate);
+        document.getElementById('bmTo').value   = ymd(dayDate);
+    }
+});
+document.getElementById('bmClose').addEventListener('click', function() { document.getElementById('bmOverlay').classList.remove('open'); });
+document.getElementById('bmCancel').addEventListener('click', function() { document.getElementById('bmOverlay').classList.remove('open'); });
+document.getElementById('bmSave').addEventListener('click', function() {
+    var from = document.getElementById('bmFrom').value;
+    var to   = document.getElementById('bmTo').value;
+    var reason = document.getElementById('bmReason').value.trim();
+    if (!from || !to) { alert('Please select both from and to dates.'); return; }
+    if (from > to) { alert('From date must be before to date.'); return; }
+    var blocked = loadBlocked();
+    blocked.push({ id: 'BLK-' + Date.now(), from: from, to: to, reason: reason });
+    saveBlocked(blocked);
+    document.getElementById('bmOverlay').classList.remove('open');
+    document.getElementById('bmFrom').value = '';
+    document.getElementById('bmTo').value   = '';
+    document.getElementById('bmReason').value = '';
+    render();
+});
+
+// ── Upcoming Stays ────────────────────────────────────────────────────────────
+function renderUpcoming(bookings) {
+    var todayStr = ymd(today);
+    var upcoming = bookings
+        .filter(function(b) {
+            var ci = b.checkIn || b.checkin || b.check_in || '';
+            var st = (b.status||'').toLowerCase();
+            return ci >= todayStr && st !== 'cancelled';
+        })
+        .sort(function(a,b) {
+            return (a.checkIn||a.checkin||'').localeCompare(b.checkIn||b.checkin||'');
+        })
+        .slice(0, 8);
+
+    var list = document.getElementById('upcomingList');
+    if (!upcoming.length) {
+        list.innerHTML = '<p style="font-size:0.875rem;color:#94a3b8;padding:16px 0;">No upcoming bookings.</p>';
+        return;
+    }
+    var html = '';
+    upcoming.forEach(function(b) {
+        var ci = parseYMD(b.checkIn || b.checkin || b.check_in);
+        var co = parseYMD(b.checkOut || b.checkout || b.check_out);
+        var nights = (ci && co) ? nightsBetween(ci, co) : 0;
+        var isToday = ci && ymd(ci) === todayStr;
+        var mon = ci ? MON_SHORT[ci.getMonth()] : '';
+        var day = ci ? ci.getDate() : '';
+        html += '<div class="upcoming-item" style="cursor:pointer;" data-booking-id="' + escHtml(b.id||'') + '">';
+        html += '<div class="upcoming-datebox' + (isToday?' is-today':'') + '">';
+        html += '<span class="ud-d">' + day + '</span>';
+        html += '<span class="ud-m">' + mon + '</span>';
+        html += '</div>';
+        html += '<div class="upcoming-info">';
+        html += '<div class="upcoming-name">' + escHtml(b.guestName||b.guest_name||'Guest') + '</div>';
+        html += '<div class="upcoming-sub">' + fmtDate(ci) + ' → ' + fmtDate(co) + ' · ' + escHtml(b.guestEmail||b.email||'') + '</div>';
+        html += '</div>';
+        html += '<span class="upcoming-nights">' + nights + ' night' + (nights===1?'':'s') + '</span>';
+        html += '</div>';
+    });
+    list.innerHTML = html;
+
+    list.querySelectorAll('.upcoming-item[data-booking-id]').forEach(function(el) {
+        el.addEventListener('click', function() { openBookingPanel(el.dataset.bookingId); });
+    });
+}
+
+// ── Utilities ─────────────────────────────────────────────────────────────────
+function escHtml(s) {
+    return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+render();
 })();
 </script>
-
 </body>
 </html>
