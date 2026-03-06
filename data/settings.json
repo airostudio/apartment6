@@ -3,7 +3,7 @@
     "name": "Cascade Apartment 6",
     "description": "Self-contained alpine retreat at Mt Baw Baw Alpine Resort. Ground floor, gas log fire, sleeps 5. Book direct.",
     "url": "https://www.cascade6.com.au",
-    "contactEmail": "info@cascadeapartments.com.au",
+    "contactEmail": "hello@mtbawbawcascade3.com",
     "contactPhone": "",
     "timezone": "Australia/Melbourne",
     "currency": "AUD",
@@ -59,13 +59,10 @@
     "petFee": 0
   },
   "payments": {
-    "provider": "stripe_connect",
+    "provider": "stripe",
     "currency": "aud",
     "depositRequired": true,
     "depositPercent": 30,
-    "autoPayoutEnabled": true,
-    "payoutFrequency": "weekly",
-    "platformFeePercent": 0,
     "supportedMethods": ["card", "apple_pay", "google_pay"]
   },
   "notifications": {

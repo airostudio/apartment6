@@ -1,13 +1,12 @@
 /**
- * TrendAccom - Admin Authentication Guard
+ * Cascade Apartment 6 - Admin Authentication Guard
  *
  * Include this script on every admin page (before closing </body>).
  * It will:
  *   1. Redirect unauthenticated visitors to login.html
  *   2. Inject the logged-in user's name/avatar into the topbar
- *   3. Show the Stripe Connect sidebar link only for the site owner
- *   4. Wire up the logout button
- *   5. Expire sessions older than 8 hours
+ *   3. Wire up the logout button
+ *   4. Expire sessions older than 8 hours
  */
 
 (function () {
@@ -15,7 +14,6 @@
 
     const SESSION_KEY   = 'trendaccom_admin_auth';
     const SESSION_TTL   = 8 * 60 * 60 * 1000; // 8 hours in ms
-    const OWNER_EMAIL   = 'typhoon.tall69@gmail.com';
     const LOGIN_PAGE    = 'login.html';
 
     // ─── 1. Validate session ───────────────────────────────────────────────────
@@ -37,9 +35,7 @@
     }
 
     function redirectToLogin() {
-        // Use the full pathname so redirect works correctly regardless of where login is hosted
-        let target = window.location.pathname; // e.g. /admin/bookings or /admin/bookings.html
-        // Ensure .html extension — Vercel cleanUrls strips it from pathnames
+        let target = window.location.pathname;
         if (target && !target.split('/').pop().includes('.')) target += '.html';
         const encoded = encodeURIComponent(target);
         window.location.replace(LOGIN_PAGE + (encoded ? '?redirect=' + encoded : ''));
@@ -48,13 +44,12 @@
     const session = getSession();
     if (!session) {
         redirectToLogin();
-        return; // stop execution while redirect fires
+        return;
     }
 
     // ─── 2. Populate topbar user info ─────────────────────────────────────────
 
     function initTopbarUser() {
-        // Avatar initials
         const avatarEls = document.querySelectorAll(
             '.admin-topbar__user-avatar, .topbar-user-avatar, .topbar-user .user-avatar'
         );
@@ -67,37 +62,14 @@
 
         avatarEls.forEach(el => { el.textContent = initials; });
 
-        // Display name
         const nameEls = document.querySelectorAll(
             '.admin-topbar__user-name, .topbar-user-name, .topbar-user .user-name'
         );
-        const displayName = session.role === 'owner' ? 'Owner' : 'Admin';
+        const displayName = session.name || 'Admin';
         nameEls.forEach(el => { el.textContent = displayName; });
     }
 
-    // ─── 3. Stripe Connect visibility (owner only) ────────────────────────────
-
-    function enforceStripeVisibility() {
-        const isOwner = session.email.toLowerCase() === OWNER_EMAIL.toLowerCase();
-        const stripeLinks = document.querySelectorAll('a[href="stripe-connect.html"]');
-
-        stripeLinks.forEach(link => {
-            const li = link.closest('li');
-            if (li) {
-                li.style.display = isOwner ? '' : 'none';
-            } else {
-                link.style.display = isOwner ? '' : 'none';
-            }
-        });
-
-        // If we ARE on the stripe-connect page and not the owner, boot out
-        const currentPage = window.location.pathname.split('/').pop();
-        if (currentPage === 'stripe-connect.html' && !isOwner) {
-            window.location.replace('index.html');
-        }
-    }
-
-    // ─── 4. Logout ────────────────────────────────────────────────────────────
+    // ─── 3. Logout ────────────────────────────────────────────────────────────
 
     function initLogout() {
         document.addEventListener('click', function (e) {
@@ -111,7 +83,7 @@
         });
     }
 
-    // ─── 5. Inject logout button into topbar (if not already present) ─────────
+    // ─── 4. Inject logout button into topbar (if not already present) ─────────
 
     function injectLogoutButton() {
         const topbarActions = document.querySelector(
@@ -148,7 +120,6 @@
             btn.style.color = '#64748b';
         });
 
-        // Insert before the user chip
         const userChip = topbarActions.querySelector(
             '.admin-topbar__user, .topbar-user, .topbar-avatar'
         );
@@ -159,11 +130,9 @@
         }
     }
 
-    // ─── 6. Highlight active sidebar link ────────────────────────────────────
+    // ─── 5. Highlight active sidebar link ────────────────────────────────────
 
     function highlightActiveLink() {
-        // Strip .html from both sides so comparison works with Vercel cleanUrls
-        // (URL pathname has no extension, but hrefs do)
         const currentBase = (window.location.pathname.split('/').pop() || 'index').replace(/\.html$/, '');
         document.querySelectorAll(
             '.admin-sidebar__menu-link, .sidebar-link, .nav-link'
@@ -180,7 +149,6 @@
 
     function run() {
         initTopbarUser();
-        enforceStripeVisibility();
         injectLogoutButton();
         highlightActiveLink();
         initLogout();
@@ -195,6 +163,5 @@
     // Expose session for other scripts
     window.TrendAccomAdmin = window.TrendAccomAdmin || {};
     window.TrendAccomAdmin.session = session;
-    window.TrendAccomAdmin.isOwner = session.email.toLowerCase() === OWNER_EMAIL.toLowerCase();
 
 })();

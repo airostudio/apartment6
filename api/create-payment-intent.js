@@ -18,7 +18,7 @@ module.exports = async function handler(req, res) {
       automatic_payment_methods: { enabled: true },
     };
 
-    // Stripe Connect: transfer to the property's connected account,
+    // Direct Stripe payment:
     // retaining the platform fee. STRIPE_CONNECTED_ACCOUNT_ID is set
     // in the Vercel environment variables.
     const connectedAccountId = process.env.STRIPE_CONNECTED_ACCOUNT_ID;
