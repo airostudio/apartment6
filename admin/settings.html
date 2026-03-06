@@ -10,33 +10,348 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/main.css">
     <link rel="stylesheet" href="../css/admin.css">
-    
+
     <style>
-        .settings-tabs { display:flex; border-bottom:2px solid var(--color-light); margin-bottom:var(--space-xl); gap:0; }
-        .tab-btn { padding:var(--space-md) var(--space-xl); font-size:var(--font-size-sm); font-weight:var(--font-weight-medium); color:var(--color-gray); border:none; border-bottom:2px solid transparent; margin-bottom:-2px; background:none; cursor:pointer; font-family:inherit; transition:all var(--transition-fast); }
-        .tab-btn:hover { color:var(--color-dark); }
-        .tab-btn.active { color:var(--color-primary); border-bottom-color:var(--color-primary); font-weight:var(--font-weight-semibold); }
-        .tab-content { display:none; }
-        .tab-content.active { display:block; }
-        .settings-section { background:var(--color-white); border:1px solid var(--color-light); border-radius:var(--radius-lg); margin-bottom:var(--space-lg); }
-        .settings-section-header { padding:var(--space-lg) var(--space-xl); border-bottom:1px solid var(--color-light); display:flex; align-items:center; justify-content:space-between; }
-        .settings-section-title { font-size:var(--font-size-base); font-weight:var(--font-weight-semibold); color:var(--color-darker); font-family:var(--font-primary); }
-        .settings-section-body { padding:var(--space-xl); }
-        .settings-row { display:flex; align-items:center; justify-content:space-between; padding:var(--space-md) 0; border-bottom:1px solid var(--color-light); gap:var(--space-md); }
-        .settings-row:last-child { border-bottom:none; }
-        .settings-row-label { font-size:var(--font-size-sm); font-weight:var(--font-weight-medium); color:var(--color-dark); }
-        .settings-row-sub { font-size:var(--font-size-xs); color:var(--color-gray); margin-top:2px; }
-        .page-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:var(--space-xl); gap:var(--space-md); flex-wrap:wrap; }
-        .page-title { font-size:var(--font-size-xl); font-weight:var(--font-weight-bold); color:var(--color-darker); font-family:var(--font-primary); }
-        .page-subtitle { font-size:var(--font-size-sm); color:var(--color-gray); margin-top:2px; }
-        .btn-save { display:inline-flex; align-items:center; gap:var(--space-sm); padding:var(--space-sm) var(--space-lg); background:var(--color-primary); color:#fff; border:none; border-radius:var(--radius-md); font-size:var(--font-size-sm); font-weight:var(--font-weight-semibold); cursor:pointer; font-family:inherit; transition:background var(--transition-fast); }
-        .btn-save:hover { background:var(--color-primary-light); }
-        .toggle { position:relative; width:44px; height:24px; display:inline-block; }
-        .toggle input { opacity:0; width:0; height:0; }
-        .toggle-slider { position:absolute; inset:0; background:var(--color-muted); border-radius:24px; cursor:pointer; transition:background var(--transition-fast); }
-        .toggle-slider::before { content:''; position:absolute; width:18px; height:18px; left:3px; top:3px; background:#fff; border-radius:50%; transition:transform var(--transition-fast); }
-        .toggle input:checked + .toggle-slider { background:var(--color-success); }
-        .toggle input:checked + .toggle-slider::before { transform:translateX(20px); }
+        /* ── Tabs ── */
+        .settings-tabs {
+            display: flex;
+            border-bottom: 2px solid var(--color-light);
+            margin-bottom: var(--space-xl);
+            gap: 0;
+            overflow-x: auto;
+        }
+        .settings-tab {
+            padding: 12px 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--color-gray);
+            border: none;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            background: none;
+            cursor: pointer;
+            font-family: inherit;
+            white-space: nowrap;
+            transition: color 0.15s, border-color 0.15s;
+        }
+        .settings-tab:hover { color: var(--color-dark); }
+        .settings-tab.active {
+            color: var(--color-primary);
+            border-bottom-color: var(--color-primary);
+            font-weight: 600;
+        }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* ── Section header ── */
+        .settings-section {
+            background: var(--color-white);
+            border: 1px solid var(--color-light);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--space-lg);
+            overflow: hidden;
+        }
+        .settings-section-header {
+            padding: 18px 24px;
+            border-bottom: 1px solid var(--color-light);
+            background: #fafbfc;
+        }
+        .settings-section-header h3 {
+            font-size: 0.9375rem;
+            font-weight: 600;
+            color: var(--color-darker);
+            margin: 0;
+        }
+        .settings-section-header p {
+            font-size: 0.8125rem;
+            color: var(--color-gray);
+            margin: 3px 0 0;
+        }
+        .settings-section-body { padding: 24px; }
+
+        /* ── Form layout ── */
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .form-row-3 {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .form-group { margin-bottom: 20px; }
+        .form-group:last-child { margin-bottom: 0; }
+        .form-group label {
+            display: block;
+            font-size: 0.8125rem;
+            font-weight: 500;
+            color: var(--color-dark);
+            margin-bottom: 6px;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 9px 12px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: var(--radius-md);
+            font-size: 0.875rem;
+            font-family: inherit;
+            color: var(--color-darker);
+            background: #fff;
+            transition: border-color 0.15s, box-shadow 0.15s;
+            outline: none;
+        }
+        .form-group input[type="color"] {
+            height: 40px;
+            padding: 4px 6px;
+            cursor: pointer;
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.08);
+        }
+        .form-group textarea { resize: vertical; }
+        .form-hint {
+            font-size: 0.75rem;
+            color: var(--color-gray);
+            margin-top: 5px;
+        }
+
+        /* ── Toggle rows ── */
+        .toggle-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--color-light);
+            gap: 16px;
+        }
+        .toggle-row:last-child { border-bottom: none; }
+        .toggle-info { flex: 1; }
+        .toggle-info h4 {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--color-dark);
+            margin: 0 0 3px;
+        }
+        .toggle-info p {
+            font-size: 0.8125rem;
+            color: var(--color-gray);
+            margin: 0;
+        }
+        .toggle-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* ── Toggle switch ── */
+        .toggle-switch {
+            position: relative;
+            width: 44px;
+            height: 24px;
+            display: inline-block;
+            flex-shrink: 0;
+        }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .toggle-slider {
+            position: absolute;
+            inset: 0;
+            background: #cbd5e1;
+            border-radius: 24px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .toggle-slider::before {
+            content: '';
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            left: 3px;
+            top: 3px;
+            background: #fff;
+            border-radius: 50%;
+            transition: transform 0.2s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+        .toggle-switch input:checked + .toggle-slider { background: #22c55e; }
+        .toggle-switch input:checked + .toggle-slider::before { transform: translateX(20px); }
+
+        /* ── Inline select ── */
+        .inline-select {
+            padding: 6px 10px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: var(--radius-md);
+            font-size: 0.8125rem;
+            font-family: inherit;
+            color: var(--color-darker);
+            background: #fff;
+            outline: none;
+            cursor: pointer;
+        }
+        .inline-select:focus { border-color: var(--color-primary); }
+
+        /* ── Policy cards ── */
+        .policy-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--color-light);
+            gap: 16px;
+        }
+        .policy-card:last-of-type { border-bottom: none; }
+        .policy-info h4 {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--color-dark);
+            margin: 0 0 3px;
+        }
+        .policy-info p {
+            font-size: 0.8125rem;
+            color: var(--color-gray);
+            margin: 0;
+        }
+        .policy-card.active-policy .policy-info h4 { color: var(--color-primary); }
+
+        /* ── Upload area ── */
+        .upload-area {
+            border: 2px dashed #e2e8f0;
+            border-radius: var(--radius-lg);
+            padding: 28px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.15s, background 0.15s;
+        }
+        .upload-area:hover { border-color: var(--color-primary); background: #f0f7ff; }
+        .upload-area svg {
+            width: 32px;
+            height: 32px;
+            color: var(--color-gray);
+            margin-bottom: 8px;
+        }
+        .upload-area p {
+            font-size: 0.8125rem;
+            color: var(--color-gray);
+            margin: 4px 0 0;
+        }
+        .upload-label { color: var(--color-primary); font-weight: 500; }
+
+        /* ── Users table ── */
+        .users-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+        }
+        .users-table th {
+            text-align: left;
+            padding: 10px 16px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--color-gray);
+            border-bottom: 1px solid var(--color-light);
+            background: #fafbfc;
+        }
+        .users-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--color-light);
+            color: var(--color-dark);
+            vertical-align: middle;
+        }
+        .users-table tr:last-child td { border-bottom: none; }
+        .user-cell { display: flex; align-items: center; gap: 10px; }
+        .user-avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #fff;
+            flex-shrink: 0;
+        }
+        .user-avatar.bg-blue   { background: #3b82f6; }
+        .user-avatar.bg-green  { background: #22c55e; }
+        .user-avatar.bg-orange { background: #f97316; }
+        .user-name { font-weight: 500; color: var(--color-darker); }
+        .role-badge {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .role-badge.role-owner   { background: #ede9fe; color: #7c3aed; }
+        .role-badge.role-admin   { background: #dbeafe; color: #1d4ed8; }
+        .role-badge.role-manager { background: #fef9c3; color: #a16207; }
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8125rem;
+        }
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+        }
+        .status-dot.active   { background: #22c55e; }
+        .status-dot.inactive { background: #94a3b8; }
+        .action-link {
+            font-size: 0.8125rem;
+            font-weight: 500;
+            color: var(--color-primary);
+            text-decoration: none;
+            margin-right: 12px;
+        }
+        .action-link:hover { text-decoration: underline; }
+        .action-link.danger { color: #ef4444; }
+
+        /* ── Invite section ── */
+        .invite-section {
+            padding: 16px 0 4px;
+            border-top: 1px solid var(--color-light);
+            margin-top: 8px;
+        }
+
+        /* ── Page header ── */
+        .page-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: var(--space-xl);
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .page-header h2 {
+            font-size: 1.375rem;
+            font-weight: 700;
+            color: var(--color-darker);
+            margin: 0 0 4px;
+        }
+        .page-header p {
+            font-size: 0.875rem;
+            color: var(--color-gray);
+            margin: 0;
+        }
+
+        @media (max-width: 640px) {
+            .form-row, .form-row-3 { grid-template-columns: 1fr; }
+            .users-table th:nth-child(4),
+            .users-table td:nth-child(4),
+            .users-table th:nth-child(5),
+            .users-table td:nth-child(5) { display: none; }
+        }
     </style>
 </head>
 <body class="admin-body">
@@ -78,14 +393,14 @@
             <div class="admin-sidebar__section">
                 <span class="admin-sidebar__section-title">SYSTEM</span>
                 <ul class="admin-sidebar__menu">
-                    <li class="admin-sidebar__menu-item"><a href="settings.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span>Settings</span></a></li>
+                    <li class="admin-sidebar__menu-item"><a href="settings.html" class="admin-sidebar__menu-link admin-sidebar__menu-link--active"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span>Settings</span></a></li>
                     <li class="admin-sidebar__menu-item"><a href="reports.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg><span>Reports</span></a></li>
                 </ul>
             </div>
         </nav>
     </aside>
 
-    <!-- Main Content -->
+    <!-- ========== Main ========== -->
     <main class="admin-main">
 
         <header class="admin-topbar">
@@ -97,19 +412,18 @@
             <div class="admin-topbar__actions">
                 <div class="admin-topbar__user">
                     <div class="admin-topbar__user-avatar">AD</div>
-                    <span class="admin-topbar__user-name">Admin</span>
+                    <span class="admin-topbar__user-name" id="topbarUserName">Admin</span>
                 </div>
             </div>
         </header>
 
-        <!-- Content -->
         <div class="admin-content">
 
             <!-- Page Header -->
             <div class="page-header">
-                <div class="page-header-text">
+                <div>
                     <h2>Settings</h2>
-                    <p>Configure your Cascade Apartment 6 platform settings</p>
+                    <p>Configure your Cascade Apartment 6 platform settings.</p>
                 </div>
                 <button class="btn btn-primary" id="saveChangesBtn">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -130,609 +444,567 @@
                 <button class="settings-tab" data-tab="users">Users</button>
             </div>
 
-            <!-- ==================== GENERAL TAB ==================== -->
+            <!-- ==================== GENERAL ==================== -->
             <div class="tab-content active" id="tab-general">
 
                 <!-- Site Information -->
                 <div class="settings-section">
-                    <h3>Site Information</h3>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="siteName">Site Name</label>
-                            <input type="text" id="siteName" value="Cascade Apartment 6">
-                        </div>
-                        <div class="form-group">
-                            <label for="siteUrl">Site URL</label>
-                            <input type="url" id="siteUrl" value="https://www.cascade6.com.au">
-                        </div>
+                    <div class="settings-section-header">
+                        <h3>Site Information</h3>
+                        <p>Basic details about your accommodation listing.</p>
                     </div>
-
-                    <div class="form-group">
-                        <label for="siteDescription">Site Description</label>
-                        <textarea id="siteDescription" rows="3">Premium accommodation management platform for short-term rental properties.</textarea>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="contactEmail">Contact Email</label>
-                            <input type="email" id="contactEmail" value="hello@mtbawbawcascade3.com">
+                    <div class="settings-section-body">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="siteName">Site Name</label>
+                                <input type="text" id="siteName" value="Cascade Apartment 6">
+                            </div>
+                            <div class="form-group">
+                                <label for="siteUrl">Site URL</label>
+                                <input type="url" id="siteUrl" value="https://www.cascadeapartments.com.au">
+                            </div>
                         </div>
                         <div class="form-group">
-                            <label for="contactPhone">Contact Phone</label>
-                            <input type="tel" id="contactPhone" value="+61 2 9876 5432">
+                            <label for="siteDescription">Site Description</label>
+                            <textarea id="siteDescription" rows="3">A beautifully appointed apartment at the Cascade resort on Mt Baw Baw, perfect for couples and small families seeking a mountain retreat.</textarea>
                         </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="defaultTimezone">Default Timezone</label>
-                            <select id="defaultTimezone">
-                                <option value="Australia/Sydney" selected>Australia/Sydney (AEST/AEDT)</option>
-                                <option value="Australia/Melbourne">Australia/Melbourne (AEST/AEDT)</option>
-                                <option value="Australia/Brisbane">Australia/Brisbane (AEST)</option>
-                                <option value="Australia/Perth">Australia/Perth (AWST)</option>
-                                <option value="Australia/Adelaide">Australia/Adelaide (ACST/ACDT)</option>
-                                <option value="Australia/Darwin">Australia/Darwin (ACST)</option>
-                                <option value="Australia/Hobart">Australia/Hobart (AEST/AEDT)</option>
-                                <option value="Pacific/Auckland">Pacific/Auckland (NZST/NZDT)</option>
-                                <option value="America/New_York">America/New_York (EST/EDT)</option>
-                                <option value="America/Los_Angeles">America/Los_Angeles (PST/PDT)</option>
-                                <option value="Europe/London">Europe/London (GMT/BST)</option>
-                                <option value="Asia/Tokyo">Asia/Tokyo (JST)</option>
-                            </select>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="contactEmail">Contact Email</label>
+                                <input type="email" id="contactEmail" value="admin@cascadeapartments.com.au">
+                            </div>
+                            <div class="form-group">
+                                <label for="contactPhone">Contact Phone</label>
+                                <input type="tel" id="contactPhone" value="">
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="defaultCurrency">Default Currency</label>
-                            <select id="defaultCurrency">
-                                <option value="AUD" selected>AUD - Australian Dollar</option>
-                                <option value="NZD">NZD - New Zealand Dollar</option>
-                                <option value="USD">USD - US Dollar</option>
-                                <option value="GBP">GBP - British Pound</option>
-                                <option value="EUR">EUR - Euro</option>
-                                <option value="JPY">JPY - Japanese Yen</option>
-                                <option value="CAD">CAD - Canadian Dollar</option>
-                                <option value="SGD">SGD - Singapore Dollar</option>
-                            </select>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="defaultTimezone">Default Timezone</label>
+                                <select id="defaultTimezone">
+                                    <option value="Australia/Melbourne" selected>Australia/Melbourne (AEST/AEDT)</option>
+                                    <option value="Australia/Sydney">Australia/Sydney (AEST/AEDT)</option>
+                                    <option value="Australia/Brisbane">Australia/Brisbane (AEST)</option>
+                                    <option value="Australia/Perth">Australia/Perth (AWST)</option>
+                                    <option value="Australia/Adelaide">Australia/Adelaide (ACST/ACDT)</option>
+                                    <option value="Australia/Darwin">Australia/Darwin (ACST)</option>
+                                    <option value="Australia/Hobart">Australia/Hobart (AEST/AEDT)</option>
+                                    <option value="Pacific/Auckland">Pacific/Auckland (NZST/NZDT)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="defaultCurrency">Default Currency</label>
+                                <select id="defaultCurrency">
+                                    <option value="AUD" selected>AUD — Australian Dollar</option>
+                                    <option value="NZD">NZD — New Zealand Dollar</option>
+                                    <option value="USD">USD — US Dollar</option>
+                                    <option value="GBP">GBP — British Pound</option>
+                                    <option value="EUR">EUR — Euro</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Business Details -->
                 <div class="settings-section">
-                    <h3>Business Details</h3>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="businessName">Business Name</label>
-                            <input type="text" id="businessName" value="Cascade Apartment 6 Pty Ltd">
-                        </div>
-                        <div class="form-group">
-                            <label for="abnTaxId">ABN / Tax ID</label>
-                            <input type="text" id="abnTaxId" value="12 345 678 901">
-                            <p class="form-hint">Australian Business Number or equivalent tax identifier</p>
-                        </div>
+                    <div class="settings-section-header">
+                        <h3>Business Details</h3>
+                        <p>Used on invoices, receipts, and tax documents.</p>
                     </div>
-
-                    <div class="form-group">
-                        <label for="businessAddress">Street Address</label>
-                        <input type="text" id="businessAddress" value="Level 5, 123 George Street">
-                    </div>
-
-                    <div class="form-row-3">
-                        <div class="form-group">
-                            <label for="businessCity">City</label>
-                            <input type="text" id="businessCity" value="Sydney">
+                    <div class="settings-section-body">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="businessName">Business / Trading Name</label>
+                                <input type="text" id="businessName" value="">
+                            </div>
+                            <div class="form-group">
+                                <label for="abnTaxId">ABN / Tax ID</label>
+                                <input type="text" id="abnTaxId" value="" placeholder="e.g. 12 345 678 901">
+                                <p class="form-hint">Australian Business Number or equivalent tax identifier.</p>
+                            </div>
                         </div>
                         <div class="form-group">
-                            <label for="businessState">State</label>
-                            <input type="text" id="businessState" value="NSW">
+                            <label for="businessAddress">Street Address</label>
+                            <input type="text" id="businessAddress" value="">
                         </div>
-                        <div class="form-group">
-                            <label for="businessPostcode">Postcode</label>
-                            <input type="text" id="businessPostcode" value="2000">
+                        <div class="form-row-3">
+                            <div class="form-group">
+                                <label for="businessCity">City / Suburb</label>
+                                <input type="text" id="businessCity" value="">
+                            </div>
+                            <div class="form-group">
+                                <label for="businessState">State</label>
+                                <input type="text" id="businessState" value="VIC">
+                            </div>
+                            <div class="form-group">
+                                <label for="businessPostcode">Postcode</label>
+                                <input type="text" id="businessPostcode" value="">
+                            </div>
                         </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="businessCountry">Country</label>
-                            <input type="text" id="businessCountry" value="Australia">
-                        </div>
-                        <div class="form-group">
-                            <label for="businessPhone">Business Phone</label>
-                            <input type="tel" id="businessPhone" value="+61 2 9876 5400">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="businessCountry">Country</label>
+                                <input type="text" id="businessCountry" value="Australia">
+                            </div>
+                            <div class="form-group">
+                                <label for="businessPhone">Business Phone</label>
+                                <input type="tel" id="businessPhone" value="">
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- ==================== BOOKING RULES TAB ==================== -->
+            <!-- ==================== BOOKING RULES ==================== -->
             <div class="tab-content" id="tab-booking-rules">
 
                 <!-- Default Booking Rules -->
                 <div class="settings-section">
-                    <h3>Default Booking Rules</h3>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="bookingMode">Booking Mode</label>
-                            <select id="bookingMode">
-                                <option value="instant" selected>Instant Booking</option>
-                                <option value="request">Request &amp; Approve</option>
-                                <option value="enquiry">Enquiry Only</option>
-                            </select>
-                            <p class="form-hint">How guests can book your properties</p>
-                        </div>
+                    <div class="settings-section-header">
+                        <h3>Default Booking Rules</h3>
+                        <p>These apply globally and can be overridden per property.</p>
                     </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="checkinTime">Default Check-in Time</label>
-                            <input type="time" id="checkinTime" value="15:00">
+                    <div class="settings-section-body">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="bookingMode">Booking Mode</label>
+                                <select id="bookingMode">
+                                    <option value="instant" selected>Instant Booking</option>
+                                    <option value="request">Request &amp; Approve</option>
+                                    <option value="enquiry">Enquiry Only</option>
+                                </select>
+                                <p class="form-hint">How guests can book your properties.</p>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="checkoutTime">Default Check-out Time</label>
-                            <input type="time" id="checkoutTime" value="11:00">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="checkinTime">Default Check-in Time</label>
+                                <input type="time" id="checkinTime" value="15:00">
+                            </div>
+                            <div class="form-group">
+                                <label for="checkoutTime">Default Check-out Time</label>
+                                <input type="time" id="checkoutTime" value="11:00">
+                            </div>
                         </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="minStay">Minimum Stay (nights)</label>
-                            <input type="number" id="minStay" value="1" min="1">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="minStay">Minimum Stay (nights)</label>
+                                <input type="number" id="minStay" value="2" min="1">
+                            </div>
+                            <div class="form-group">
+                                <label for="maxStay">Maximum Stay (nights)</label>
+                                <input type="number" id="maxStay" value="30" min="1">
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="maxStay">Maximum Stay (nights)</label>
-                            <input type="number" id="maxStay" value="30" min="1">
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="advanceBooking">Advance Booking Window (days)</label>
-                            <input type="number" id="advanceBooking" value="365" min="1">
-                            <p class="form-hint">How far in advance guests can book</p>
-                        </div>
-                        <div class="form-group">
-                            <label for="bookingCutoff">Booking Cut-off (hours before check-in)</label>
-                            <input type="number" id="bookingCutoff" value="24" min="0">
-                            <p class="form-hint">Minimum hours before check-in that a booking can be made</p>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="advanceBooking">Advance Booking Window (days)</label>
+                                <input type="number" id="advanceBooking" value="365" min="1">
+                                <p class="form-hint">How far in advance guests can book.</p>
+                            </div>
+                            <div class="form-group">
+                                <label for="bookingCutoff">Booking Cut-off (hours before check-in)</label>
+                                <input type="number" id="bookingCutoff" value="24" min="0">
+                                <p class="form-hint">Minimum notice required before a new booking can be made.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Cancellation Policies -->
                 <div class="settings-section">
-                    <h3>Cancellation Policies</h3>
-
-                    <div class="policy-card">
-                        <div class="policy-info">
-                            <h4>Flexible</h4>
-                            <p>Free cancellation up to 24 hours before check-in</p>
-                        </div>
-                        <label class="toggle-switch">
-                            <input type="checkbox" name="policyFlexible">
-                            <span class="toggle-slider"></span>
-                        </label>
+                    <div class="settings-section-header">
+                        <h3>Cancellation Policy</h3>
+                        <p>Select the active cancellation policy for this property.</p>
                     </div>
-
-                    <div class="policy-card active-policy">
-                        <div class="policy-info">
-                            <h4>Moderate</h4>
-                            <p>Free cancellation up to 5 days before check-in. 50% refund within 5 days.</p>
+                    <div class="settings-section-body">
+                        <div class="policy-card">
+                            <div class="policy-info">
+                                <h4>Flexible</h4>
+                                <p>Free cancellation up to 24 hours before check-in.</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" name="policyFlexible">
+                                <span class="toggle-slider"></span>
+                            </label>
                         </div>
-                        <label class="toggle-switch">
-                            <input type="checkbox" name="policyModerate" checked>
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </div>
-
-                    <div class="policy-card">
-                        <div class="policy-info">
-                            <h4>Strict</h4>
-                            <p>50% refund up to 7 days before check-in. No refund within 7 days.</p>
+                        <div class="policy-card active-policy">
+                            <div class="policy-info">
+                                <h4>Moderate</h4>
+                                <p>Free cancellation up to 5 days before check-in. 50% refund within 5 days.</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" name="policyModerate" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
                         </div>
-                        <label class="toggle-switch">
-                            <input type="checkbox" name="policyStrict">
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </div>
-
-                    <div class="form-group" style="margin-top: 20px;">
-                        <label for="customPolicy">Custom Cancellation Policy</label>
-                        <textarea id="customPolicy" rows="4" placeholder="Enter your custom cancellation policy terms here..."></textarea>
-                        <p class="form-hint">This will override the selected policy above if filled in.</p>
+                        <div class="policy-card">
+                            <div class="policy-info">
+                                <h4>Strict</h4>
+                                <p>50% refund up to 7 days before check-in. No refund within 7 days.</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" name="policyStrict">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="form-group" style="margin-top:20px;">
+                            <label for="customPolicy">Custom Cancellation Terms (optional)</label>
+                            <textarea id="customPolicy" rows="4" placeholder="Enter any additional cancellation terms here. This will be shown to guests at checkout."></textarea>
+                            <p class="form-hint">If filled in, this overrides the policy selection above.</p>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Guest Requirements -->
                 <div class="settings-section">
-                    <h3>Guest Requirements</h3>
-
-                    <div class="toggle-row">
-                        <div class="toggle-info">
-                            <h4>Require Phone Number</h4>
-                            <p>Guests must provide a phone number when booking</p>
-                        </div>
-                        <label class="toggle-switch">
-                            <input type="checkbox" name="requirePhone" checked>
-                            <span class="toggle-slider"></span>
-                        </label>
+                    <div class="settings-section-header">
+                        <h3>Guest Requirements</h3>
+                        <p>Information and conditions required from guests at the time of booking.</p>
                     </div>
-
-                    <div class="toggle-row">
-                        <div class="toggle-info">
-                            <h4>Require ID Verification</h4>
-                            <p>Guests must verify their identity before check-in</p>
+                    <div class="settings-section-body">
+                        <div class="toggle-row">
+                            <div class="toggle-info">
+                                <h4>Require Phone Number</h4>
+                                <p>Guests must provide a contact phone number when booking.</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" name="requirePhone" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
                         </div>
-                        <label class="toggle-switch">
-                            <input type="checkbox" name="requireId">
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </div>
-
-                    <div class="toggle-row">
-                        <div class="toggle-info">
-                            <h4>Allow Children</h4>
-                            <p>Properties are suitable for children and families</p>
+                        <div class="toggle-row">
+                            <div class="toggle-info">
+                                <h4>Require ID Verification</h4>
+                                <p>Guests must verify their identity before check-in.</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" name="requireId">
+                                <span class="toggle-slider"></span>
+                            </label>
                         </div>
-                        <label class="toggle-switch">
-                            <input type="checkbox" name="allowChildren" checked>
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </div>
-
-                    <div class="toggle-row">
-                        <div class="toggle-info">
-                            <h4>Allow Pets</h4>
-                            <p>Guests can bring pets to the property</p>
+                        <div class="toggle-row">
+                            <div class="toggle-info">
+                                <h4>Allow Children</h4>
+                                <p>Property is suitable for children and families.</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" name="allowChildren" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
                         </div>
-                        <label class="toggle-switch">
-                            <input type="checkbox" name="allowPets">
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </div>
-
-                    <div class="form-group" style="margin-top: 20px;">
-                        <label for="maxGuests">Maximum Guests Per Booking</label>
-                        <input type="number" id="maxGuests" value="10" min="1" style="max-width: 200px;">
-                        <p class="form-hint">Default maximum for all properties. Can be overridden per property.</p>
+                        <div class="toggle-row">
+                            <div class="toggle-info">
+                                <h4>Allow Pets</h4>
+                                <p>Guests may bring pets to the property.</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" name="allowPets">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="form-group" style="margin-top:20px;">
+                            <label for="maxGuests">Maximum Guests Per Booking</label>
+                            <input type="number" id="maxGuests" value="6" min="1" style="max-width:120px;">
+                            <p class="form-hint">This can be overridden in Property Settings.</p>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- ==================== NOTIFICATIONS TAB ==================== -->
+            <!-- ==================== NOTIFICATIONS ==================== -->
             <div class="tab-content" id="tab-notifications">
 
-                <!-- Email Notifications -->
+                <!-- Admin Notifications -->
                 <div class="settings-section">
-                    <h3>Email Notifications</h3>
-
-                    <div class="toggle-row">
-                        <div class="toggle-info">
-                            <h4>New Booking Notification</h4>
-                            <p>Receive an email when a new booking is made</p>
-                        </div>
-                        <label class="toggle-switch">
-                            <input type="checkbox" name="notifyNewBooking" checked>
-                            <span class="toggle-slider"></span>
-                        </label>
+                    <div class="settings-section-header">
+                        <h3>Admin Notifications</h3>
+                        <p>Email alerts sent to <strong>admin@cascadeapartments.com.au</strong>.</p>
                     </div>
-
-                    <div class="toggle-row">
-                        <div class="toggle-info">
-                            <h4>Booking Cancellation</h4>
-                            <p>Receive an email when a booking is cancelled</p>
-                        </div>
-                        <label class="toggle-switch">
-                            <input type="checkbox" name="notifyCancellation" checked>
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </div>
-
-                    <div class="toggle-row">
-                        <div class="toggle-info">
-                            <h4>Guest Check-in Reminder</h4>
-                            <p>Receive a reminder before guest check-in</p>
-                        </div>
-                        <div class="toggle-controls">
-                            <select class="inline-select" name="checkinReminderDays">
-                                <option value="1" selected>1 day before</option>
-                                <option value="2">2 days before</option>
-                                <option value="3">3 days before</option>
-                                <option value="7">7 days before</option>
-                            </select>
+                    <div class="settings-section-body">
+                        <div class="toggle-row">
+                            <div class="toggle-info">
+                                <h4>New Booking</h4>
+                                <p>Receive an email when a new booking is confirmed.</p>
+                            </div>
                             <label class="toggle-switch">
-                                <input type="checkbox" name="notifyCheckinReminder" checked>
+                                <input type="checkbox" name="notifyNewBooking" checked>
                                 <span class="toggle-slider"></span>
                             </label>
                         </div>
-                    </div>
-
-                    <div class="toggle-row">
-                        <div class="toggle-info">
-                            <h4>Guest Check-out Reminder</h4>
-                            <p>Receive a reminder on guest check-out day</p>
+                        <div class="toggle-row">
+                            <div class="toggle-info">
+                                <h4>Booking Cancellation</h4>
+                                <p>Receive an email when a booking is cancelled.</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" name="notifyCancellation" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
                         </div>
-                        <label class="toggle-switch">
-                            <input type="checkbox" name="notifyCheckoutReminder" checked>
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </div>
-
-                    <div class="toggle-row">
-                        <div class="toggle-info">
-                            <h4>Payment Received</h4>
-                            <p>Receive an email when a payment is processed</p>
+                        <div class="toggle-row">
+                            <div class="toggle-info">
+                                <h4>Check-in Reminder</h4>
+                                <p>Receive a reminder before guest check-in.</p>
+                            </div>
+                            <div class="toggle-controls">
+                                <select class="inline-select" name="checkinReminderDays">
+                                    <option value="1" selected>1 day before</option>
+                                    <option value="2">2 days before</option>
+                                    <option value="3">3 days before</option>
+                                    <option value="7">7 days before</option>
+                                </select>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" name="notifyCheckinReminder" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
                         </div>
-                        <label class="toggle-switch">
-                            <input type="checkbox" name="notifyPayment" checked>
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </div>
-
-                    <div class="toggle-row">
-                        <div class="toggle-info">
-                            <h4>Review Received</h4>
-                            <p>Receive an email when a guest leaves a review</p>
+                        <div class="toggle-row">
+                            <div class="toggle-info">
+                                <h4>Check-out Reminder</h4>
+                                <p>Receive a reminder on guest check-out day.</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" name="notifyCheckoutReminder" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
                         </div>
-                        <label class="toggle-switch">
-                            <input type="checkbox" name="notifyReview" checked>
-                            <span class="toggle-slider"></span>
-                        </label>
+                        <div class="toggle-row">
+                            <div class="toggle-info">
+                                <h4>Payment Received</h4>
+                                <p>Receive an email when a payment is processed via Stripe.</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" name="notifyPayment" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="toggle-row">
+                            <div class="toggle-info">
+                                <h4>New Review</h4>
+                                <p>Receive an email when a guest submits a review.</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" name="notifyReview" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Guest Emails -->
                 <div class="settings-section">
-                    <h3>Guest Emails</h3>
-
-                    <div class="toggle-row">
-                        <div class="toggle-info">
-                            <h4>Booking Confirmation</h4>
-                            <p>Send confirmation email to guest after booking</p>
-                        </div>
-                        <label class="toggle-switch">
-                            <input type="checkbox" name="guestBookingConfirm" checked>
-                            <span class="toggle-slider"></span>
-                        </label>
+                    <div class="settings-section-header">
+                        <h3>Guest Emails</h3>
+                        <p>Automated emails sent to guests throughout their booking journey.</p>
                     </div>
-
-                    <div class="toggle-row">
-                        <div class="toggle-info">
-                            <h4>Pre-arrival Information</h4>
-                            <p>Send property details and arrival info before check-in</p>
-                        </div>
-                        <div class="toggle-controls">
-                            <select class="inline-select" name="preArrivalDays">
-                                <option value="1">1 day before</option>
-                                <option value="2">2 days before</option>
-                                <option value="3" selected>3 days before</option>
-                                <option value="5">5 days before</option>
-                                <option value="7">7 days before</option>
-                            </select>
+                    <div class="settings-section-body">
+                        <div class="toggle-row">
+                            <div class="toggle-info">
+                                <h4>Booking Confirmation</h4>
+                                <p>Send a confirmation email to the guest immediately after booking.</p>
+                            </div>
                             <label class="toggle-switch">
-                                <input type="checkbox" name="guestPreArrival" checked>
+                                <input type="checkbox" name="guestBookingConfirm" checked>
                                 <span class="toggle-slider"></span>
                             </label>
                         </div>
-                    </div>
-
-                    <div class="toggle-row">
-                        <div class="toggle-info">
-                            <h4>Check-in Instructions</h4>
-                            <p>Send access codes, directions, and check-in details</p>
+                        <div class="toggle-row">
+                            <div class="toggle-info">
+                                <h4>Pre-arrival Information</h4>
+                                <p>Send property details and arrival information before check-in.</p>
+                            </div>
+                            <div class="toggle-controls">
+                                <select class="inline-select" name="preArrivalDays">
+                                    <option value="1">1 day before</option>
+                                    <option value="2">2 days before</option>
+                                    <option value="3" selected>3 days before</option>
+                                    <option value="5">5 days before</option>
+                                    <option value="7">7 days before</option>
+                                </select>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" name="guestPreArrival" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
                         </div>
-                        <label class="toggle-switch">
-                            <input type="checkbox" name="guestCheckinInstructions" checked>
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </div>
-
-                    <div class="toggle-row">
-                        <div class="toggle-info">
-                            <h4>Post-stay Thank You</h4>
-                            <p>Send a thank-you email after guest check-out</p>
-                        </div>
-                        <label class="toggle-switch">
-                            <input type="checkbox" name="guestThankYou" checked>
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </div>
-
-                    <div class="toggle-row">
-                        <div class="toggle-info">
-                            <h4>Review Request</h4>
-                            <p>Ask guests to leave a review after their stay</p>
-                        </div>
-                        <div class="toggle-controls">
-                            <select class="inline-select" name="reviewRequestDays">
-                                <option value="1">1 day after</option>
-                                <option value="2" selected>2 days after</option>
-                                <option value="3">3 days after</option>
-                                <option value="5">5 days after</option>
-                                <option value="7">7 days after</option>
-                            </select>
+                        <div class="toggle-row">
+                            <div class="toggle-info">
+                                <h4>Check-in Instructions</h4>
+                                <p>Send access codes, directions, and check-in details.</p>
+                            </div>
                             <label class="toggle-switch">
-                                <input type="checkbox" name="guestReviewRequest" checked>
+                                <input type="checkbox" name="guestCheckinInstructions" checked>
                                 <span class="toggle-slider"></span>
                             </label>
+                        </div>
+                        <div class="toggle-row">
+                            <div class="toggle-info">
+                                <h4>Post-stay Thank You</h4>
+                                <p>Send a thank-you email after guest check-out.</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" name="guestThankYou" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="toggle-row">
+                            <div class="toggle-info">
+                                <h4>Review Request</h4>
+                                <p>Ask guests to leave a review after their stay.</p>
+                            </div>
+                            <div class="toggle-controls">
+                                <select class="inline-select" name="reviewRequestDays">
+                                    <option value="1">1 day after</option>
+                                    <option value="2" selected>2 days after</option>
+                                    <option value="3">3 days after</option>
+                                    <option value="5">5 days after</option>
+                                    <option value="7">7 days after</option>
+                                </select>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" name="guestReviewRequest" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- ==================== APPEARANCE TAB ==================== -->
+            <!-- ==================== APPEARANCE ==================== -->
             <div class="tab-content" id="tab-appearance">
 
                 <!-- Branding -->
                 <div class="settings-section">
-                    <h3>Branding</h3>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="primaryColor">Primary Color</label>
-                            <input type="color" id="primaryColor" value="#2563eb">
-                        </div>
-                        <div class="form-group">
-                            <label for="secondaryColor">Secondary Color</label>
-                            <input type="color" id="secondaryColor" value="#0f172a">
-                        </div>
+                    <div class="settings-section-header">
+                        <h3>Branding</h3>
+                        <p>Colours and assets used across the guest-facing site.</p>
                     </div>
-
-                    <div class="form-row" style="margin-top: 20px;">
-                        <div class="form-group">
-                            <label>Logo</label>
-                            <div class="upload-area">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                                    <circle cx="8.5" cy="8.5" r="1.5"/>
-                                    <polyline points="21 15 16 10 5 21"/>
-                                </svg>
-                                <p><span class="upload-label">Click to upload</span> or drag and drop</p>
-                                <p>SVG, PNG, or JPG (max. 2MB)</p>
+                    <div class="settings-section-body">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="primaryColor">Primary Colour</label>
+                                <input type="color" id="primaryColor" value="#0f2744">
+                            </div>
+                            <div class="form-group">
+                                <label for="secondaryColor">Accent Colour</label>
+                                <input type="color" id="secondaryColor" value="#c9a84c">
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label>Favicon</label>
-                            <div class="upload-area">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                                    <circle cx="8.5" cy="8.5" r="1.5"/>
-                                    <polyline points="21 15 16 10 5 21"/>
-                                </svg>
-                                <p><span class="upload-label">Click to upload</span> or drag and drop</p>
-                                <p>ICO, PNG, or SVG (32x32px recommended)</p>
+                        <div class="form-row" style="margin-top:4px;">
+                            <div class="form-group">
+                                <label>Logo</label>
+                                <div class="upload-area">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                        <circle cx="8.5" cy="8.5" r="1.5"/>
+                                        <polyline points="21 15 16 10 5 21"/>
+                                    </svg>
+                                    <p><span class="upload-label">Click to upload</span> or drag and drop</p>
+                                    <p>SVG, PNG or JPG (max 2 MB)</p>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Favicon</label>
+                                <div class="upload-area">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                        <circle cx="8.5" cy="8.5" r="1.5"/>
+                                        <polyline points="21 15 16 10 5 21"/>
+                                    </svg>
+                                    <p><span class="upload-label">Click to upload</span> or drag and drop</p>
+                                    <p>ICO, PNG or SVG (32 × 32 px recommended)</p>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Homepage -->
+                <!-- Guest-Facing Site -->
                 <div class="settings-section">
-                    <h3>Homepage</h3>
-
-                    <div class="form-group">
-                        <label for="heroTitle">Hero Title</label>
-                        <input type="text" id="heroTitle" value="Find Your Perfect Stay">
+                    <div class="settings-section-header">
+                        <h3>Guest-Facing Site</h3>
+                        <p>Content displayed on the public booking page.</p>
                     </div>
-
-                    <div class="form-group">
-                        <label for="heroSubtitle">Hero Subtitle</label>
-                        <input type="text" id="heroSubtitle" value="Discover unique accommodation experiences curated just for you">
-                    </div>
-
-                    <div class="toggle-row">
-                        <div class="toggle-info">
-                            <h4>Show Featured Properties</h4>
-                            <p>Display a section of featured properties on the homepage</p>
+                    <div class="settings-section-body">
+                        <div class="form-group">
+                            <label for="heroTitle">Hero Title</label>
+                            <input type="text" id="heroTitle" value="Mt Baw Baw Mountain Retreat">
                         </div>
-                        <label class="toggle-switch">
-                            <input type="checkbox" name="showFeatured" checked>
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </div>
-
-                    <div class="toggle-row">
-                        <div class="toggle-info">
-                            <h4>Show Testimonials</h4>
-                            <p>Display guest testimonials on the homepage</p>
+                        <div class="form-group">
+                            <label for="heroSubtitle">Hero Subtitle</label>
+                            <input type="text" id="heroSubtitle" value="A luxury alpine escape at the Cascade resort — ski-in, ski-out access all year round.">
                         </div>
-                        <label class="toggle-switch">
-                            <input type="checkbox" name="showTestimonials" checked>
-                            <span class="toggle-slider"></span>
-                        </label>
+                        <div class="toggle-row">
+                            <div class="toggle-info">
+                                <h4>Show Featured Properties Section</h4>
+                                <p>Display a featured properties section on the homepage.</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" name="showFeatured" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="toggle-row">
+                            <div class="toggle-info">
+                                <h4>Show Guest Testimonials</h4>
+                                <p>Display guest testimonials and reviews on the homepage.</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" name="showTestimonials" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- ==================== USERS TAB ==================== -->
+            <!-- ==================== USERS ==================== -->
             <div class="tab-content" id="tab-users">
 
-                <!-- Team Members -->
                 <div class="settings-section">
-                    <h3>Team Members</h3>
-
-                    <table class="users-table">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Role</th>
-                                <th>Status</th>
-                                <th>Last Login</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <div class="user-cell">
-                                        <div class="user-avatar bg-blue">SM</div>
-                                        <span class="user-name">Sarah Mitchell</span>
-                                    </div>
-                                </td>
-                                <td>hello@mtbawbawcascade3.com</td>
-                                <td><span class="role-badge role-owner">Owner</span></td>
-                                <td>
-                                    <span class="status-badge">
-                                        <span class="status-dot active"></span>
-                                        Active
-                                    </span>
-                                </td>
-                                <td>19 Feb 2026, 9:15 AM</td>
-                                <td>
-                                    <a href="#" class="action-link">Edit</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="user-cell">
-                                        <div class="user-avatar bg-green">JC</div>
-                                        <span class="user-name">James Chen</span>
-                                    </div>
-                                </td>
-                                <td>hello@mtbawbawcascade3.com</td>
-                                <td><span class="role-badge role-admin">Admin</span></td>
-                                <td>
-                                    <span class="status-badge">
-                                        <span class="status-dot active"></span>
-                                        Active
-                                    </span>
-                                </td>
-                                <td>18 Feb 2026, 4:32 PM</td>
-                                <td>
-                                    <a href="#" class="action-link">Edit</a>
-                                    <a href="#" class="action-link danger">Remove</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="user-cell">
-                                        <div class="user-avatar bg-orange">ER</div>
-                                        <span class="user-name">Emma Robinson</span>
-                                    </div>
-                                </td>
-                                <td>hello@mtbawbawcascade3.com</td>
-                                <td><span class="role-badge role-manager">Manager</span></td>
-                                <td>
-                                    <span class="status-badge">
-                                        <span class="status-dot inactive"></span>
-                                        Inactive
-                                    </span>
-                                </td>
-                                <td>15 Feb 2026, 11:20 AM</td>
-                                <td>
-                                    <a href="#" class="action-link">Edit</a>
-                                    <a href="#" class="action-link danger">Remove</a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <div class="invite-section">
-                        <button class="btn btn-primary" id="inviteBtn">
+                    <div class="settings-section-header">
+                        <h3>Admin Accounts</h3>
+                        <p>People with access to this admin dashboard.</p>
+                    </div>
+                    <div class="settings-section-body" style="padding:0;">
+                        <table class="users-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Status</th>
+                                    <th>Last Login</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody">
+                                <tr>
+                                    <td>
+                                        <div class="user-cell">
+                                            <div class="user-avatar bg-blue">CA</div>
+                                            <span class="user-name">Cascade Admin</span>
+                                        </div>
+                                    </td>
+                                    <td>admin@cascadeapartments.com.au</td>
+                                    <td><span class="role-badge role-owner">Owner</span></td>
+                                    <td>
+                                        <span class="status-badge">
+                                            <span class="status-dot active"></span>
+                                            Active
+                                        </span>
+                                    </td>
+                                    <td id="lastLoginCell">—</td>
+                                    <td><a href="#" class="action-link">Edit</a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="invite-section" style="padding:16px 24px;">
+                        <button class="btn btn-outline" id="inviteBtn" disabled title="User management coming soon">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
                                 <circle cx="8.5" cy="7" r="4"/>
@@ -741,61 +1013,70 @@
                             </svg>
                             Invite Team Member
                         </button>
+                        <p class="form-hint" style="margin-top:8px;">Multi-user access management coming in a future update.</p>
                     </div>
                 </div>
             </div>
 
-        </main>
-    </div>
+        </div><!-- .admin-content -->
+    </main>
 
-    <script src="../js/app.js"></script>
-    <script src="../js/admin.js"></script>
-    <script>
-        // Tab switching
-        document.querySelectorAll('.settings-tab').forEach(function(tab) {
-            tab.addEventListener('click', function() {
-                // Remove active from all tabs
-                document.querySelectorAll('.settings-tab').forEach(function(t) {
-                    t.classList.remove('active');
-                });
-                // Remove active from all tab contents
-                document.querySelectorAll('.tab-content').forEach(function(tc) {
-                    tc.classList.remove('active');
-                });
-                // Activate clicked tab
-                this.classList.add('active');
-                var tabId = 'tab-' + this.getAttribute('data-tab');
-                document.getElementById(tabId).classList.add('active');
-            });
-        });
-
-        // Policy card toggle visual feedback
-        document.querySelectorAll('.policy-card input[type="checkbox"]').forEach(function(cb) {
-            cb.addEventListener('change', function() {
-                var card = this.closest('.policy-card');
-                if (this.checked) {
-                    card.classList.add('active-policy');
-                } else {
-                    card.classList.remove('active-policy');
-                }
-            });
-        });
-
-        // Save changes button
-        document.getElementById('saveChangesBtn').addEventListener('click', function() {
-            var btn = this;
-            btn.textContent = 'Saving...';
-            btn.disabled = true;
-            setTimeout(function() {
-                btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Saved!';
-                setTimeout(function() {
-                    btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Save Changes';
-                    btn.disabled = false;
-                }, 2000);
-            }, 800);
-        });
-    </script>
-    <script src="../js/admin-auth.js"></script>
 </div><!-- .admin-layout -->
+
+<script src="../js/app.js"></script>
+<script src="../js/admin.js"></script>
+<script>
+(function () {
+    'use strict';
+
+    // ── Tab switching ──────────────────────────────────────────────
+    document.querySelectorAll('.settings-tab').forEach(function (tab) {
+        tab.addEventListener('click', function () {
+            document.querySelectorAll('.settings-tab').forEach(function (t) { t.classList.remove('active'); });
+            document.querySelectorAll('.tab-content').forEach(function (tc) { tc.classList.remove('active'); });
+            this.classList.add('active');
+            document.getElementById('tab-' + this.getAttribute('data-tab')).classList.add('active');
+        });
+    });
+
+    // ── Policy card active state ───────────────────────────────────
+    document.querySelectorAll('.policy-card input[type="checkbox"]').forEach(function (cb) {
+        cb.addEventListener('change', function () {
+            this.closest('.policy-card').classList.toggle('active-policy', this.checked);
+        });
+    });
+
+    // ── Last login from session ────────────────────────────────────
+    try {
+        var session = JSON.parse(localStorage.getItem('trendaccom_admin_auth') || 'null');
+        if (session && session.loginAt) {
+            var d = new Date(session.loginAt);
+            document.getElementById('lastLoginCell').textContent =
+                d.toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' }) + ', ' +
+                d.toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit' });
+        }
+        if (session && session.name) {
+            var nameEl = document.getElementById('topbarUserName');
+            if (nameEl) nameEl.textContent = session.name;
+        }
+    } catch (e) {}
+
+    // ── Save Changes button ────────────────────────────────────────
+    document.getElementById('saveChangesBtn').addEventListener('click', function () {
+        var btn = this;
+        btn.disabled = true;
+        btn.textContent = 'Saving…';
+        setTimeout(function () {
+            btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Saved!';
+            setTimeout(function () {
+                btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Save Changes';
+                btn.disabled = false;
+            }, 2000);
+        }, 800);
+    });
+})();
+</script>
+<script src="../js/admin-auth.js"></script>
+
 </body>
 </html>
