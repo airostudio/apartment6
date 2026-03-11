@@ -163,12 +163,12 @@
             const intentData = await intentRes.json();
             if (!intentRes.ok) throw new Error(intentData.error || 'Could not create payment intent.');
 
-            // If the server returned a publishable key that differs from the one we
-            // used to initialise (e.g. key was unavailable at init time), re-init now.
+            // If the server returned a publishable key that differs from the one used
+            // at init time, swap the Stripe instance — but do NOT remount the card
+            // element (that would clear what the user has already typed).
             if (intentData.publishableKey && intentData.publishableKey !== this.config.publishableKey) {
                 this.config.publishableKey = intentData.publishableKey;
                 this.stripe = Stripe(this.config.publishableKey);
-                this.createElements();
             }
 
             const { paymentIntent, error } = await this.stripe.confirmCardPayment(
@@ -283,6 +283,7 @@
                             const bk = {
                                 id:              'bk-' + Date.now(),
                                 ref:             confirmedRef,
+                                guestName:       pending.guestName       || 'Guest',
                                 name:            pending.guestName       || 'Guest',
                                 email:           pending.email           || '',
                                 phone:           pending.phone           || '',
@@ -317,7 +318,7 @@
                     recordPayment({
                         bookingRef:  confirmedRef,
                         bookingId:   savedBooking ? savedBooking.id : '',
-                        guestName:   savedBooking ? savedBooking.name  : (pending ? pending.guestName : 'Guest'),
+                        guestName:   savedBooking ? savedBooking.guestName : (pending ? pending.guestName : 'Guest'),
                         guestEmail:  savedBooking ? savedBooking.email : guestEmail,
                         amount:      amountCents / 100,
                         status:      'succeeded',
