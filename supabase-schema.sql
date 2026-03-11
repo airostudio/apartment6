@@ -65,6 +65,14 @@ CREATE TABLE IF NOT EXISTS property_settings (
 
 INSERT INTO property_settings (id) VALUES (1) ON CONFLICT (id) DO NOTHING;
 
+-- ── Site Settings (single row, id always = 1) ────────────────────────────────
+CREATE TABLE IF NOT EXISTS site_settings (
+  id   INTEGER PRIMARY KEY DEFAULT 1,
+  data JSONB NOT NULL DEFAULT '{}'
+);
+
+INSERT INTO site_settings (id) VALUES (1) ON CONFLICT (id) DO NOTHING;
+
 -- ── Blocked Dates ─────────────────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS blocked_dates (
   id         TEXT PRIMARY KEY,
@@ -81,3 +89,4 @@ ALTER TABLE payments          ENABLE ROW LEVEL SECURITY;
 ALTER TABLE rates             ENABLE ROW LEVEL SECURITY;
 ALTER TABLE blocked_dates     ENABLE ROW LEVEL SECURITY;
 ALTER TABLE property_settings ENABLE ROW LEVEL SECURITY;
+ALTER TABLE site_settings     ENABLE ROW LEVEL SECURITY;

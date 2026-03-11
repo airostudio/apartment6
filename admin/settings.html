@@ -417,6 +417,11 @@
             </div>
         </header>
 
+        <!-- Toast notification -->
+        <div id="settingsToast" style="display:none;position:fixed;top:24px;right:24px;z-index:9999;background:#10b981;color:#fff;padding:14px 24px;border-radius:10px;font-weight:600;box-shadow:0 4px 16px rgba(0,0,0,0.18);font-size:0.95rem;">
+            &#10003; Settings saved
+        </div>
+
         <div class="admin-content">
 
             <!-- Page Header -->
@@ -1024,6 +1029,7 @@
 </div><!-- .admin-layout -->
 
 <script src="../js/app.js"></script>
+<script src="../js/db.js"></script>
 <script src="../js/admin.js"></script>
 <script>
 (function () {
@@ -1061,18 +1067,89 @@
         }
     } catch (e) {}
 
+    // ── Helpers: collect / apply all settings fields ──────────────────
+    function collectSettings() {
+        var s = {};
+        // text/number/email/url/tel/time/color/select inputs with id
+        ['siteName','siteUrl','siteDescription','contactEmail','contactPhone',
+         'defaultTimezone','defaultCurrency','businessName','abnTaxId',
+         'businessAddress','businessCity','businessState','businessPostcode',
+         'businessCountry','businessPhone','bookingMode','checkinTime',
+         'checkoutTime','minStay','maxStay','advanceBooking','bookingCutoff',
+         'customPolicy','maxGuests','primaryColor','secondaryColor',
+         'heroTitle','heroSubtitle'].forEach(function(id) {
+            var el = document.getElementById(id);
+            if (el) s[id] = el.value;
+        });
+        // checkboxes / toggles by name
+        ['policyFlexible','policyModerate','policyStrict','requirePhone',
+         'requireId','allowChildren','allowPets','notifyNewBooking',
+         'notifyCancellation','notifyCheckinReminder','notifyCheckoutReminder',
+         'notifyPayment','notifyReview','guestBookingConfirm','guestPreArrival',
+         'guestCheckinInstructions','guestThankYou','guestReviewRequest',
+         'showFeatured','showTestimonials'].forEach(function(name) {
+            var el = document.querySelector('[name="' + name + '"]');
+            if (el) s[name] = el.checked;
+        });
+        // selects by name (inline-select for day pickers)
+        ['checkinReminderDays','preArrivalDays','reviewRequestDays'].forEach(function(name) {
+            var el = document.querySelector('[name="' + name + '"]');
+            if (el) s[name] = el.value;
+        });
+        return s;
+    }
+
+    function applySettings(s) {
+        if (!s || !Object.keys(s).length) return;
+        ['siteName','siteUrl','siteDescription','contactEmail','contactPhone',
+         'defaultTimezone','defaultCurrency','businessName','abnTaxId',
+         'businessAddress','businessCity','businessState','businessPostcode',
+         'businessCountry','businessPhone','bookingMode','checkinTime',
+         'checkoutTime','minStay','maxStay','advanceBooking','bookingCutoff',
+         'customPolicy','maxGuests','primaryColor','secondaryColor',
+         'heroTitle','heroSubtitle'].forEach(function(id) {
+            var el = document.getElementById(id);
+            if (el && s[id] !== undefined) el.value = s[id];
+        });
+        ['policyFlexible','policyModerate','policyStrict','requirePhone',
+         'requireId','allowChildren','allowPets','notifyNewBooking',
+         'notifyCancellation','notifyCheckinReminder','notifyCheckoutReminder',
+         'notifyPayment','notifyReview','guestBookingConfirm','guestPreArrival',
+         'guestCheckinInstructions','guestThankYou','guestReviewRequest',
+         'showFeatured','showTestimonials'].forEach(function(name) {
+            var el = document.querySelector('[name="' + name + '"]');
+            if (el && s[name] !== undefined) el.checked = !!s[name];
+        });
+        ['checkinReminderDays','preArrivalDays','reviewRequestDays'].forEach(function(name) {
+            var el = document.querySelector('[name="' + name + '"]');
+            if (el && s[name] !== undefined) el.value = s[name];
+        });
+    }
+
+    function showSettingsToast() {
+        var t = document.getElementById('settingsToast');
+        t.style.display = 'block';
+        setTimeout(function() { t.style.display = 'none'; }, 2500);
+    }
+
+    // ── Load settings from DB on page open ───────────────────────────
+    DB.getSiteSettings().then(applySettings);
+
     // ── Save Changes button ────────────────────────────────────────
-    document.getElementById('saveChangesBtn').addEventListener('click', function () {
-        var btn = this;
-        btn.disabled = true;
-        btn.textContent = 'Saving…';
-        setTimeout(function () {
-            btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Saved!';
-            setTimeout(function () {
-                btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Save Changes';
-                btn.disabled = false;
-            }, 2000);
-        }, 800);
+    var saveBtn = document.getElementById('saveChangesBtn');
+    var saveBtnOrigHTML = saveBtn.innerHTML;
+    saveBtn.addEventListener('click', function () {
+        saveBtn.disabled = true;
+        saveBtn.textContent = 'Saving…';
+        DB.saveSiteSettings(collectSettings()).then(function() {
+            showSettingsToast();
+            saveBtn.innerHTML = saveBtnOrigHTML;
+            saveBtn.disabled = false;
+        }).catch(function(err) {
+            alert('Save failed: ' + (err.message || 'Unknown error'));
+            saveBtn.innerHTML = saveBtnOrigHTML;
+            saveBtn.disabled = false;
+        });
     });
 })();
 </script>

@@ -74,5 +74,13 @@
     savePropertySettings(settings) {
       return api('/api/property-settings', { method: 'POST', ...json(settings) });
     },
+
+    // ── Site Settings ──────────────────────────────────────────────────────
+    getSiteSettings() {
+      return api('/api/site-settings').catch(() => ({}));
+    },
+    saveSiteSettings(settings) {
+      return api('/api/site-settings', { method: 'POST', ...json(settings) });
+    },
   };
 })();
