@@ -656,7 +656,14 @@
   align-items: center;
   justify-content: center;
   color: var(--color-dark);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  flex-shrink: 0;
+  padding: 0;
+  transition: background 0.15s;
 }
+.sidebar-toggle:hover { background: var(--color-light); }
 
 /* --- Settings Sections --- */
 .settings-section {

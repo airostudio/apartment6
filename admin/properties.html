@@ -355,13 +355,12 @@
   </div>
 
 <script src="../js/app.js"></script>
+<script src="../js/db.js"></script>
 <script src="../js/admin.js"></script>
 <script src="../js/admin-auth.js"></script>
 <script>
 (function() {
     'use strict';
-
-    var STORAGE_KEY = 'cascade6_property_settings';
 
     // Known property photos in /public/
     var PHOTOS = [
@@ -392,35 +391,21 @@
         'propEmail','propPhone'
     ];
 
-    function saveSettings() {
+    function collectSettings() {
         var data = {};
         FIELDS.forEach(function(id) {
             var el = document.getElementById(id);
             if (el) data[id] = el.value;
         });
-        // Amenity checkboxes
         data.amenities = [];
         document.querySelectorAll('.amenity-cb input[type="checkbox"]').forEach(function(cb) {
             if (cb.checked) data.amenities.push(cb.parentElement.textContent.trim());
         });
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-        var toast = document.getElementById('saveToast');
-        if (toast) {
-            toast.style.display = 'block';
-            setTimeout(function(){ toast.style.display = 'none'; }, 2500);
-        }
+        return data;
     }
 
-    function loadDefaults() {
-        localStorage.removeItem(STORAGE_KEY);
-        location.reload();
-    }
-
-    function restoreSettings() {
-        var raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return;
-        var data;
-        try { data = JSON.parse(raw); } catch(e) { return; }
+    function applySettings(data) {
+        if (!data || !Object.keys(data).length) return;
         FIELDS.forEach(function(id) {
             if (data[id] === undefined) return;
             var el = document.getElementById(id);
@@ -434,10 +419,33 @@
         }
     }
 
-    window.saveSettings  = saveSettings;
-    window.loadDefaults  = loadDefaults;
+    function showToastMsg() {
+        var toast = document.getElementById('saveToast');
+        if (toast) {
+            toast.style.display = 'block';
+            setTimeout(function(){ toast.style.display = 'none'; }, 2500);
+        }
+    }
 
-    restoreSettings();
+    function saveSettings() {
+        var data = collectSettings();
+        DB.savePropertySettings(data).then(function() {
+            showToastMsg();
+        }).catch(function(err) {
+            alert('Save failed: ' + err.message);
+        });
+    }
+
+    function loadDefaults() {
+        if (!confirm('Reset all property settings to defaults?')) return;
+        DB.savePropertySettings({}).then(function() { location.reload(); });
+    }
+
+    window.saveSettings = saveSettings;
+    window.loadDefaults = loadDefaults;
+
+    // Load from DB on page open
+    DB.getPropertySettings().then(applySettings);
 })();
 </script>
 </div><!-- /.admin-layout -->

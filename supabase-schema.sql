@@ -57,6 +57,14 @@ CREATE TABLE IF NOT EXISTS rates (
 -- Seed the single rates row so GET always returns something
 INSERT INTO rates (id) VALUES (1) ON CONFLICT (id) DO NOTHING;
 
+-- ── Property Settings (single row, id always = 1) ────────────────────────────
+CREATE TABLE IF NOT EXISTS property_settings (
+  id   INTEGER PRIMARY KEY DEFAULT 1,
+  data JSONB NOT NULL DEFAULT '{}'
+);
+
+INSERT INTO property_settings (id) VALUES (1) ON CONFLICT (id) DO NOTHING;
+
 -- ── Blocked Dates ─────────────────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS blocked_dates (
   id         TEXT PRIMARY KEY,
@@ -68,7 +76,8 @@ CREATE TABLE IF NOT EXISTS blocked_dates (
 -- ── Row Level Security ────────────────────────────────────────────────────────
 -- All access goes through the service-role key in Vercel API functions,
 -- so anon access is disabled for safety.
-ALTER TABLE bookings      ENABLE ROW LEVEL SECURITY;
-ALTER TABLE payments      ENABLE ROW LEVEL SECURITY;
-ALTER TABLE rates         ENABLE ROW LEVEL SECURITY;
-ALTER TABLE blocked_dates ENABLE ROW LEVEL SECURITY;
+ALTER TABLE bookings          ENABLE ROW LEVEL SECURITY;
+ALTER TABLE payments          ENABLE ROW LEVEL SECURITY;
+ALTER TABLE rates             ENABLE ROW LEVEL SECURITY;
+ALTER TABLE blocked_dates     ENABLE ROW LEVEL SECURITY;
+ALTER TABLE property_settings ENABLE ROW LEVEL SECURITY;

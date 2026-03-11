@@ -74,6 +74,14 @@
                 <span class="admin-topbar__breadcrumb-current">Dashboard</span>
             </div>
             <div class="admin-topbar__actions">
+                <div id="dbStatusBadge" style="display:none;align-items:center;gap:6px;font-size:0.75rem;font-weight:600;padding:4px 10px;border-radius:20px;background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0;">
+                    <span style="width:7px;height:7px;border-radius:50%;background:#16a34a;display:inline-block;"></span>
+                    DB Connected
+                </div>
+                <div id="dbErrorBadge" style="display:none;align-items:center;gap:6px;font-size:0.75rem;font-weight:600;padding:4px 10px;border-radius:20px;background:#fef2f2;color:#dc2626;border:1px solid #fecaca;">
+                    <span style="width:7px;height:7px;border-radius:50%;background:#dc2626;display:inline-block;"></span>
+                    DB Error
+                </div>
                 <div class="admin-topbar__user">
                     <div class="admin-topbar__user-avatar" id="userAvatar">AD</div>
                     <span class="admin-topbar__user-name" id="userName">Admin</span>
@@ -175,7 +183,7 @@
                 <div class="dashboard-grid-left">
                     <div class="admin-card">
                         <div class="admin-card__header">
-                            <h2 class="admin-card__title">Recent Bookings</h2>
+                            <h2 class="admin-card__title">Recent Bookings <span style="font-size:0.75rem;font-weight:400;color:#94a3b8;margin-left:4px;">last 3</span></h2>
                         </div>
                         <div class="admin-card__body admin-card__body--no-padding">
                             <table class="admin-table">
@@ -325,6 +333,9 @@
         }
 
         DB.getBookings().then(function(bookings) {
+            // Show DB connected badge
+            var ok = document.getElementById('dbStatusBadge');
+            if (ok) ok.style.display = 'flex';
             // Calculate stats
             var total = bookings.length;
             var revenue = 0;
@@ -355,12 +366,12 @@
             document.getElementById('statUpcoming').textContent = upcoming;
             document.getElementById('statPending').textContent = pending;
 
-            // Render recent bookings table (last 5)
+            // Render recent bookings table (last 3)
             var tbody = document.getElementById('recentBookingsBody');
 
             var sorted = bookings.slice().sort(function(a,b){
                 return new Date(b.bookedAt||0) - new Date(a.bookedAt||0);
-            }).slice(0, 5);
+            }).slice(0, 3);
 
             if (sorted.length > 0) {
                 tbody.innerHTML = '';
@@ -395,6 +406,9 @@
                     tbody.appendChild(tr);
                 });
             }
+        }).catch(function() {
+            var err = document.getElementById('dbErrorBadge');
+            if (err) err.style.display = 'flex';
         });
     })();
     </script>

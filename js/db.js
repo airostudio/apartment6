@@ -66,5 +66,13 @@
     deleteBlockedDate(id) {
       return api('/api/blocked-dates?id=' + encodeURIComponent(id), { method: 'DELETE' });
     },
+
+    // ── Property Settings ──────────────────────────────────────────────────
+    getPropertySettings() {
+      return api('/api/property-settings').catch(() => ({}));
+    },
+    savePropertySettings(settings) {
+      return api('/api/property-settings', { method: 'POST', ...json(settings) });
+    },
   };
 })();
