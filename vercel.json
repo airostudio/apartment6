@@ -42,7 +42,6 @@
     { "source": "/admin/rates", "destination": "/admin/rates.html" },
     { "source": "/admin/reviews", "destination": "/admin/reviews.html" },
     { "source": "/admin/ical-sync", "destination": "/admin/ical-sync.html" },
-    { "source": "/admin/stripe-connect", "destination": "/admin/payments.html" },
     { "source": "/admin/settings", "destination": "/admin/settings.html" },
     { "source": "/admin/reports", "destination": "/admin/reports.html" },
     { "source": "/admin/properties", "destination": "/admin/properties.html" },

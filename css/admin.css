@@ -555,7 +555,7 @@
 .sync-dot--error { background: var(--color-danger); }
 .sync-dot--pending { background: var(--color-warning); }
 
-/* --- Stripe Connect --- */
+/* --- Stripe --- */
 .stripe-status {
   display: flex;
   align-items: center;
