@@ -287,17 +287,13 @@
 </div><!-- /.admin-layout -->
 
 <script src="../js/app.js"></script>
+<script src="../js/db.js"></script>
 <script src="../js/admin.js"></script>
 <script src="../js/admin-auth.js"></script>
 <script>
 (function() {
     'use strict';
 
-    var PAYMENTS_KEY = 'cascade6_payments';
-
-    function loadPayments() {
-        try { return JSON.parse(localStorage.getItem(PAYMENTS_KEY) || '[]'); } catch(e) { return []; }
-    }
     function fmtMoney(n) {
         return '$' + Number(n || 0).toLocaleString('en-AU', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
@@ -325,8 +321,7 @@
         document.getElementById('statThisMonth').textContent    = fmtMoney(month);
     }
 
-    function renderTable(filter) {
-        var payments = loadPayments();
+    function _renderTable(filter, payments) {
         renderStats(payments);
         var filtered = filter && filter !== 'all'
             ? payments.filter(function(p){ return p.status === filter; })
@@ -362,17 +357,24 @@
         }).join('');
     }
 
-    document.getElementById('txFilter').addEventListener('change', function() { renderTable(this.value); });
+    document.getElementById('txFilter').addEventListener('change', function() {
+        var filter = this.value;
+        DB.getPayments().then(function(payments) { _renderTable(filter, payments); });
+    });
 
     document.getElementById('depositToggle').addEventListener('change', function() {
         document.getElementById('depositPctRow').style.opacity = this.checked ? '1' : '0.4';
     });
 
     window.clearPayments = function() {
-        if (!confirm('Clear all local transaction records? Your Stripe Dashboard data is unaffected.')) return;
-        localStorage.removeItem(PAYMENTS_KEY);
-        renderTable('all');
+        if (!confirm('Clear all transaction records? Your Stripe Dashboard data is unaffected.')) return;
+        DB.clearPayments().then(function() { renderTable('all'); });
     };
+
+    async function renderTable(filter) {
+        var payments = await DB.getPayments();
+        _renderTable(filter, payments);
+    }
 
     renderTable('all');
 })();

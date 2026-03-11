@@ -491,6 +491,7 @@
 </div>
 
 <script src="../js/app.js"></script>
+<script src="../js/db.js"></script>
 <script src="../js/admin.js"></script>
 <script src="../js/admin-auth.js"></script>
 <script>
@@ -512,16 +513,12 @@ var dayDate = new Date(today); // for day view
 var currentBookingId = null;
 
 // ── Data helpers ─────────────────────────────────────────────────────────────
-function loadBookings() {
-    try { return JSON.parse(localStorage.getItem('cascade6_bookings') || '[]'); }
-    catch(e) { return []; }
-}
-function loadBlocked() {
-    try { return JSON.parse(localStorage.getItem('cascade6_blocked_dates') || '[]'); }
-    catch(e) { return []; }
-}
-function saveBlocked(arr) {
-    localStorage.setItem('cascade6_blocked_dates', JSON.stringify(arr));
+var _calBookings = [];
+var _calBlocked  = [];
+
+async function loadData() {
+    _calBookings = await DB.getBookings();
+    _calBlocked  = await DB.getBlockedDates();
 }
 
 function ymd(d) {
@@ -578,9 +575,10 @@ function buildDayMap(bookings, blocked) {
 }
 
 // ── Render ───────────────────────────────────────────────────────────────────
-function render() {
-    var bookings = loadBookings();
-    var blocked  = loadBlocked();
+async function render() {
+    await loadData();
+    var bookings = _calBookings;
+    var blocked  = _calBlocked;
     var dayMap   = buildDayMap(bookings, blocked);
 
     document.getElementById('viewMonth').style.display = view === 'month' ? '' : 'none';
@@ -898,8 +896,7 @@ document.querySelectorAll('.cal-view-tab').forEach(function(btn) {
 
 // ── Booking Detail Panel ──────────────────────────────────────────────────────
 function openBookingPanel(bookingId) {
-    var bookings = loadBookings();
-    var b = bookings.find(function(x){ return x.id === bookingId; });
+    var b = _calBookings.find(function(x){ return x.id === bookingId; });
     if (!b) return;
     currentBookingId = bookingId;
 
@@ -978,14 +975,10 @@ document.getElementById('bdpCloseBtn').addEventListener('click', closeBookingPan
 document.getElementById('bdpOverlay').addEventListener('click', function(e) {
     if (e.target === this) closeBookingPanel();
 });
-document.getElementById('bdpMarkCancelled').addEventListener('click', function() {
+document.getElementById('bdpMarkCancelled').addEventListener('click', async function() {
     if (!currentBookingId) return;
-    var bookings = loadBookings();
-    var idx = bookings.findIndex(function(b){ return b.id === currentBookingId; });
-    if (idx === -1) return;
     if (!confirm('Mark this booking as cancelled?')) return;
-    bookings[idx].status = 'cancelled';
-    localStorage.setItem('cascade6_bookings', JSON.stringify(bookings));
+    await DB.updateBooking(currentBookingId, { status: 'cancelled' });
     closeBookingPanel();
     render();
 });
@@ -1001,15 +994,13 @@ document.getElementById('blockDatesBtn').addEventListener('click', function() {
 });
 document.getElementById('bmClose').addEventListener('click', function() { document.getElementById('bmOverlay').classList.remove('open'); });
 document.getElementById('bmCancel').addEventListener('click', function() { document.getElementById('bmOverlay').classList.remove('open'); });
-document.getElementById('bmSave').addEventListener('click', function() {
+document.getElementById('bmSave').addEventListener('click', async function() {
     var from = document.getElementById('bmFrom').value;
     var to   = document.getElementById('bmTo').value;
     var reason = document.getElementById('bmReason').value.trim();
     if (!from || !to) { alert('Please select both from and to dates.'); return; }
     if (from > to) { alert('From date must be before to date.'); return; }
-    var blocked = loadBlocked();
-    blocked.push({ id: 'BLK-' + Date.now(), from: from, to: to, reason: reason });
-    saveBlocked(blocked);
+    await DB.createBlockedDate({ id: 'BLK-' + Date.now(), from: from, to: to, reason: reason });
     document.getElementById('bmOverlay').classList.remove('open');
     document.getElementById('bmFrom').value = '';
     document.getElementById('bmTo').value   = '';

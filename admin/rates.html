@@ -255,6 +255,7 @@
     </main>
 
     <script src="../js/app.js"></script>
+    <script src="../js/db.js"></script>
     <script src="../js/admin.js"></script>
     <script src="../js/admin-auth.js"></script>
     <script>
@@ -269,21 +270,14 @@
             extraGuestFee:  50
         };
 
-        function loadRates() {
-            try {
-                var stored = localStorage.getItem('cascade6_rates');
-                return stored ? JSON.parse(stored) : DEFAULTS;
-            } catch(e) { return DEFAULTS; }
-        }
-
         function populateForm(r) {
-            document.getElementById('ratePeakWknd').value  = r.peakWeekend  || DEFAULTS.peakWeekend;
-            document.getElementById('ratePeakMidwk').value = r.peakMidweek  || DEFAULTS.peakMidweek;
-            document.getElementById('rateShoulder').value  = r.shoulder     || DEFAULTS.shoulder;
-            document.getElementById('rateGreen').value     = r.green        || DEFAULTS.green;
-            document.getElementById('feeClean').value      = r.cleaningFee  || DEFAULTS.cleaningFee;
-            document.getElementById('feeService').value    = r.serviceRate  || DEFAULTS.serviceRate;
-            document.getElementById('feeExtraGuest').value = r.extraGuestFee|| DEFAULTS.extraGuestFee;
+            document.getElementById('ratePeakWknd').value  = r.peakWeekend   || DEFAULTS.peakWeekend;
+            document.getElementById('ratePeakMidwk').value = r.peakMidweek   || DEFAULTS.peakMidweek;
+            document.getElementById('rateShoulder').value  = r.shoulder      || DEFAULTS.shoulder;
+            document.getElementById('rateGreen').value     = r.green         || DEFAULTS.green;
+            document.getElementById('feeClean').value      = r.cleaningFee   || DEFAULTS.cleaningFee;
+            document.getElementById('feeService').value    = r.serviceRate   || DEFAULTS.serviceRate;
+            document.getElementById('feeExtraGuest').value = r.extraGuestFee || DEFAULTS.extraGuestFee;
         }
 
         function showToast() {
@@ -292,7 +286,7 @@
             setTimeout(function() { t.style.display = 'none'; }, 3000);
         }
 
-        document.getElementById('saveRatesBtn').addEventListener('click', function() {
+        document.getElementById('saveRatesBtn').addEventListener('click', async function() {
             var r = {
                 peakWeekend:   parseInt(document.getElementById('ratePeakWknd').value)  || DEFAULTS.peakWeekend,
                 peakMidweek:   parseInt(document.getElementById('ratePeakMidwk').value) || DEFAULTS.peakMidweek,
@@ -302,11 +296,11 @@
                 serviceRate:   parseInt(document.getElementById('feeService').value)    || DEFAULTS.serviceRate,
                 extraGuestFee: parseInt(document.getElementById('feeExtraGuest').value) || DEFAULTS.extraGuestFee
             };
-            localStorage.setItem('cascade6_rates', JSON.stringify(r));
+            await DB.saveRates(r);
             showToast();
         });
 
-        populateForm(loadRates());
+        DB.getRates().then(function(r) { populateForm(r || DEFAULTS); });
     })();
     </script>
 </div><!-- /.admin-layout -->

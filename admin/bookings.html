@@ -374,26 +374,25 @@
 <div class="bk-toast" id="bkToast">Saved!</div>
 
 <script src="../js/app.js"></script>
+<script src="../js/db.js"></script>
 <script src="../js/admin.js"></script>
 <script src="../js/admin-auth.js"></script>
 <script>
 (function () {
     'use strict';
 
-    // ── Storage ───────────────────────────────────────────────────────────────
-    var STORAGE_KEY = 'cascade6_bookings';
+    // ── In-memory cache (refreshed from Supabase on load and after mutations) ──
+    var _bookings = [];
 
-    function loadBookings() {
-        try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch(e) { return []; }
-    }
-    function saveBookings(arr) {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
+    async function loadBookings() {
+        _bookings = await DB.getBookings();
+        return _bookings;
     }
 
-    // ── Rate engine (reads admin rates) ───────────────────────────────────────
-    function getRates() {
-        try { return JSON.parse(localStorage.getItem('cascade6_rates') || 'null') || {}; } catch(e) { return {}; }
-    }
+    // ── Rate engine ────────────────────────────────────────────────────────────
+    var _rates = {};
+    DB.getRates().then(function(r) { if (r) _rates = r; });
+    function getRates() { return _rates; }
     function calcTotal(checkin, checkout) {
         if (!checkin || !checkout) return 0;
         var r = getRates();
@@ -414,9 +413,9 @@
     }
 
     // ── ID generator ─────────────────────────────────────────────────────────
-    function nextId(bookings) {
-        if (!bookings.length) return 'BK-1001';
-        var nums = bookings.map(function(b) { return parseInt(b.id.replace('BK-', '')) || 0; });
+    function nextId() {
+        if (!_bookings.length) return 'BK-1001';
+        var nums = _bookings.map(function(b) { return parseInt((b.id || '').replace('BK-', '')) || 0; });
         return 'BK-' + (Math.max.apply(null, nums) + 1);
     }
 
@@ -441,12 +440,13 @@
         return '<span class="admin-badge ' + cls + '">' + status.charAt(0).toUpperCase() + status.slice(1) + '</span>';
     }
 
-    function renderTable() {
-        var bookings = loadBookings();
+    async function renderTable() {
+        var bookings = await loadBookings();
         var filtered = bookings.filter(function(b) {
             var matchFilter = currentFilter === 'all' || b.status === currentFilter;
             var q = currentSearch.toLowerCase();
-            var matchSearch = !q || b.name.toLowerCase().includes(q) || b.email.toLowerCase().includes(q) || b.id.toLowerCase().includes(q);
+            var n = (b.guestName || b.name || '').toLowerCase();
+            var matchSearch = !q || n.includes(q) || (b.email||'').toLowerCase().includes(q) || (b.id||'').toLowerCase().includes(q);
             return matchFilter && matchSearch;
         });
 
@@ -537,7 +537,7 @@
     document.getElementById('editCheckin').addEventListener('change', recalcModalTotal);
     document.getElementById('editCheckout').addEventListener('change', recalcModalTotal);
 
-    document.getElementById('editModalSave').addEventListener('click', function() {
+    document.getElementById('editModalSave').addEventListener('click', async function() {
         var name = document.getElementById('editName').value.trim();
         var email = document.getElementById('editEmail').value.trim();
         var checkin = document.getElementById('editCheckin').value;
@@ -546,36 +546,35 @@
         if (checkout <= checkin) { alert('Check-out must be after check-in.'); return; }
 
         var id = document.getElementById('editBookingId').value;
-        var bookings = loadBookings();
-        var existing = id ? bookings.findIndex(function(b){return b.id===id;}) : -1;
+        var isExisting = !!id;
         var total = parseInt(document.getElementById('editTotal').value) || calcTotal(checkin, checkout);
 
         var record = {
-            id: id || nextId(bookings),
-            name: name,
-            email: email,
-            phone: document.getElementById('editPhone').value.trim(),
-            guests: parseInt(document.getElementById('editGuests').value) || 2,
-            checkin: checkin,
-            checkout: checkout,
-            status: document.getElementById('editStatus').value,
-            total: total,
-            notes: document.getElementById('editNotes').value.trim(),
-            createdAt: existing >= 0 ? (bookings[existing].createdAt || Date.now()) : Date.now()
+            id:        id || nextId(),
+            guestName: name,
+            name:      name,
+            email:     email,
+            phone:     document.getElementById('editPhone').value.trim(),
+            guests:    parseInt(document.getElementById('editGuests').value) || 2,
+            checkin:   checkin,
+            checkout:  checkout,
+            status:    document.getElementById('editStatus').value,
+            total:     total,
+            notes:     document.getElementById('editNotes').value.trim(),
+            bookedAt:  isExisting ? (_bookings.find(function(b){return b.id===id;})||{}).bookedAt || new Date().toISOString() : new Date().toISOString(),
         };
 
-        if (existing >= 0) { bookings[existing] = record; } else { bookings.push(record); }
-        saveBookings(bookings);
+        if (isExisting) { await DB.updateBooking(id, record); } else { await DB.createBooking(record); }
         closeEditModal();
         renderTable();
-        showToast(existing >= 0 ? 'Booking updated!' : 'Booking created!');
+        showToast(isExisting ? 'Booking updated!' : 'Booking created!');
     });
 
     // ── View modal ────────────────────────────────────────────────────────────
     var viewModal = document.getElementById('viewModal');
 
     function openViewModal(id) {
-        var booking = loadBookings().find(function(b){return b.id===id;});
+        var booking = _bookings.find(function(b){return b.id===id;});
         if (!booking) return;
         viewingId = id;
         var nights = nightsBetween(booking.checkin, booking.checkout);
@@ -606,7 +605,7 @@
     viewModal.addEventListener('click', function(e) { if (e.target === viewModal) closeViewModal(); });
     document.getElementById('viewModalEdit').addEventListener('click', function() {
         if (!viewingId) return;
-        var booking = loadBookings().find(function(b){return b.id===viewingId;});
+        var booking = _bookings.find(function(b){return b.id===viewingId;});
         closeViewModal();
         if (booking) openEditModal(booking);
     });
@@ -624,11 +623,9 @@
     document.getElementById('cancelModalClose').addEventListener('click', closeCancelModal);
     document.getElementById('cancelModalAbort').addEventListener('click', closeCancelModal);
     cancelModal.addEventListener('click', function(e) { if (e.target === cancelModal) closeCancelModal(); });
-    document.getElementById('cancelModalConfirm').addEventListener('click', function() {
+    document.getElementById('cancelModalConfirm').addEventListener('click', async function() {
         if (!cancelingId) return;
-        var bookings = loadBookings();
-        var idx = bookings.findIndex(function(b){return b.id===cancelingId;});
-        if (idx >= 0) { bookings[idx].status = 'cancelled'; saveBookings(bookings); }
+        await DB.updateBooking(cancelingId, { status: 'cancelled' });
         closeCancelModal();
         renderTable();
         showToast('Booking cancelled.');
@@ -640,7 +637,7 @@
         var editBtn   = e.target.closest('.btn-edit');
         var cancelBtn = e.target.closest('.btn-cancel');
         if (viewBtn)   { openViewModal(viewBtn.getAttribute('data-id')); }
-        if (editBtn)   { var booking = loadBookings().find(function(b){return b.id===editBtn.getAttribute('data-id');}); if (booking) openEditModal(booking); }
+        if (editBtn)   { var booking = _bookings.find(function(b){return b.id===editBtn.getAttribute('data-id');}); if (booking) openEditModal(booking); }
         if (cancelBtn) { openCancelModal(cancelBtn.getAttribute('data-id')); }
     });
 

@@ -989,6 +989,7 @@
   </div>
 
   <script src="js/app.js"></script>
+  <script src="js/db.js"></script>
   <script>
     // ── Tab switching ──────────────────────────────────────────────
     document.querySelectorAll('.property-tab').forEach(function(tab) {
@@ -1062,9 +1063,8 @@
       err.style.display = 'none';
 
       // Check availability against stored bookings
-      var available = true;
-      try {
-        var bookings = JSON.parse(localStorage.getItem('cascade6_bookings') || '[]');
+      DB.getBookings().then(function(bookings) {
+        var available = true;
         var ci = new Date(checkin + 'T00:00:00');
         var co = new Date(checkout + 'T00:00:00');
         for (var i = 0; i < bookings.length; i++) {
@@ -1074,16 +1074,15 @@
           var be = new Date((b.checkout || b.checkOut || b.check_out) + 'T00:00:00');
           if (ci < be && co > bs) { available = false; break; }
         }
-      } catch(e) { /* localStorage unavailable — assume available */ }
 
-      if (!available) {
-        err.textContent = 'Sorry, those dates are not available. Please try different dates.';
-        err.style.display = 'block';
-        ar.style.display = 'none';
-        ar.innerHTML = '';
-        setTimeout(function() { err.style.display = 'none'; }, 6000);
-        return;
-      }
+        if (!available) {
+          err.textContent = 'Sorry, those dates are not available. Please try different dates.';
+          err.style.display = 'block';
+          ar.style.display = 'none';
+          ar.innerHTML = '';
+          setTimeout(function() { err.style.display = 'none'; }, 6000);
+          return;
+        }
 
       // Dates are available — show result + Book Now button
       var nights = Math.round((new Date(checkout) - new Date(checkin)) / 86400000);
@@ -1105,7 +1104,8 @@
             + '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>'
           + '</a>'
         + '</div>';
-    });
+      }); // end DB.getBookings().then()
+    }); // end addEventListener click
 
     // ── Photo Gallery Lightbox ─────────────────────────────────────
     var GALLERY = [
@@ -1223,31 +1223,37 @@
       if (Math.abs(dx) > 50) dx < 0 ? goTo(currentIdx + 1) : goTo(currentIdx - 1);
     }, { passive: true });
 
-    // ── Rates from localStorage + live sidebar pricing ─────────────
+    // ── Rates from DB + live sidebar pricing ─────────────
     (function() {
-      var _r = (function() {
-        try { return JSON.parse(localStorage.getItem('cascade6_rates') || 'null'); } catch(e) { return null; }
-      })() || {};
-      var PEAK_WKND = _r.peakWeekend  || 800;
-      var PEAK_MIDWK= _r.peakMidweek  || 600;
-      var SHOULDER  = _r.shoulder     || 465;
-      var GREEN     = _r.green        || 200;
-      var CLEAN     = _r.cleaningFee  || 60;
-      var SVC_PCT   = (_r.serviceRate || 10) / 100;
+      var PEAK_WKND = 800;
+      var PEAK_MIDWK= 600;
+      var SHOULDER  = 465;
+      var GREEN     = 200;
+      var CLEAN     = 60;
+      var SVC_PCT   = 0.10;
+
+      DB.getRates().then(function(_r) {
+        if (!_r) return;
+        PEAK_WKND = _r.peakWeekend  || PEAK_WKND;
+        PEAK_MIDWK= _r.peakMidweek  || PEAK_MIDWK;
+        SHOULDER  = _r.shoulder     || SHOULDER;
+        GREEN     = _r.green        || GREEN;
+        CLEAN     = _r.cleaningFee  || CLEAN;
+        SVC_PCT   = (_r.serviceRate || 10) / 100;
+        setPriceEl('dispPeakWknd',  PEAK_WKND);
+        setPriceEl('dispPeakMidwk', PEAK_MIDWK);
+        setPriceEl('dispShoulder',  SHOULDER);
+        setPriceEl('dispGreen',     GREEN);
+        var fromEl = document.getElementById('sidebarFromPrice');
+        if (fromEl) fromEl.textContent = 'From $' + GREEN;
+        updateSidebarPrice();
+      });
 
       // Update rates tab display
       function setPriceEl(id, val) {
         var el = document.getElementById(id);
         if (el) el.innerHTML = '$' + val + ' <span>/ night</span>';
       }
-      setPriceEl('dispPeakWknd',  PEAK_WKND);
-      setPriceEl('dispPeakMidwk', PEAK_MIDWK);
-      setPriceEl('dispShoulder',  SHOULDER);
-      setPriceEl('dispGreen',     GREEN);
-
-      // Update "From" label in sidebar to lowest rate
-      var fromEl = document.getElementById('sidebarFromPrice');
-      if (fromEl) fromEl.textContent = 'From $' + GREEN;
 
       function getNightlyRate(date) {
         var m   = date.getMonth() + 1;

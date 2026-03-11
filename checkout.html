@@ -640,6 +640,7 @@
   </footer>
 
   <script src="js/app.js"></script>
+  <script src="js/db.js"></script>
   <script src="js/stripe.js"></script>
   <script>
   // ── Populate checkout order summary ──────────────────────────────────────
@@ -713,53 +714,52 @@
 
       setText('payNowLabel', 'Pay Now — ' + fmtMoney(grand));
       setAmount(grand);
-      setPlatformFee(pending.platformFee || 0);
 
     } else if (checkin && checkout) {
       // Fallback: recalculate base price from dates (no addon data available)
-      var _r = (function() {
-        try { return JSON.parse(localStorage.getItem('cascade6_rates') || 'null'); } catch(e) { return null; }
-      })() || {};
-      var PEAK_WKND = _r.peakWeekend  || 800;
-      var PEAK_MIDWK= _r.peakMidweek  || 600;
-      var SHOULDER  = _r.shoulder     || 465;
-      var GREEN     = _r.green        || 200;
-      var CLEAN     = _r.cleaningFee  || 60;
-      var SVC       = (_r.serviceRate || 10) / 100;
-      var TAX       = 0.10;
-      function rate(date) {
-        var m = date.getMonth() + 1, d = date.getDate(), dow = date.getDay();
-        var isPeak = (m === 6 && d >= 15) || (m >= 7 && m <= 9) || (m === 10 && d <= 1);
-        var isShoulder = (m === 5 && d >= 14) || (m === 6 && d <= 14) ||
-                         (m === 10 && d >= 2) || (m === 11 && d === 1);
-        if (isPeak) return (dow >= 4) ? PEAK_WKND : PEAK_MIDWK;
-        if (isShoulder) return SHOULDER;
-        return GREEN;
-      }
+      DB.getRates().then(function(_r) {
+        _r = _r || {};
+        var PEAK_WKND = _r.peakWeekend  || 800;
+        var PEAK_MIDWK= _r.peakMidweek  || 600;
+        var SHOULDER  = _r.shoulder     || 465;
+        var GREEN     = _r.green        || 200;
+        var CLEAN     = _r.cleaningFee  || 60;
+        var SVC       = (_r.serviceRate || 10) / 100;
+        var TAX       = 0.10;
+        function rate(date) {
+          var m = date.getMonth() + 1, d = date.getDate(), dow = date.getDay();
+          var isPeak = (m === 6 && d >= 15) || (m >= 7 && m <= 9) || (m === 10 && d <= 1);
+          var isShoulder = (m === 5 && d >= 14) || (m === 6 && d <= 14) ||
+                           (m === 10 && d >= 2) || (m === 11 && d === 1);
+          if (isPeak) return (dow >= 4) ? PEAK_WKND : PEAK_MIDWK;
+          if (isShoulder) return SHOULDER;
+          return GREEN;
+        }
 
-      var ci = new Date(checkin + 'T00:00:00');
-      var co = new Date(checkout + 'T00:00:00');
-      var n = Math.round((co - ci) / 86400000);
-      if (n > 0) {
-        var accom = 0, cur = new Date(ci);
-        for (var i = 0; i < n; i++) { accom += rate(cur); cur.setDate(cur.getDate() + 1); }
-        var svc         = Math.round(accom * SVC);
-        var subtotal = accom + CLEAN + svc;
-        var tax      = Math.round(subtotal * TAX);
-        var grand    = subtotal + tax;
+        var ci = new Date(checkin + 'T00:00:00');
+        var co = new Date(checkout + 'T00:00:00');
+        var n = Math.round((co - ci) / 86400000);
+        if (n > 0) {
+          var accom = 0, cur = new Date(ci);
+          for (var i = 0; i < n; i++) { accom += rate(cur); cur.setDate(cur.getDate() + 1); }
+          var svc      = Math.round(accom * SVC);
+          var subtotal = accom + CLEAN + svc;
+          var tax      = Math.round(subtotal * TAX);
+          var grand    = subtotal + tax;
 
-        setText('coLblNightly',  fmtMoney(Math.round(accom / n)) + ' avg × ' + n + ' night' + (n !== 1 ? 's' : ''));
-        setText('coValNightly',  fmtMoney(accom));
-        setText('coValCleaning', fmtMoney(CLEAN));
-        setText('coValService',  fmtMoney(svc));
-        setText('coValTax',      fmtMoney(tax));
-        setText('coValTotal',    fmtMoney(grand));
-        ['coRowNightly','coRowCleaning','coRowService','coRowTax','coRowTotal'].forEach(show);
-        hide('coNoDates');
+          setText('coLblNightly',  fmtMoney(Math.round(accom / n)) + ' avg × ' + n + ' night' + (n !== 1 ? 's' : ''));
+          setText('coValNightly',  fmtMoney(accom));
+          setText('coValCleaning', fmtMoney(CLEAN));
+          setText('coValService',  fmtMoney(svc));
+          setText('coValTax',      fmtMoney(tax));
+          setText('coValTotal',    fmtMoney(grand));
+          ['coRowNightly','coRowCleaning','coRowService','coRowTax','coRowTotal'].forEach(show);
+          hide('coNoDates');
 
-        setText('payNowLabel', 'Pay Now — ' + fmtMoney(grand));
-        setAmount(grand);
-      }
+          setText('payNowLabel', 'Pay Now — ' + fmtMoney(grand));
+          setAmount(grand);
+        }
+      });
     }
   })();
   </script>

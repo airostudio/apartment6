@@ -12,8 +12,6 @@
 (function() {
     'use strict';
 
-    const PAYMENTS_KEY = 'cascade6_payments';
-    const BOOKINGS_KEY = 'cascade6_bookings';
 
     const StripePayments = {
         stripe: null,
@@ -202,33 +200,25 @@
 
     // ─── Payment record helpers ───────────────────────────────────────────────
 
-    function loadPayments() {
-        try { return JSON.parse(localStorage.getItem(PAYMENTS_KEY) || '[]'); } catch(e) { return []; }
-    }
-    function savePayments(arr) {
-        localStorage.setItem(PAYMENTS_KEY, JSON.stringify(arr));
-    }
-
     /**
-     * Persist a payment transaction record (success or failure) to localStorage.
+     * Persist a payment transaction record (success or failure) to Supabase.
      * The admin Payments page reads from this store.
      */
     function recordPayment(opts) {
-        const payments = loadPayments();
-        payments.unshift({
+        const record = {
             id:          'PAY-' + Date.now(),
             bookingRef:  opts.bookingRef  || '',
             bookingId:   opts.bookingId   || '',
             guestName:   opts.guestName   || 'Guest',
             guestEmail:  opts.guestEmail  || '',
             amount:      opts.amount      || 0,
-            status:      opts.status,          // 'succeeded' | 'failed'
+            status:      opts.status,
             stripeId:    opts.stripeId    || '',
             method:      'card',
             timestamp:   new Date().toISOString(),
-            errorMsg:    opts.errorMsg    || ''
-        });
-        savePayments(payments);
+            errorMsg:    opts.errorMsg    || '',
+        };
+        if (window.DB) window.DB.createPayment(record);
     }
 
     // ─── Checkout Form Handler ────────────────────────────────────────────────
@@ -276,7 +266,7 @@
                 });
 
                 if (result.success) {
-                    // ── Save confirmed booking ─────────────────────────────────
+                    // ── Save confirmed booking to Supabase ────────────────────
                     let savedBooking = null;
                     try {
                         if (pending) {
@@ -304,15 +294,13 @@
                                 stripeId:        result.paymentIntentId  || '',
                                 bookedAt:        new Date().toISOString()
                             };
-                            const existing = JSON.parse(localStorage.getItem(BOOKINGS_KEY) || '[]');
-                            existing.push(bk);
-                            localStorage.setItem(BOOKINGS_KEY, JSON.stringify(existing));
+                            if (window.DB) await window.DB.createBooking(bk);
                             sessionStorage.setItem('cascade6_confirmed_booking', JSON.stringify(bk));
                             sessionStorage.removeItem('cascade6_pending_booking');
                             confirmedRef = bk.ref;
                             savedBooking = bk;
                         }
-                    } catch(e) { /* non-critical */ }
+                    } catch(e) { /* non-critical — booking saved to DB above */ }
 
                     // ── Record successful payment ──────────────────────────────
                     recordPayment({

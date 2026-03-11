@@ -590,6 +590,7 @@
   </footer>
 
   <script src="js/app.js"></script>
+  <script src="js/db.js"></script>
   <script>
   // ── Form validation with scroll-to + red border ────────────────────────────
   (function() {
@@ -662,18 +663,27 @@
 
   // ── Live Pricing Engine ────────────────────────────────────────────────────
   (function() {
-    // Load rates from admin localStorage, fall back to defaults
-    var _r = (function() {
-      try { return JSON.parse(localStorage.getItem('cascade6_rates') || 'null'); } catch(e) { return null; }
-    })() || {};
-    var RATE_PEAK_WKND = _r.peakWeekend  || 800;  // Peak Thu–Sat (Jun 15–Oct 1)
-    var RATE_PEAK_MIDWK= _r.peakMidweek  || 600;  // Peak Sun–Wed (Jun 15–Oct 1)
-    var RATE_SHOULDER  = _r.shoulder     || 465;  // May 14–Jun 14, Oct 2–Nov 1
-    var RATE_GREEN     = _r.green        || 200;  // All other dates (green/summer)
-    var EXTRA_GUEST_FEE= _r.extraGuestFee|| 50;   // Per extra guest per night (beyond 2 pax)
-    var CLEANING_FEE   = _r.cleaningFee  || 60;
-    var SERVICE_RATE   = (_r.serviceRate || 10) / 100;
+    // Load rates from DB, fall back to defaults
+    var RATE_PEAK_WKND = 800;
+    var RATE_PEAK_MIDWK= 600;
+    var RATE_SHOULDER  = 465;
+    var RATE_GREEN     = 200;
+    var EXTRA_GUEST_FEE= 50;
+    var CLEANING_FEE   = 60;
+    var SERVICE_RATE   = 0.10;
     var TAX_RATE       = 0.10;
+
+    DB.getRates().then(function(_r) {
+      if (!_r) return;
+      RATE_PEAK_WKND  = _r.peakWeekend  || RATE_PEAK_WKND;
+      RATE_PEAK_MIDWK = _r.peakMidweek  || RATE_PEAK_MIDWK;
+      RATE_SHOULDER   = _r.shoulder     || RATE_SHOULDER;
+      RATE_GREEN      = _r.green        || RATE_GREEN;
+      EXTRA_GUEST_FEE = _r.extraGuestFee|| EXTRA_GUEST_FEE;
+      CLEANING_FEE    = _r.cleaningFee  || CLEANING_FEE;
+      SERVICE_RATE    = (_r.serviceRate || 10) / 100;
+      updateSummary();
+    });
 
     var DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
     var MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
