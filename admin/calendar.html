@@ -102,11 +102,12 @@
         color:#fff;
     }
     .mcal-booking.cancelled { background:#b91c1c; opacity:0.7; }
-    /* Start/end/middle spans */
-    .mcal-booking.span-start { border-radius:4px 0 0 4px; margin-right:0; padding-right:2px; }
+    /* Start/end/middle spans — checkin starts in right half (PM), checkout ends in left half (AM) */
+    .mcal-booking.span-start { border-radius:4px 0 0 4px; margin-left:50%; margin-right:0; padding-right:2px; }
     .mcal-booking.span-mid   { border-radius:0; margin-left:0; margin-right:0; padding-left:2px; padding-right:2px; }
-    .mcal-booking.span-end   { border-radius:0 4px 4px 0; margin-left:0; padding-left:2px; }
-    .mcal-booking.span-start.span-end { border-radius:4px; }
+    .mcal-booking.span-end   { border-radius:0; margin-left:0; margin-right:0; padding-left:2px; }
+    .mcal-booking.span-start.span-end { border-radius:4px 0 0 4px; margin-left:50%; margin-right:0; }
+    .mcal-booking.span-checkout { border-radius:0 4px 4px 0; margin-left:0; margin-right:50%; padding-left:2px; }
     /* show +N more if overflow */
     .mcal-more {
         font-size:0.6875rem; color:#94a3b8; font-weight:500;
@@ -560,6 +561,8 @@ function buildDayMap(bookings, blocked) {
             addToMap(ymd(d), { type: 'booking', booking: b });
             d.setDate(d.getDate()+1);
         }
+        // Mark checkout day so it appears in year/day views
+        addToMap(ymd(co), { type: 'checkout', booking: b });
     });
     blocked.forEach(function(bl) {
         var from = parseYMD(bl.from);
@@ -648,13 +651,14 @@ function renderMonth(bookings, blocked, dayMap) {
                 if (shown >= 3) return;
                 shown++;
                 var posCls = '';
-                if (sp.isStart && sp.isEnd) posCls = 'span-start span-end';
-                else if (sp.isStart) posCls = 'span-start';
-                else if (sp.isEnd)   posCls = 'span-end';
-                else                 posCls = 'span-mid';
+                if (sp.isCheckout)           posCls = 'span-checkout';
+                else if (sp.isStart && sp.isEnd) posCls = 'span-start span-end';
+                else if (sp.isStart)         posCls = 'span-start';
+                else if (sp.isEnd)           posCls = 'span-end';
+                else                         posCls = 'span-mid';
 
                 var label = '';
-                if (sp.isStart) {
+                if (sp.isStart || sp.isCheckout) {
                     if (sp.type === 'booking') {
                         label = sp.booking.guestName || sp.booking.guest_name || 'Guest';
                     } else {
@@ -716,13 +720,25 @@ function buildMonthSpans(bookings, blocked, year, month) {
         while (d < to || (type === 'blocked' && d <= to)) {
             var dm = ymd(d);
             addSpan(dm, {
-                isStart: ymd(d) === ymd(from),
-                isEnd:   type === 'blocked' ? ymd(d) === ymd(to) : ymd(new Date(d.getTime() + 86400000)) === ymd(to),
-                type:    type,
-                booking: data.booking || null,
-                block:   data.block   || null
+                isStart:    ymd(d) === ymd(from),
+                isEnd:      type === 'blocked' ? ymd(d) === ymd(to) : ymd(new Date(d.getTime() + 86400000)) === ymd(to),
+                isCheckout: false,
+                type:       type,
+                booking:    data.booking || null,
+                block:      data.block   || null
             });
             d.setDate(d.getDate()+1);
+        }
+        // For bookings, add a checkout half-bar on the checkout day (AM portion)
+        if (type === 'booking') {
+            addSpan(ymd(to), {
+                isStart:    false,
+                isEnd:      false,
+                isCheckout: true,
+                type:       type,
+                booking:    data.booking || null,
+                block:      null
+            });
         }
     }
 
@@ -763,7 +779,7 @@ function renderYear(dayMap) {
             var isOther = d.getMonth() !== m;
             var isToday = dm === ymd(today);
             var entries = dayMap[dm] || [];
-            var hasB    = entries.some(function(e){ return e.type==='booking'; });
+            var hasB    = entries.some(function(e){ return e.type==='booking' || e.type==='checkout'; });
             var hasBl   = entries.some(function(e){ return e.type==='blocked'; });
 
             var cls = 'ycal-cell';
@@ -809,8 +825,8 @@ function renderDay(dayMap, bookings, blocked) {
         // Deduplicate bookings by id
         var seen = {};
         entries.forEach(function(entry) {
-            if (entry.type === 'booking') {
-                var bid = entry.booking.id || JSON.stringify(entry.booking);
+            if (entry.type === 'booking' || entry.type === 'checkout') {
+                var bid = (entry.booking.id || JSON.stringify(entry.booking)) + (entry.type === 'checkout' ? '-out' : '');
                 if (seen[bid]) return;
                 seen[bid] = true;
                 var b = entry.booking;
@@ -819,13 +835,14 @@ function renderDay(dayMap, bookings, blocked) {
                 var ci   = parseYMD(b.checkIn || b.checkin || b.check_in);
                 var co   = parseYMD(b.checkOut || b.checkout || b.check_out);
                 var nights = (ci && co) ? nightsBetween(ci, co) : '?';
+                var isOut = entry.type === 'checkout';
                 html += '<div class="dcal-booking-card" data-booking-id="' + escHtml(b.id||'') + '">';
                 html += '<div class="dcal-booking-dot ' + status + '"></div>';
                 html += '<div class="dcal-booking-info">';
-                html += '<div class="dcal-booking-name">' + escHtml(name) + '</div>';
+                html += '<div class="dcal-booking-name">' + escHtml(name) + (isOut ? ' <span style="font-size:0.75rem;font-weight:400;opacity:0.65;">— checking out</span>' : '') + '</div>';
                 html += '<div class="dcal-booking-sub">' + fmtDate(ci) + ' → ' + fmtDate(co) + ' · ' + nights + ' night' + (nights===1?'':'s') + '</div>';
                 html += '</div>';
-                html += '<span class="dcal-booking-badge ' + status + '">' + status + '</span>';
+                html += '<span class="dcal-booking-badge ' + status + '">' + (isOut ? 'check-out' : status) + '</span>';
                 html += '</div>';
             } else {
                 var bl = entry.block;
