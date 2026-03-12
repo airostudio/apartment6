@@ -961,9 +961,9 @@
         <div>
           <h4 class="footer-heading">Contact &amp; Info</h4>
           <div class="footer-links">
-            <a href="mailto:hello@mtbawbawcascade3.com">Email Us</a>
-            <a href="mailto:hello@mtbawbawcascade3.com">Terms of Stay</a>
-            <a href="mailto:hello@mtbawbawcascade3.com">Cancellation Policy</a>
+            <a href="mailto:hello@cascade6.com.au">Email Us</a>
+            <a href="mailto:hello@cascade6.com.au">Terms of Stay</a>
+            <a href="mailto:hello@cascade6.com.au">Cancellation Policy</a>
             <a href="admin/login.html">Owner Login</a>
           </div>
         </div>
@@ -1062,17 +1062,32 @@
       }
       err.style.display = 'none';
 
-      // Check availability against stored bookings
-      DB.getBookings().then(function(bookings) {
+      // Check availability against stored bookings AND admin-blocked dates
+      Promise.all([DB.getBookings(), DB.getBlockedDates()]).then(function(results) {
+        var bookings = results[0];
+        var blocked  = results[1];
         var available = true;
         var ci = new Date(checkin + 'T00:00:00');
         var co = new Date(checkout + 'T00:00:00');
+
+        // Booking overlap: half-open interval [checkin, checkout)
+        // checkout date of an existing booking does NOT block checkin of a new one
         for (var i = 0; i < bookings.length; i++) {
           var b = bookings[i];
           if (b.status === 'cancelled') continue;
           var bs = new Date((b.checkin || b.checkIn || b.check_in) + 'T00:00:00');
           var be = new Date((b.checkout || b.checkOut || b.check_out) + 'T00:00:00');
           if (ci < be && co > bs) { available = false; break; }
+        }
+
+        // Blocked dates overlap: blocked range is inclusive on both ends
+        if (available) {
+          for (var j = 0; j < blocked.length; j++) {
+            var bl = blocked[j];
+            var bf = new Date((bl.from) + 'T00:00:00');
+            var bt = new Date((bl.to)   + 'T00:00:00');
+            if (ci <= bt && co > bf) { available = false; break; }
+          }
         }
 
         if (!available) {
