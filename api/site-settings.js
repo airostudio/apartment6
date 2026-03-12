@@ -5,10 +5,19 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_KEY
 );
 
+function requireAdmin(req, res) {
+  const key = process.env.ADMIN_KEY;
+  if (key && req.headers['x-admin-key'] !== key) {
+    res.status(401).json({ error: 'Unauthorized' });
+    return false;
+  }
+  return true;
+}
+
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Admin-Key');
   if (req.method === 'OPTIONS') return res.status(200).end();
 
   if (req.method === 'GET') {
@@ -22,6 +31,7 @@ module.exports = async function handler(req, res) {
   }
 
   if (req.method === 'POST') {
+    if (!requireAdmin(req, res)) return;
     const { data, error } = await supabase
       .from('site_settings')
       .upsert({ id: 1, data: req.body })

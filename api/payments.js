@@ -36,10 +36,19 @@ function toDB(obj) {
   };
 }
 
+function requireAdmin(req, res) {
+  const key = process.env.ADMIN_KEY;
+  if (key && req.headers['x-admin-key'] !== key) {
+    res.status(401).json({ error: 'Unauthorized' });
+    return false;
+  }
+  return true;
+}
+
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,DELETE,OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type,X-Admin-Key');
   if (req.method === 'OPTIONS') return res.status(200).end();
 
   const sb = client();
@@ -65,6 +74,7 @@ module.exports = async function handler(req, res) {
 
   // DELETE with no id = clear all (admin action)
   if (req.method === 'DELETE') {
+    if (!requireAdmin(req, res)) return;
     const { error } = await sb.from('payments').delete().neq('id', '');
     if (error) return res.status(500).json({ error: error.message });
     return res.status(200).json({ ok: true });

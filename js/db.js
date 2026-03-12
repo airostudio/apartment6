@@ -22,6 +22,29 @@
     };
   }
 
+  function adminJson(body) {
+    const key = (function () {
+      try {
+        const s = JSON.parse(localStorage.getItem('trendaccom_admin_auth') || '{}');
+        return s.adminKey || '';
+      } catch (_) { return ''; }
+    })();
+    return {
+      headers: { 'Content-Type': 'application/json', 'X-Admin-Key': key },
+      body: JSON.stringify(body),
+    };
+  }
+
+  function adminOpts() {
+    const key = (function () {
+      try {
+        const s = JSON.parse(localStorage.getItem('trendaccom_admin_auth') || '{}');
+        return s.adminKey || '';
+      } catch (_) { return ''; }
+    })();
+    return { headers: { 'X-Admin-Key': key } };
+  }
+
   window.DB = {
     // ── Bookings ──────────────────────────────────────────────────────────
     getBookings() {
@@ -31,10 +54,10 @@
       return api('/api/bookings', { method: 'POST', ...json(bk) });
     },
     updateBooking(id, changes) {
-      return api('/api/bookings?id=' + encodeURIComponent(id), { method: 'PUT', ...json(changes) });
+      return api('/api/bookings?id=' + encodeURIComponent(id), { method: 'PUT', ...adminJson(changes) });
     },
     deleteBooking(id) {
-      return api('/api/bookings?id=' + encodeURIComponent(id), { method: 'DELETE' });
+      return api('/api/bookings?id=' + encodeURIComponent(id), { method: 'DELETE', ...adminOpts() });
     },
 
     // ── Payments ──────────────────────────────────────────────────────────
@@ -45,7 +68,7 @@
       return api('/api/payments', { method: 'POST', ...json(p) }).catch(() => null);
     },
     clearPayments() {
-      return api('/api/payments', { method: 'DELETE' });
+      return api('/api/payments', { method: 'DELETE', ...adminOpts() });
     },
 
     // ── Rates ─────────────────────────────────────────────────────────────
@@ -53,7 +76,7 @@
       return api('/api/rates').catch(() => null);
     },
     saveRates(rates) {
-      return api('/api/rates', { method: 'POST', ...json(rates) });
+      return api('/api/rates', { method: 'POST', ...adminJson(rates) });
     },
 
     // ── Blocked Dates ─────────────────────────────────────────────────────
@@ -61,10 +84,10 @@
       return api('/api/blocked-dates').catch(() => []);
     },
     createBlockedDate(item) {
-      return api('/api/blocked-dates', { method: 'POST', ...json(item) });
+      return api('/api/blocked-dates', { method: 'POST', ...adminJson(item) });
     },
     deleteBlockedDate(id) {
-      return api('/api/blocked-dates?id=' + encodeURIComponent(id), { method: 'DELETE' });
+      return api('/api/blocked-dates?id=' + encodeURIComponent(id), { method: 'DELETE', ...adminOpts() });
     },
 
     // ── Property Settings ──────────────────────────────────────────────────
@@ -72,7 +95,7 @@
       return api('/api/property-settings').catch(() => ({}));
     },
     savePropertySettings(settings) {
-      return api('/api/property-settings', { method: 'POST', ...json(settings) });
+      return api('/api/property-settings', { method: 'POST', ...adminJson(settings) });
     },
 
     // ── Site Settings ──────────────────────────────────────────────────────
@@ -80,7 +103,12 @@
       return api('/api/site-settings').catch(() => ({}));
     },
     saveSiteSettings(settings) {
-      return api('/api/site-settings', { method: 'POST', ...json(settings) });
+      return api('/api/site-settings', { method: 'POST', ...adminJson(settings) });
+    },
+
+    // ── Booking Email ──────────────────────────────────────────────────────
+    sendBookingEmail(bk) {
+      return api('/api/booking-email', { method: 'POST', ...json(bk) }).catch(() => null);
     },
   };
 })();

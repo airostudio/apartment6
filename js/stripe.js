@@ -295,6 +295,7 @@
                                 bookedAt:        new Date().toISOString()
                             };
                             if (window.DB) await window.DB.createBooking(bk);
+                            if (window.DB) window.DB.sendBookingEmail(bk);
                             sessionStorage.setItem('cascade6_confirmed_booking', JSON.stringify(bk));
                             sessionStorage.removeItem('cascade6_pending_booking');
                             confirmedRef = bk.ref;

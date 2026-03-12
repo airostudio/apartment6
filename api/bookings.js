@@ -63,10 +63,19 @@ function toDB(obj) {
   return row;
 }
 
+function requireAdmin(req, res) {
+  const key = process.env.ADMIN_KEY;
+  if (key && req.headers['x-admin-key'] !== key) {
+    res.status(401).json({ error: 'Unauthorized' });
+    return false;
+  }
+  return true;
+}
+
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type,X-Admin-Key');
   if (req.method === 'OPTIONS') return res.status(200).end();
 
   const sb = client();
@@ -81,9 +90,28 @@ module.exports = async function handler(req, res) {
   }
 
   if (req.method === 'POST') {
+    const obj = req.body || {};
+    // Server-side overlap check: half-open interval [checkin, checkout)
+    if (obj.checkin && obj.checkout) {
+      const { data: existing, error: fetchErr } = await sb
+        .from('bookings')
+        .select('id, checkin, checkout, status')
+        .neq('status', 'cancelled');
+      if (!fetchErr && existing) {
+        const ci = new Date(obj.checkin + 'T00:00:00');
+        const co = new Date(obj.checkout + 'T00:00:00');
+        for (const b of existing) {
+          const bs = new Date((b.checkin || '') + 'T00:00:00');
+          const be = new Date((b.checkout || '') + 'T00:00:00');
+          if (ci < be && co > bs) {
+            return res.status(409).json({ error: 'Those dates are already booked.' });
+          }
+        }
+      }
+    }
     const { data, error } = await sb
       .from('bookings')
-      .insert(toDB(req.body))
+      .insert(toDB(obj))
       .select()
       .single();
     if (error) return res.status(500).json({ error: error.message });
@@ -91,6 +119,7 @@ module.exports = async function handler(req, res) {
   }
 
   if (req.method === 'PUT') {
+    if (!requireAdmin(req, res)) return;
     const id = req.query.id;
     if (!id) return res.status(400).json({ error: 'id required' });
     const { data, error } = await sb
@@ -104,6 +133,7 @@ module.exports = async function handler(req, res) {
   }
 
   if (req.method === 'DELETE') {
+    if (!requireAdmin(req, res)) return;
     const id = req.query.id;
     if (!id) return res.status(400).json({ error: 'id required' });
     const { error } = await sb.from('bookings').delete().eq('id', id);
