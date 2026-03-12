@@ -1,6 +1,8 @@
 module.exports = function handler(req, res) {
-  res.setHeader('Cache-Control', 'public, max-age=3600');
+  const key = process.env.STRIPE_PUBLISHABLE_KEY || '';
+  res.setHeader('Cache-Control', 'no-store');
   return res.status(200).json({
-    publishableKey: process.env.STRIPE_PUBLISHABLE_KEY || '',
+    publishableKey: key,
+    testMode: key.startsWith('pk_test_'),
   });
 };

@@ -175,17 +175,20 @@
             <div class="stripe-setup-card">
                 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:0.5rem;">
                     <h2 style="margin-bottom:0;">Stripe Configuration</h2>
-                    <span class="admin-badge admin-badge--confirmed">Active</span>
+                    <span id="stripeModebadge" class="admin-badge admin-badge--confirmed">Loading…</span>
+                </div>
+                <div id="stripeTestWarning" style="display:none;background:#fef9c3;border:1px solid #fde047;border-radius:8px;padding:10px 14px;margin-bottom:1rem;font-size:0.8125rem;color:#713f12;">
+                    <strong>Test mode active.</strong> Real payments are not processed. Switch to live keys in Vercel (<code>STRIPE_PUBLISHABLE_KEY</code> + <code>STRIPE_SECRET_KEY</code>) before going live.
                 </div>
                 <div class="sform-row">
                     <div>
                         <label for="stripePublishableKey">Publishable Key</label>
-                        <input type="text" id="stripePublishableKey" value="pk_test_51R90aVH4Fz8ujm…" readonly style="font-family:monospace;font-size:0.8125rem;">
-                        <p class="key-hint">Starts with <code>pk_live_</code> in production. Safe to expose publicly.</p>
+                        <input type="text" id="stripePublishableKey" value="Loading…" readonly style="font-family:monospace;font-size:0.8125rem;">
+                        <p class="key-hint">Live key starts with <code>pk_live_</code>. Safe to expose publicly.</p>
                     </div>
                     <div>
                         <label>Secret Key (server-side only)</label>
-                        <input type="password" value="sk_test_placeholder" readonly>
+                        <input type="password" value="stored-in-vercel-env" readonly>
                         <p class="key-hint">Stored in Vercel environment as <code>STRIPE_SECRET_KEY</code>. Never expose publicly.</p>
                     </div>
                 </div>
@@ -293,6 +296,30 @@
 <script>
 (function() {
     'use strict';
+
+    // Load live Stripe config from server and update the UI
+    fetch('/api/stripe-config').then(function(r){ return r.json(); }).then(function(cfg) {
+        var keyEl   = document.getElementById('stripePublishableKey');
+        var badgeEl = document.getElementById('stripeModebadge');
+        var warnEl  = document.getElementById('stripeTestWarning');
+        if (keyEl) keyEl.value = cfg.publishableKey || '(not configured)';
+        if (cfg.testMode) {
+            if (badgeEl) {
+                badgeEl.textContent = 'TEST MODE';
+                badgeEl.style.background = '#fef9c3';
+                badgeEl.style.color = '#713f12';
+                badgeEl.style.border = '1px solid #fde047';
+            }
+            if (warnEl) warnEl.style.display = 'block';
+        } else if (cfg.publishableKey) {
+            if (badgeEl) { badgeEl.textContent = 'Live'; }
+        } else {
+            if (badgeEl) { badgeEl.textContent = 'Not configured'; badgeEl.style.background = '#fee2e2'; badgeEl.style.color = '#b91c1c'; }
+        }
+    }).catch(function() {
+        var badgeEl = document.getElementById('stripeModebadge');
+        if (badgeEl) { badgeEl.textContent = 'Unknown'; }
+    });
 
     function fmtMoney(n) {
         return '$' + Number(n || 0).toLocaleString('en-AU', { minimumFractionDigits: 2, maximumFractionDigits: 2 });

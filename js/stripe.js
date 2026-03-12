@@ -51,6 +51,9 @@
                 if (res && res.ok) {
                     const cfg = await res.json();
                     if (cfg.publishableKey) this.config.publishableKey = cfg.publishableKey;
+                    // Show test mode banner if keys are test keys
+                    const banner = document.getElementById('stripeTestBanner');
+                    if (banner) banner.style.display = cfg.testMode ? 'block' : 'none';
                 }
                 if (!this.config.publishableKey) {
                     console.warn('Stripe publishable key not available. Showing placeholder.');
