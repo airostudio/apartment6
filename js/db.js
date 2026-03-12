@@ -82,5 +82,10 @@
     saveSiteSettings(settings) {
       return api('/api/site-settings', { method: 'POST', ...json(settings) });
     },
+
+    // ── Emails ─────────────────────────────────────────────────────────────
+    sendBookingEmail(bk) {
+      return api('/api/booking-email', { method: 'POST', ...json(bk) }).catch(() => null);
+    },
   };
 })();
