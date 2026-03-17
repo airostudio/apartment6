@@ -81,6 +81,29 @@ CREATE TABLE IF NOT EXISTS blocked_dates (
   reason     TEXT NOT NULL DEFAULT ''
 );
 
+-- ── Admin Users ───────────────────────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS admin_users (
+  id         SERIAL PRIMARY KEY,
+  email      TEXT UNIQUE NOT NULL,
+  hash       TEXT NOT NULL,
+  salt       TEXT NOT NULL,
+  role       TEXT NOT NULL DEFAULT 'admin',
+  name       TEXT NOT NULL DEFAULT 'Admin',
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+-- Seed initial admin account (password: RachelM1972$, hashed with scrypt)
+-- To change the password: update the hash and salt columns for this row,
+-- or use the admin Change Password feature.
+INSERT INTO admin_users (email, hash, salt, role, name)
+VALUES (
+  'admin@cascadeapartments.com.au',
+  '457937f67f0ca3d129adc29deb1ab43b3d9988aa41a106ca1b0275cae1581ea7c06dc41e618ade5327136fde47d722abcc6373a2793fc96f936676a8e0e7f971',
+  '4dacc56c5f31dd5891df05923a637500',
+  'admin',
+  'Admin'
+) ON CONFLICT (email) DO NOTHING;
+
 -- ── Row Level Security ────────────────────────────────────────────────────────
 -- All access goes through the service-role key in Vercel API functions,
 -- so anon access is disabled for safety.

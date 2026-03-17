@@ -197,50 +197,50 @@
         window.location.href = 'index.html';
     }
 
-    // Authorised admin accounts
-    // NOTE: In production, authentication must be handled server-side.
-    const ADMIN_ACCOUNTS = [
-        
-        { email: 'admin@cascadeapartments.com.au', password: 'RachelM1972$', role: 'admin' }
-    ];
-
     const form     = document.getElementById('loginForm');
     const errorEl  = document.getElementById('loginError');
     const loginBtn = document.getElementById('loginBtn');
 
-    form.addEventListener('submit', function(e) {
+    form.addEventListener('submit', async function(e) {
         e.preventDefault();
         errorEl.classList.remove('visible');
+        loginBtn.disabled = true;
+        loginBtn.textContent = 'Signing in…';
 
         const email    = document.getElementById('email').value.trim().toLowerCase();
         const password = document.getElementById('password').value;
 
-        const account = ADMIN_ACCOUNTS.find(a =>
-            a.email.toLowerCase() === email && a.password === password
-        );
+        try {
+            const res = await fetch('/api/admin-login', {
+                method:  'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body:    JSON.stringify({ email, password }),
+            });
+            const data = await res.json();
 
-        if (account) {
-            loginBtn.disabled = true;
-            loginBtn.textContent = 'Signing in…';
+            if (res.ok && data.ok) {
+                const session = {
+                    email:    data.email,
+                    role:     data.role,
+                    name:     data.name,
+                    adminKey: password,
+                    loginAt:  Date.now(),
+                };
+                localStorage.setItem('trendaccom_admin_auth', JSON.stringify(session));
 
-            const session = {
-                email:    account.email,
-                role:     account.role,
-                name:     account.role === 'owner' ? 'Owner' : 'Admin',
-                adminKey: account.password,
-                loginAt:  Date.now()
-            };
-            localStorage.setItem('trendaccom_admin_auth', JSON.stringify(session));
-
-            let redirect = new URLSearchParams(window.location.search).get('redirect') || '';
-            // Redirect must be an absolute /admin/ path — anything else (e.g. bare "admin.html"
-            // from external auth systems) falls back to the dashboard
-            if (!redirect || !redirect.startsWith('/admin/')) redirect = '/admin/index.html';
-            window.location.href = redirect;
-        } else {
+                let redirect = new URLSearchParams(window.location.search).get('redirect') || '';
+                if (!redirect || !redirect.startsWith('/admin/')) redirect = '/admin/index.html';
+                window.location.href = redirect;
+            } else {
+                throw new Error(data.error || 'Login failed.');
+            }
+        } catch (err) {
+            errorEl.textContent = err.message || 'Invalid email or password. Please try again.';
             errorEl.classList.add('visible');
             document.getElementById('password').value = '';
             document.getElementById('password').focus();
+            loginBtn.disabled = false;
+            loginBtn.textContent = 'Sign In';
         }
     });
 })();
