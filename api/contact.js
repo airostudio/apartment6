@@ -20,8 +20,8 @@ module.exports = async function handler(req, res) {
 
   try {
     await resend.emails.send({
-      from: 'Cascade Apartment 6 <hello@cascade6.com.au>',
-      to: 'hello@cascade6.com.au',
+      from: 'Cascade Apartment 6 <hello@cascade6.online>',
+      to: 'hello@cascade6.online',
       replyTo: email,
       subject: `Contact enquiry from ${name}`,
       html: `

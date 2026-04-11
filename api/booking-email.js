@@ -1,8 +1,8 @@
 const { Resend } = require('resend');
 
 const resend = new Resend(process.env.RESEND_API_KEY);
-const FROM  = 'Cascade Apartment 6 <hello@cascade6.com.au>';
-const ADMIN = 'hello@cascade6.com.au';
+const FROM  = 'Cascade Apartment 6 <hello@cascade6.online>';
+const ADMIN = 'hello@cascade6.online';
 
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -114,11 +114,11 @@ module.exports = async function handler(req, res) {
     </table>
     <div style="background:#fefce8;border:1px solid #fde68a;border-radius:8px;padding:14px 18px;margin:20px 0">
       <p style="margin:0;font-size:13px;color:#92400e;font-weight:600">Property Access</p>
-      <p style="margin:6px 0 0;font-size:13px;color:#78350f">Access details will be provided before your arrival. If you have any questions, contact us at <a href="mailto:hello@cascade6.com.au" style="color:#b45309">hello@cascade6.com.au</a></p>
+      <p style="margin:6px 0 0;font-size:13px;color:#78350f">Access details will be provided before your arrival. If you have any questions, contact us at <a href="mailto:hello@cascade6.online" style="color:#b45309">hello@cascade6.online</a></p>
     </div>
     ${bk.specialRequests ? `<p style="font-size:13px;color:#6b7280"><strong>Your special requests:</strong><br>${esc(bk.specialRequests)}</p>` : ''}
     <hr style="margin:24px 0;border:none;border-top:1px solid #e5e7eb">
-    <p style="margin:0;font-size:12px;color:#9ca3af;text-align:center">Cascade Apartment 6 · Mt Baw Baw Alpine Resort, Victoria · <a href="mailto:hello@cascade6.com.au" style="color:#9ca3af">hello@cascade6.com.au</a></p>
+    <p style="margin:0;font-size:12px;color:#9ca3af;text-align:center">Cascade Apartment 6 · Mt Baw Baw Alpine Resort, Victoria · <a href="mailto:hello@cascade6.online" style="color:#9ca3af">hello@cascade6.online</a></p>
   </div>
 </div>`,
       });
