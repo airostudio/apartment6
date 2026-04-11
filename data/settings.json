@@ -1,7 +1,7 @@
 {
   "site": {
     "name": "Cascade Apartment 6",
-    "description": "Self-contained alpine retreat at Mt Baw Baw Alpine Resort. Ground floor, gas log fire, sleeps 5. Book direct.",
+    "description": "Self-contained alpine retreat at Mt Baw Baw Alpine Resort. Ground floor, gas log fire, sleeps 6. Book direct.",
     "url": "https://www.cascade6.com.au",
     "contactEmail": "hello@cascade6.com.au",
     "contactPhone": "",
@@ -22,7 +22,7 @@
     "maxStay": 14,
     "advanceBookingDays": 365,
     "bookingCutoffHours": 24,
-    "maxGuestsPerBooking": 5
+    "maxGuestsPerBooking": 6
   },
   "cancellationPolicies": {
     "flexible": {
@@ -90,7 +90,7 @@
     "secondaryColor": "#c9a84c",
     "backgroundColor": "#faf8f4",
     "heroTitle": "Cascade Apartment 6",
-    "heroSubtitle": "Self-contained alpine retreat at Mt Baw Baw Resort — ground floor, gas log fire, sleeps 5",
+    "heroSubtitle": "Self-contained alpine retreat at Mt Baw Baw Resort — ground floor, gas log fire, sleeps 6",
     "showFeaturedProperties": true,
     "showTestimonials": true
   }
