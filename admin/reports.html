@@ -113,389 +113,43 @@
 
                 <!-- Stats Grid -->
                 <div class="stats-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-bottom: 1.5rem;">
-
                     <div class="admin-card stat-card" style="padding: 1.5rem;">
                         <div class="stat-label" style="font-size: 0.875rem; color: #64748b; margin-bottom: 0.5rem;">Total Revenue</div>
-                        <div class="stat-value" style="font-size: 1.75rem; font-weight: 700; color: #0f172a;">$89,432</div>
-                        <div class="stat-change positive" style="font-size: 0.8125rem; color: #16a34a; margin-top: 0.375rem; font-weight: 500;">+12% vs last period</div>
+                        <div class="stat-value" id="statRevenue" style="font-size: 1.75rem; font-weight: 700; color: #0f172a;">—</div>
                     </div>
-
                     <div class="admin-card stat-card" style="padding: 1.5rem;">
                         <div class="stat-label" style="font-size: 0.875rem; color: #64748b; margin-bottom: 0.5rem;">Total Bookings</div>
-                        <div class="stat-value" style="font-size: 1.75rem; font-weight: 700; color: #0f172a;">1,247</div>
-                        <div class="stat-change positive" style="font-size: 0.8125rem; color: #16a34a; margin-top: 0.375rem; font-weight: 500;">+8% vs last period</div>
+                        <div class="stat-value" id="statBookings" style="font-size: 1.75rem; font-weight: 700; color: #0f172a;">—</div>
                     </div>
-
                     <div class="admin-card stat-card" style="padding: 1.5rem;">
                         <div class="stat-label" style="font-size: 0.875rem; color: #64748b; margin-bottom: 0.5rem;">Average Daily Rate</div>
-                        <div class="stat-value" style="font-size: 1.75rem; font-weight: 700; color: #0f172a;">$185</div>
-                        <div class="stat-change positive" style="font-size: 0.8125rem; color: #16a34a; margin-top: 0.375rem; font-weight: 500;">+5% vs last period</div>
+                        <div class="stat-value" id="statADR" style="font-size: 1.75rem; font-weight: 700; color: #0f172a;">—</div>
                     </div>
-
                     <div class="admin-card stat-card" style="padding: 1.5rem;">
-                        <div class="stat-label" style="font-size: 0.875rem; color: #64748b; margin-bottom: 0.5rem;">Average Length of Stay</div>
-                        <div class="stat-value" style="font-size: 1.75rem; font-weight: 700; color: #0f172a;">3.2 nights</div>
-                        <div class="stat-change negative" style="font-size: 0.8125rem; color: #dc2626; margin-top: 0.375rem; font-weight: 500;">-2% vs last period</div>
+                        <div class="stat-label" style="font-size: 0.875rem; color: #64748b; margin-bottom: 0.5rem;">Avg Length of Stay</div>
+                        <div class="stat-value" id="statLOS" style="font-size: 1.75rem; font-weight: 700; color: #0f172a;">—</div>
                     </div>
-
                 </div>
 
-                <!-- Revenue Overview -->
+                <!-- Bookings Table -->
                 <div class="admin-card" style="padding: 1.5rem; margin-bottom: 1.5rem;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                        <h2 style="font-size: 1.125rem; font-weight: 600; color: #0f172a; margin: 0;">Revenue Overview</h2>
-                        <div class="chart-toggles" style="display: flex; gap: 0.25rem;">
-                            <button style="padding: 0.375rem 0.75rem; border: 1px solid #e2e8f0; background: #fff; border-radius: 0.375rem; font-size: 0.8125rem; cursor: pointer; color: #64748b;">7D</button>
-                            <button style="padding: 0.375rem 0.75rem; border: 1px solid #2563eb; background: #eff6ff; border-radius: 0.375rem; font-size: 0.8125rem; cursor: pointer; color: #2563eb; font-weight: 500;">30D</button>
-                            <button style="padding: 0.375rem 0.75rem; border: 1px solid #e2e8f0; background: #fff; border-radius: 0.375rem; font-size: 0.8125rem; cursor: pointer; color: #64748b;">90D</button>
-                            <button style="padding: 0.375rem 0.75rem; border: 1px solid #e2e8f0; background: #fff; border-radius: 0.375rem; font-size: 0.8125rem; cursor: pointer; color: #64748b;">1Y</button>
-                            <button style="padding: 0.375rem 0.75rem; border: 1px solid #e2e8f0; background: #fff; border-radius: 0.375rem; font-size: 0.8125rem; cursor: pointer; color: #64748b;">All</button>
-                        </div>
-                    </div>
-                    <div class="chart-placeholder" style="height: 300px; border: 2px dashed #e2e8f0; border-radius: 0.5rem; display: flex; align-items: center; justify-content: center; color: #94a3b8; font-size: 0.9375rem; background: #f8fafc;">
-                        Revenue Chart - Monthly revenue data visualization
-                    </div>
-                </div>
-
-                <!-- Two Column Layout: Top Properties & Booking Sources -->
-                <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
-
-                    <!-- Top Performing Properties -->
-                    <div class="admin-card" style="padding: 1.5rem;">
-                        <h2 style="font-size: 1.125rem; font-weight: 600; color: #0f172a; margin: 0 0 1rem 0;">Top Performing Properties</h2>
-                        <div style="overflow-x: auto;">
-                            <table class="admin-table" style="width: 100%; border-collapse: collapse; font-size: 0.875rem;">
-                                <thead>
-                                    <tr style="border-bottom: 2px solid #e2e8f0;">
-                                        <th style="padding: 0.75rem 0.5rem; text-align: left; font-weight: 600; color: #64748b; font-size: 0.8125rem;">Rank #</th>
-                                        <th style="padding: 0.75rem 0.5rem; text-align: left; font-weight: 600; color: #64748b; font-size: 0.8125rem;">Property Name</th>
-                                        <th style="padding: 0.75rem 0.5rem; text-align: right; font-weight: 600; color: #64748b; font-size: 0.8125rem;">Bookings</th>
-                                        <th style="padding: 0.75rem 0.5rem; text-align: right; font-weight: 600; color: #64748b; font-size: 0.8125rem;">Revenue</th>
-                                        <th style="padding: 0.75rem 0.5rem; text-align: right; font-weight: 600; color: #64748b; font-size: 0.8125rem;">Occupancy</th>
-                                        <th style="padding: 0.75rem 0.5rem; text-align: right; font-weight: 600; color: #64748b; font-size: 0.8125rem;">Rating</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr style="border-bottom: 1px solid #f1f5f9;">
-                                        <td style="padding: 0.75rem 0.5rem; color: #64748b;">1</td>
-                                        <td style="padding: 0.75rem 0.5rem; font-weight: 500; color: #0f172a;">Bondi Beach Penthouse</td>
-                                        <td style="padding: 0.75rem 0.5rem; text-align: right; color: #334155;">342</td>
-                                        <td style="padding: 0.75rem 0.5rem; text-align: right; font-weight: 500; color: #0f172a;">$28,450</td>
-                                        <td style="padding: 0.75rem 0.5rem; text-align: right; color: #334155;">94%</td>
-                                        <td style="padding: 0.75rem 0.5rem; text-align: right; color: #f59e0b; font-weight: 500;">4.9</td>
-                                    </tr>
-                                    <tr style="border-bottom: 1px solid #f1f5f9;">
-                                        <td style="padding: 0.75rem 0.5rem; color: #64748b;">2</td>
-                                        <td style="padding: 0.75rem 0.5rem; font-weight: 500; color: #0f172a;">Cascade Apartment 6</td>
-                                        <td style="padding: 0.75rem 0.5rem; text-align: right; color: #334155;">289</td>
-                                        <td style="padding: 0.75rem 0.5rem; text-align: right; font-weight: 500; color: #0f172a;">$24,120</td>
-                                        <td style="padding: 0.75rem 0.5rem; text-align: right; color: #334155;">88%</td>
-                                        <td style="padding: 0.75rem 0.5rem; text-align: right; color: #f59e0b; font-weight: 500;">4.8</td>
-                                    </tr>
-                                    <tr style="border-bottom: 1px solid #f1f5f9;">
-                                        <td style="padding: 0.75rem 0.5rem; color: #64748b;">3</td>
-                                        <td style="padding: 0.75rem 0.5rem; font-weight: 500; color: #0f172a;">Manly Beachside Apartment</td>
-                                        <td style="padding: 0.75rem 0.5rem; text-align: right; color: #334155;">256</td>
-                                        <td style="padding: 0.75rem 0.5rem; text-align: right; font-weight: 500; color: #0f172a;">$18,970</td>
-                                        <td style="padding: 0.75rem 0.5rem; text-align: right; color: #334155;">82%</td>
-                                        <td style="padding: 0.75rem 0.5rem; text-align: right; color: #f59e0b; font-weight: 500;">4.7</td>
-                                    </tr>
-                                    <tr style="border-bottom: 1px solid #f1f5f9;">
-                                        <td style="padding: 0.75rem 0.5rem; color: #64748b;">4</td>
-                                        <td style="padding: 0.75rem 0.5rem; font-weight: 500; color: #0f172a;">Surry Hills Terrace</td>
-                                        <td style="padding: 0.75rem 0.5rem; text-align: right; color: #334155;">198</td>
-                                        <td style="padding: 0.75rem 0.5rem; text-align: right; font-weight: 500; color: #0f172a;">$12,340</td>
-                                        <td style="padding: 0.75rem 0.5rem; text-align: right; color: #334155;">76%</td>
-                                        <td style="padding: 0.75rem 0.5rem; text-align: right; color: #f59e0b; font-weight: 500;">4.6</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding: 0.75rem 0.5rem; color: #64748b;">5</td>
-                                        <td style="padding: 0.75rem 0.5rem; font-weight: 500; color: #0f172a;">Cascade Apartment 6</td>
-                                        <td style="padding: 0.75rem 0.5rem; text-align: right; color: #334155;">162</td>
-                                        <td style="padding: 0.75rem 0.5rem; text-align: right; font-weight: 500; color: #0f172a;">$5,552</td>
-                                        <td style="padding: 0.75rem 0.5rem; text-align: right; color: #334155;">71%</td>
-                                        <td style="padding: 0.75rem 0.5rem; text-align: right; color: #f59e0b; font-weight: 500;">4.5</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <!-- Booking Sources -->
-                    <div class="admin-card" style="padding: 1.5rem;">
-                        <h2 style="font-size: 1.125rem; font-weight: 600; color: #0f172a; margin: 0 0 1.25rem 0;">Booking Sources</h2>
-                        <div class="booking-sources-list" style="display: flex; flex-direction: column; gap: 1.25rem;">
-
-                            <div class="source-item">
-                                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                                    <span style="font-size: 0.875rem; font-weight: 500; color: #334155;">Direct</span>
-                                    <span style="font-size: 0.875rem; font-weight: 600; color: #0f172a;">45%</span>
-                                </div>
-                                <div style="height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden;">
-                                    <div style="width: 45%; height: 100%; background: #2563eb; border-radius: 4px;"></div>
-                                </div>
-                            </div>
-
-                            <div class="source-item">
-                                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                                    <span style="font-size: 0.875rem; font-weight: 500; color: #334155;">Airbnb</span>
-                                    <span style="font-size: 0.875rem; font-weight: 600; color: #0f172a;">25%</span>
-                                </div>
-                                <div style="height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden;">
-                                    <div style="width: 25%; height: 100%; background: #f43f5e; border-radius: 4px;"></div>
-                                </div>
-                            </div>
-
-                            <div class="source-item">
-                                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                                    <span style="font-size: 0.875rem; font-weight: 500; color: #334155;">Booking.com</span>
-                                    <span style="font-size: 0.875rem; font-weight: 600; color: #0f172a;">20%</span>
-                                </div>
-                                <div style="height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden;">
-                                    <div style="width: 20%; height: 100%; background: #0ea5e9; border-radius: 4px;"></div>
-                                </div>
-                            </div>
-
-                            <div class="source-item">
-                                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                                    <span style="font-size: 0.875rem; font-weight: 500; color: #334155;">Other</span>
-                                    <span style="font-size: 0.875rem; font-weight: 600; color: #0f172a;">10%</span>
-                                </div>
-                                <div style="height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden;">
-                                    <div style="width: 10%; height: 100%; background: #a78bfa; border-radius: 4px;"></div>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-
-                </div>
-
-                <!-- Occupancy Report -->
-                <div class="admin-card" style="padding: 1.5rem; margin-bottom: 1.5rem;">
-                    <h2 style="font-size: 1.125rem; font-weight: 600; color: #0f172a; margin: 0 0 1rem 0;">Occupancy Report</h2>
+                    <h2 style="font-size: 1.125rem; font-weight: 600; color: #0f172a; margin: 0 0 1rem 0;">Confirmed Bookings</h2>
                     <div style="overflow-x: auto;">
                         <table class="admin-table" style="width: 100%; border-collapse: collapse; font-size: 0.875rem;">
                             <thead>
                                 <tr style="border-bottom: 2px solid #e2e8f0;">
-                                    <th style="padding: 0.75rem 0.5rem; text-align: left; font-weight: 600; color: #64748b; font-size: 0.8125rem;">Month</th>
-                                    <th style="padding: 0.75rem 0.5rem; text-align: right; font-weight: 600; color: #64748b; font-size: 0.8125rem;">Available Nights</th>
-                                    <th style="padding: 0.75rem 0.5rem; text-align: right; font-weight: 600; color: #64748b; font-size: 0.8125rem;">Booked Nights</th>
-                                    <th style="padding: 0.75rem 0.5rem; text-align: left; font-weight: 600; color: #64748b; font-size: 0.8125rem; min-width: 200px;">Occupancy Rate</th>
-                                    <th style="padding: 0.75rem 0.5rem; text-align: right; font-weight: 600; color: #64748b; font-size: 0.8125rem;">Revenue</th>
+                                    <th style="padding: 0.75rem 0.5rem; text-align: left; font-weight: 600; color: #64748b; font-size: 0.8125rem;">Ref</th>
+                                    <th style="padding: 0.75rem 0.5rem; text-align: left; font-weight: 600; color: #64748b; font-size: 0.8125rem;">Guest</th>
+                                    <th style="padding: 0.75rem 0.5rem; text-align: left; font-weight: 600; color: #64748b; font-size: 0.8125rem;">Check-in</th>
+                                    <th style="padding: 0.75rem 0.5rem; text-align: right; font-weight: 600; color: #64748b; font-size: 0.8125rem;">Nights</th>
+                                    <th style="padding: 0.75rem 0.5rem; text-align: right; font-weight: 600; color: #64748b; font-size: 0.8125rem;">Guests</th>
+                                    <th style="padding: 0.75rem 0.5rem; text-align: right; font-weight: 600; color: #64748b; font-size: 0.8125rem;">Total</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr style="border-bottom: 1px solid #f1f5f9;">
-                                    <td style="padding: 0.75rem 0.5rem; font-weight: 500; color: #0f172a;">September 2025</td>
-                                    <td style="padding: 0.75rem 0.5rem; text-align: right; color: #334155;">450</td>
-                                    <td style="padding: 0.75rem 0.5rem; text-align: right; color: #334155;">315</td>
-                                    <td style="padding: 0.75rem 0.5rem;">
-                                        <div style="display: flex; align-items: center; gap: 0.5rem;">
-                                            <div style="flex: 1; height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden;">
-                                                <div style="width: 70%; height: 100%; background: #f59e0b; border-radius: 4px;"></div>
-                                            </div>
-                                            <span style="font-size: 0.8125rem; font-weight: 500; color: #334155; min-width: 36px;">70%</span>
-                                        </div>
-                                    </td>
-                                    <td style="padding: 0.75rem 0.5rem; text-align: right; font-weight: 500; color: #0f172a;">$12,180</td>
-                                </tr>
-                                <tr style="border-bottom: 1px solid #f1f5f9;">
-                                    <td style="padding: 0.75rem 0.5rem; font-weight: 500; color: #0f172a;">October 2025</td>
-                                    <td style="padding: 0.75rem 0.5rem; text-align: right; color: #334155;">465</td>
-                                    <td style="padding: 0.75rem 0.5rem; text-align: right; color: #334155;">349</td>
-                                    <td style="padding: 0.75rem 0.5rem;">
-                                        <div style="display: flex; align-items: center; gap: 0.5rem;">
-                                            <div style="flex: 1; height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden;">
-                                                <div style="width: 75%; height: 100%; background: #f59e0b; border-radius: 4px;"></div>
-                                            </div>
-                                            <span style="font-size: 0.8125rem; font-weight: 500; color: #334155; min-width: 36px;">75%</span>
-                                        </div>
-                                    </td>
-                                    <td style="padding: 0.75rem 0.5rem; text-align: right; font-weight: 500; color: #0f172a;">$13,540</td>
-                                </tr>
-                                <tr style="border-bottom: 1px solid #f1f5f9;">
-                                    <td style="padding: 0.75rem 0.5rem; font-weight: 500; color: #0f172a;">November 2025</td>
-                                    <td style="padding: 0.75rem 0.5rem; text-align: right; color: #334155;">450</td>
-                                    <td style="padding: 0.75rem 0.5rem; text-align: right; color: #334155;">378</td>
-                                    <td style="padding: 0.75rem 0.5rem;">
-                                        <div style="display: flex; align-items: center; gap: 0.5rem;">
-                                            <div style="flex: 1; height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden;">
-                                                <div style="width: 84%; height: 100%; background: #22c55e; border-radius: 4px;"></div>
-                                            </div>
-                                            <span style="font-size: 0.8125rem; font-weight: 500; color: #334155; min-width: 36px;">84%</span>
-                                        </div>
-                                    </td>
-                                    <td style="padding: 0.75rem 0.5rem; text-align: right; font-weight: 500; color: #0f172a;">$16,230</td>
-                                </tr>
-                                <tr style="border-bottom: 1px solid #f1f5f9;">
-                                    <td style="padding: 0.75rem 0.5rem; font-weight: 500; color: #0f172a;">December 2025</td>
-                                    <td style="padding: 0.75rem 0.5rem; text-align: right; color: #334155;">465</td>
-                                    <td style="padding: 0.75rem 0.5rem; text-align: right; color: #334155;">432</td>
-                                    <td style="padding: 0.75rem 0.5rem;">
-                                        <div style="display: flex; align-items: center; gap: 0.5rem;">
-                                            <div style="flex: 1; height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden;">
-                                                <div style="width: 93%; height: 100%; background: #22c55e; border-radius: 4px;"></div>
-                                            </div>
-                                            <span style="font-size: 0.8125rem; font-weight: 500; color: #334155; min-width: 36px;">93%</span>
-                                        </div>
-                                    </td>
-                                    <td style="padding: 0.75rem 0.5rem; text-align: right; font-weight: 500; color: #0f172a;">$21,870</td>
-                                </tr>
-                                <tr style="border-bottom: 1px solid #f1f5f9;">
-                                    <td style="padding: 0.75rem 0.5rem; font-weight: 500; color: #0f172a;">January 2026</td>
-                                    <td style="padding: 0.75rem 0.5rem; text-align: right; color: #334155;">465</td>
-                                    <td style="padding: 0.75rem 0.5rem; text-align: right; color: #334155;">419</td>
-                                    <td style="padding: 0.75rem 0.5rem;">
-                                        <div style="display: flex; align-items: center; gap: 0.5rem;">
-                                            <div style="flex: 1; height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden;">
-                                                <div style="width: 90%; height: 100%; background: #22c55e; border-radius: 4px;"></div>
-                                            </div>
-                                            <span style="font-size: 0.8125rem; font-weight: 500; color: #334155; min-width: 36px;">90%</span>
-                                        </div>
-                                    </td>
-                                    <td style="padding: 0.75rem 0.5rem; text-align: right; font-weight: 500; color: #0f172a;">$18,940</td>
-                                </tr>
-                                <tr>
-                                    <td style="padding: 0.75rem 0.5rem; font-weight: 500; color: #0f172a;">February 2026</td>
-                                    <td style="padding: 0.75rem 0.5rem; text-align: right; color: #334155;">420</td>
-                                    <td style="padding: 0.75rem 0.5rem; text-align: right; color: #334155;">336</td>
-                                    <td style="padding: 0.75rem 0.5rem;">
-                                        <div style="display: flex; align-items: center; gap: 0.5rem;">
-                                            <div style="flex: 1; height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden;">
-                                                <div style="width: 80%; height: 100%; background: #22c55e; border-radius: 4px;"></div>
-                                            </div>
-                                            <span style="font-size: 0.8125rem; font-weight: 500; color: #334155; min-width: 36px;">80%</span>
-                                        </div>
-                                    </td>
-                                    <td style="padding: 0.75rem 0.5rem; text-align: right; font-weight: 500; color: #0f172a;">$6,672</td>
-                                </tr>
+                            <tbody id="bookingsTableBody">
+                                <tr><td colspan="6" style="padding: 2rem; text-align: center; color: #94a3b8;">Loading…</td></tr>
                             </tbody>
                         </table>
-                    </div>
-                </div>
-
-                <!-- Guest Demographics -->
-                <div class="admin-card" style="padding: 1.5rem; margin-bottom: 1.5rem;">
-                    <h2 style="font-size: 1.125rem; font-weight: 600; color: #0f172a; margin: 0 0 1.25rem 0;">Guest Demographics</h2>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
-
-                        <!-- Top Countries -->
-                        <div>
-                            <h3 style="font-size: 0.9375rem; font-weight: 600; color: #334155; margin: 0 0 1rem 0;">Top Countries</h3>
-                            <div style="display: flex; flex-direction: column; gap: 0.875rem;">
-
-                                <div class="demo-item">
-                                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.375rem;">
-                                        <span style="font-size: 0.875rem; color: #334155;">Australia</span>
-                                        <span style="font-size: 0.875rem; font-weight: 600; color: #0f172a;">65%</span>
-                                    </div>
-                                    <div style="height: 6px; background: #e2e8f0; border-radius: 3px; overflow: hidden;">
-                                        <div style="width: 65%; height: 100%; background: #2563eb; border-radius: 3px;"></div>
-                                    </div>
-                                </div>
-
-                                <div class="demo-item">
-                                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.375rem;">
-                                        <span style="font-size: 0.875rem; color: #334155;">United States</span>
-                                        <span style="font-size: 0.875rem; font-weight: 600; color: #0f172a;">12%</span>
-                                    </div>
-                                    <div style="height: 6px; background: #e2e8f0; border-radius: 3px; overflow: hidden;">
-                                        <div style="width: 12%; height: 100%; background: #2563eb; border-radius: 3px;"></div>
-                                    </div>
-                                </div>
-
-                                <div class="demo-item">
-                                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.375rem;">
-                                        <span style="font-size: 0.875rem; color: #334155;">United Kingdom</span>
-                                        <span style="font-size: 0.875rem; font-weight: 600; color: #0f172a;">8%</span>
-                                    </div>
-                                    <div style="height: 6px; background: #e2e8f0; border-radius: 3px; overflow: hidden;">
-                                        <div style="width: 8%; height: 100%; background: #2563eb; border-radius: 3px;"></div>
-                                    </div>
-                                </div>
-
-                                <div class="demo-item">
-                                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.375rem;">
-                                        <span style="font-size: 0.875rem; color: #334155;">New Zealand</span>
-                                        <span style="font-size: 0.875rem; font-weight: 600; color: #0f172a;">6%</span>
-                                    </div>
-                                    <div style="height: 6px; background: #e2e8f0; border-radius: 3px; overflow: hidden;">
-                                        <div style="width: 6%; height: 100%; background: #2563eb; border-radius: 3px;"></div>
-                                    </div>
-                                </div>
-
-                                <div class="demo-item">
-                                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.375rem;">
-                                        <span style="font-size: 0.875rem; color: #334155;">Other</span>
-                                        <span style="font-size: 0.875rem; font-weight: 600; color: #0f172a;">9%</span>
-                                    </div>
-                                    <div style="height: 6px; background: #e2e8f0; border-radius: 3px; overflow: hidden;">
-                                        <div style="width: 9%; height: 100%; background: #94a3b8; border-radius: 3px;"></div>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-
-                        <!-- Booking Lead Time -->
-                        <div>
-                            <h3 style="font-size: 0.9375rem; font-weight: 600; color: #334155; margin: 0 0 1rem 0;">Booking Lead Time</h3>
-                            <div style="display: flex; flex-direction: column; gap: 0.875rem;">
-
-                                <div class="demo-item">
-                                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.375rem;">
-                                        <span style="font-size: 0.875rem; color: #334155;">Same day</span>
-                                        <span style="font-size: 0.875rem; font-weight: 600; color: #0f172a;">5%</span>
-                                    </div>
-                                    <div style="height: 6px; background: #e2e8f0; border-radius: 3px; overflow: hidden;">
-                                        <div style="width: 5%; height: 100%; background: #8b5cf6; border-radius: 3px;"></div>
-                                    </div>
-                                </div>
-
-                                <div class="demo-item">
-                                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.375rem;">
-                                        <span style="font-size: 0.875rem; color: #334155;">1-7 days</span>
-                                        <span style="font-size: 0.875rem; font-weight: 600; color: #0f172a;">15%</span>
-                                    </div>
-                                    <div style="height: 6px; background: #e2e8f0; border-radius: 3px; overflow: hidden;">
-                                        <div style="width: 15%; height: 100%; background: #8b5cf6; border-radius: 3px;"></div>
-                                    </div>
-                                </div>
-
-                                <div class="demo-item">
-                                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.375rem;">
-                                        <span style="font-size: 0.875rem; color: #334155;">1-4 weeks</span>
-                                        <span style="font-size: 0.875rem; font-weight: 600; color: #0f172a;">35%</span>
-                                    </div>
-                                    <div style="height: 6px; background: #e2e8f0; border-radius: 3px; overflow: hidden;">
-                                        <div style="width: 35%; height: 100%; background: #8b5cf6; border-radius: 3px;"></div>
-                                    </div>
-                                </div>
-
-                                <div class="demo-item">
-                                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.375rem;">
-                                        <span style="font-size: 0.875rem; color: #334155;">1-3 months</span>
-                                        <span style="font-size: 0.875rem; font-weight: 600; color: #0f172a;">30%</span>
-                                    </div>
-                                    <div style="height: 6px; background: #e2e8f0; border-radius: 3px; overflow: hidden;">
-                                        <div style="width: 30%; height: 100%; background: #8b5cf6; border-radius: 3px;"></div>
-                                    </div>
-                                </div>
-
-                                <div class="demo-item">
-                                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.375rem;">
-                                        <span style="font-size: 0.875rem; color: #334155;">3+ months</span>
-                                        <span style="font-size: 0.875rem; font-weight: 600; color: #0f172a;">15%</span>
-                                    </div>
-                                    <div style="height: 6px; background: #e2e8f0; border-radius: 3px; overflow: hidden;">
-                                        <div style="width: 15%; height: 100%; background: #8b5cf6; border-radius: 3px;"></div>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-
                     </div>
                 </div>
 
@@ -505,6 +159,83 @@
     <script src="../js/app.js"></script>
     <script src="../js/admin.js"></script>
     <script src="../js/admin-auth.js"></script>
+    <script>
+    (function() {
+        'use strict';
+
+        function fmtMoney(n) {
+            return '$' + Number(n || 0).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        }
+
+        function fmtDate(s) {
+            if (!s) return '—';
+            var d = new Date(s + 'T00:00:00');
+            return d.toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' });
+        }
+
+        function loadReports() {
+            var fromVal = document.getElementById('date-from').value;
+            var toVal   = document.getElementById('date-to').value;
+            var from    = fromVal ? new Date(fromVal) : null;
+            var to      = toVal   ? new Date(toVal + 'T23:59:59') : null;
+
+            var all = [];
+            try { all = JSON.parse(localStorage.getItem('cascade6_bookings') || '[]'); } catch(e) {}
+
+            var bookings = all.filter(function(b) {
+                if (b.status === 'cancelled') return false;
+                if (!b.checkin) return false;
+                var ci = new Date(b.checkin + 'T00:00:00');
+                if (from && ci < from) return false;
+                if (to   && ci > to)   return false;
+                return true;
+            });
+
+            // Stats
+            var totalRev = bookings.reduce(function(s, b) { return s + Number(b.total || 0); }, 0);
+            var totalNights = bookings.reduce(function(s, b) { return s + Number(b.nights || 0); }, 0);
+            var adr  = totalNights > 0 ? totalRev / totalNights : 0;
+            var avgLOS = bookings.length > 0 ? totalNights / bookings.length : 0;
+
+            document.getElementById('statRevenue').textContent  = bookings.length ? fmtMoney(totalRev)         : '—';
+            document.getElementById('statBookings').textContent = bookings.length ? String(bookings.length)    : '—';
+            document.getElementById('statADR').textContent      = bookings.length ? fmtMoney(adr)              : '—';
+            document.getElementById('statLOS').textContent      = bookings.length ? avgLOS.toFixed(1) + ' nights' : '—';
+
+            // Table
+            var tbody = document.getElementById('bookingsTableBody');
+            if (!bookings.length) {
+                tbody.innerHTML = '<tr><td colspan="6" style="padding:2rem;text-align:center;color:#94a3b8">No bookings found for the selected period.</td></tr>';
+                return;
+            }
+
+            bookings.sort(function(a, b) { return a.checkin < b.checkin ? -1 : 1; });
+            tbody.innerHTML = bookings.map(function(b, i) {
+                return '<tr style="border-bottom:1px solid #f1f5f9">'
+                    + '<td style="padding:0.75rem 0.5rem;color:#64748b">' + (b.ref || '—') + '</td>'
+                    + '<td style="padding:0.75rem 0.5rem;font-weight:500;color:#0f172a">' + (b.name || '—') + '</td>'
+                    + '<td style="padding:0.75rem 0.5rem;color:#334155">' + fmtDate(b.checkin) + '</td>'
+                    + '<td style="padding:0.75rem 0.5rem;text-align:right;color:#334155">' + (b.nights || 0) + '</td>'
+                    + '<td style="padding:0.75rem 0.5rem;text-align:right;color:#334155">' + (b.guests || 0) + '</td>'
+                    + '<td style="padding:0.75rem 0.5rem;text-align:right;font-weight:500;color:#0f172a">' + fmtMoney(b.total) + '</td>'
+                    + '</tr>';
+            }).join('');
+        }
+
+        // Set default date range to current year
+        var now = new Date();
+        var y = now.getFullYear();
+        document.getElementById('date-from').value = y + '-01-01';
+        document.getElementById('date-to').value   = y + '-12-31';
+
+        // Apply button
+        var applyBtn = document.querySelector('.btn-primary[style*="2563eb"]');
+        if (applyBtn) applyBtn.addEventListener('click', loadReports);
+
+        // Initial load
+        loadReports();
+    })();
+    </script>
 </div><!-- /.admin-layout -->
 </body>
 </html>
