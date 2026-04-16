@@ -202,6 +202,7 @@
         <a href="#amenities" class="nav-link">Amenities</a>
         <a href="reviews.html" class="nav-link">Reviews</a>
         <a href="property.html" class="nav-link">Details</a>
+        <a href="#contact" class="nav-link">Contact</a>
       </nav>
       <a href="index.html" class="logo logo--apt6" aria-label="Cascade Apartment 6 — home">
         <svg class="logo-mark" viewBox="0 0 48 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -234,6 +235,7 @@
     <a href="#amenities" class="nav-link">Amenities</a>
     <a href="reviews.html" class="nav-link">Reviews</a>
     <a href="property.html" class="nav-link">Full Details</a>
+    <a href="#contact" class="nav-link">Contact</a>
     <a href="property.html#book" class="btn btn--primary btn--block">Book Now</a>
     <a href="admin/login.html" class="btn btn--outline btn--block">Owner Login</a>
   </nav>
@@ -565,6 +567,61 @@
     </div>
   </section>
 
+  <!-- Contact Form -->
+  <section class="section" id="contact" style="background: var(--color-off-white);">
+    <div class="container container--narrow">
+      <div style="text-align:center;margin-bottom:var(--space-2xl)">
+        <h2 style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:var(--color-dark);margin-bottom:var(--space-sm)">Get in Touch</h2>
+        <p style="color:var(--color-gray);font-size:var(--font-size-md)">Have a question about the apartment? We'd love to hear from you.</p>
+      </div>
+      <div id="contactSuccess" style="display:none;background:#ecfdf5;border:1px solid #6ee7b7;border-radius:10px;padding:20px 24px;text-align:center;margin-bottom:24px">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:8px"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <p style="color:#15803d;font-weight:600;margin:0">Message sent! We'll be in touch soon.</p>
+      </div>
+      <div id="contactError" style="display:none;background:#fef2f2;border:1px solid #fca5a5;border-radius:10px;padding:16px 20px;text-align:center;margin-bottom:24px">
+        <p id="contactErrorMsg" style="color:#dc2626;margin:0;font-size:0.9rem">Something went wrong. Please try again.</p>
+      </div>
+      <form id="contactForm" style="background:#fff;border-radius:16px;padding:2.5rem;box-shadow:0 2px 16px rgba(0,0,0,0.07)">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+          <div>
+            <label for="contactName" style="display:block;font-size:0.875rem;font-weight:500;color:#374151;margin-bottom:6px">Name *</label>
+            <input type="text" id="contactName" name="name" required
+              style="width:100%;height:44px;padding:0 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:0.9375rem;font-family:inherit;color:#0f172a;background:#f8fafc;outline:none;transition:border-color 0.15s"
+              placeholder="Your name">
+          </div>
+          <div>
+            <label for="contactEmail" style="display:block;font-size:0.875rem;font-weight:500;color:#374151;margin-bottom:6px">Email *</label>
+            <input type="email" id="contactEmail" name="email" required
+              style="width:100%;height:44px;padding:0 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:0.9375rem;font-family:inherit;color:#0f172a;background:#f8fafc;outline:none;transition:border-color 0.15s"
+              placeholder="you@example.com">
+          </div>
+        </div>
+        <div style="margin-bottom:16px">
+          <label for="contactPhone" style="display:block;font-size:0.875rem;font-weight:500;color:#374151;margin-bottom:6px">Phone (optional)</label>
+          <input type="tel" id="contactPhone" name="phone"
+            style="width:100%;height:44px;padding:0 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:0.9375rem;font-family:inherit;color:#0f172a;background:#f8fafc;outline:none;transition:border-color 0.15s"
+            placeholder="+61 400 000 000">
+        </div>
+        <div style="margin-bottom:16px">
+          <label for="contactSubject" style="display:block;font-size:0.875rem;font-weight:500;color:#374151;margin-bottom:6px">Subject</label>
+          <input type="text" id="contactSubject" name="subject"
+            style="width:100%;height:44px;padding:0 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:0.9375rem;font-family:inherit;color:#0f172a;background:#f8fafc;outline:none;transition:border-color 0.15s"
+            placeholder="Booking enquiry, availability question…">
+        </div>
+        <div style="margin-bottom:24px">
+          <label for="contactMessage" style="display:block;font-size:0.875rem;font-weight:500;color:#374151;margin-bottom:6px">Message *</label>
+          <textarea id="contactMessage" name="message" required rows="5"
+            style="width:100%;padding:12px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:0.9375rem;font-family:inherit;color:#0f172a;background:#f8fafc;outline:none;resize:vertical;transition:border-color 0.15s"
+            placeholder="Tell us about your enquiry…"></textarea>
+        </div>
+        <button type="submit" id="contactSubmitBtn"
+          style="width:100%;height:50px;background:#0f2744;color:#fff;border:none;border-radius:8px;font-size:0.9375rem;font-weight:600;font-family:inherit;cursor:pointer;transition:background 0.15s">
+          Send Message
+        </button>
+      </form>
+    </div>
+  </section>
+
   <!-- CTA -->
   <section class="section section--dark" style="background: linear-gradient(135deg, var(--color-primary-dark), var(--color-primary)); text-align: center;">
     <div class="container container--narrow">
@@ -574,7 +631,7 @@
       </p>
       <div class="btn-group justify-center">
         <a href="property.html" class="btn btn--primary btn--lg">View Details &amp; Book</a>
-        <a href="mailto:hello@cascade6.online" class="btn btn--outline-white btn--lg">Get in Touch</a>
+        <a href="#contact" class="btn btn--outline-white btn--lg">Get in Touch</a>
       </div>
     </div>
   </section>
@@ -867,6 +924,61 @@
         if (Math.abs(dx) > 50) dx < 0 ? goTo(currentIdx + 1) : goTo(currentIdx - 1);
       }, { passive: true });
     })();
+  </script>
+  <script>
+  // Contact form → /api/contact
+  (function() {
+    var form    = document.getElementById('contactForm');
+    var success = document.getElementById('contactSuccess');
+    var error   = document.getElementById('contactError');
+    var errMsg  = document.getElementById('contactErrorMsg');
+    var btn     = document.getElementById('contactSubmitBtn');
+    if (!form) return;
+
+    // Focus styles
+    form.querySelectorAll('input, textarea').forEach(function(el) {
+      el.addEventListener('focus',  function() { this.style.borderColor = '#0f2744'; this.style.background = '#fff'; });
+      el.addEventListener('blur',   function() { this.style.borderColor = '#e2e8f0'; this.style.background = '#f8fafc'; });
+    });
+
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      success.style.display = 'none';
+      error.style.display   = 'none';
+      btn.disabled          = true;
+      btn.textContent       = 'Sending…';
+
+      var payload = {
+        name:    document.getElementById('contactName').value.trim(),
+        email:   document.getElementById('contactEmail').value.trim(),
+        phone:   document.getElementById('contactPhone').value.trim(),
+        subject: document.getElementById('contactSubject').value.trim(),
+        message: document.getElementById('contactMessage').value.trim(),
+      };
+
+      try {
+        var res  = await fetch('/api/contact', {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body:    JSON.stringify(payload),
+        });
+        var data = await res.json();
+        if (res.ok && data.ok) {
+          success.style.display = 'block';
+          form.reset();
+        } else {
+          errMsg.textContent    = data.error || 'Something went wrong. Please try again.';
+          error.style.display   = 'block';
+        }
+      } catch (err) {
+        errMsg.textContent  = 'Network error. Please try again or email hello@cascade6.online directly.';
+        error.style.display = 'block';
+      } finally {
+        btn.disabled    = false;
+        btn.textContent = 'Send Message';
+      }
+    });
+  })();
   </script>
 </body>
 </html>
