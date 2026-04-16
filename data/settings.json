@@ -59,13 +59,10 @@
     "petFee": 0
   },
   "payments": {
-    "provider": "stripe_connect",
+    "provider": "stripe",
     "currency": "aud",
     "depositRequired": true,
     "depositPercent": 30,
-    "autoPayoutEnabled": true,
-    "payoutFrequency": "weekly",
-    "platformFeePercent": 0,
     "supportedMethods": ["card", "apple_pay", "google_pay"]
   },
   "notifications": {
