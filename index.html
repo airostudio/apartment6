@@ -311,7 +311,7 @@
         </div>
         <div class="fact-item">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-          Sleeps up to 5
+          Sleeps up to 6
         </div>
         <div class="fact-item">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 0 1 10 10c0 4-2.5 7.4-6 9.3M12 2A10 10 0 0 0 2 12c0 4 2.5 7.4 6 9.3M12 2v20M2 12h20"/></svg>
@@ -487,6 +487,31 @@
     </div>
   </section>
 
+  <!-- Group Booking Callout -->
+  <section class="section" style="background: linear-gradient(135deg, #0f2744 0%, #1a3a5c 100%); padding: var(--space-3xl) 0;">
+    <div class="container container--narrow">
+      <div style="display:flex;align-items:center;gap:var(--space-3xl);flex-wrap:wrap;">
+        <div style="flex:1;min-width:240px;">
+          <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(201,168,76,0.15);border:1px solid rgba(201,168,76,0.35);border-radius:100px;padding:6px 16px;margin-bottom:var(--space-lg);">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#c9a84c" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <span style="font-size:0.8125rem;font-weight:600;color:#c9a84c;letter-spacing:0.04em;text-transform:uppercase;">Group Bookings</span>
+          </div>
+          <h2 style="color:#fff;margin-bottom:var(--space-md);font-size:clamp(1.5rem,3vw,2rem);">Planning a Group Trip to the Snow?</h2>
+          <p style="color:rgba(255,255,255,0.75);font-size:var(--font-size-md);line-height:var(--line-height-relaxed);margin-bottom:0;">
+            Cascade Apartment 6 comfortably sleeps up to 6 guests — perfect for families, friend groups, and ski crews. With a queen bed, two single bunks, and two sofa beds, there's room for everyone to spread out and enjoy the mountain.
+          </p>
+        </div>
+        <div style="flex-shrink:0;text-align:center;">
+          <div style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:var(--space-xl) var(--space-2xl);margin-bottom:var(--space-lg);">
+            <div style="font-size:2.5rem;font-weight:700;color:#c9a84c;line-height:1;">6</div>
+            <div style="font-size:0.875rem;color:rgba(255,255,255,0.7);margin-top:4px;">guests max</div>
+          </div>
+          <a href="#contact" class="btn btn--primary btn--lg" style="white-space:nowrap;">Enquire About Group Booking</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Reviews -->
   <section class="section" id="reviews">
     <div class="container container--narrow">
@@ -572,7 +597,7 @@
     <div class="container container--narrow">
       <div style="text-align:center;margin-bottom:var(--space-2xl)">
         <h2 style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:var(--color-dark);margin-bottom:var(--space-sm)">Get in Touch</h2>
-        <p style="color:var(--color-gray);font-size:var(--font-size-md)">Have a question about the apartment? We'd love to hear from you.</p>
+        <p style="color:var(--color-gray);font-size:var(--font-size-md)">Have a question about the apartment or planning a group trip? We'd love to hear from you.</p>
       </div>
       <div id="contactSuccess" style="display:none;background:#ecfdf5;border:1px solid #6ee7b7;border-radius:10px;padding:20px 24px;text-align:center;margin-bottom:24px">
         <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:8px"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
@@ -604,9 +629,14 @@
         </div>
         <div style="margin-bottom:16px">
           <label for="contactSubject" style="display:block;font-size:0.875rem;font-weight:500;color:#374151;margin-bottom:6px">Subject</label>
-          <input type="text" id="contactSubject" name="subject"
-            style="width:100%;height:44px;padding:0 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:0.9375rem;font-family:inherit;color:#0f172a;background:#f8fafc;outline:none;transition:border-color 0.15s"
-            placeholder="Booking enquiry, availability question…">
+          <select id="contactSubject" name="subject"
+            style="width:100%;height:44px;padding:0 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:0.9375rem;font-family:inherit;color:#0f172a;background:#f8fafc;outline:none;transition:border-color 0.15s;cursor:pointer;appearance:auto">
+            <option value="General Enquiry">General Enquiry</option>
+            <option value="Group Booking Enquiry">Group Booking Enquiry</option>
+            <option value="Availability Question">Availability Question</option>
+            <option value="Cancellation / Changes">Cancellation / Changes</option>
+            <option value="Other">Other</option>
+          </select>
         </div>
         <div style="margin-bottom:24px">
           <label for="contactMessage" style="display:block;font-size:0.875rem;font-weight:500;color:#374151;margin-bottom:6px">Message *</label>
@@ -926,6 +956,20 @@
     })();
   </script>
   <script>
+  // Pre-select "Group Booking Enquiry" subject when arriving via group callout button
+  (function() {
+    document.querySelectorAll('a[href="#contact"]').forEach(function(a) {
+      if (a.textContent.trim().toLowerCase().indexOf('group') !== -1) {
+        a.addEventListener('click', function() {
+          setTimeout(function() {
+            var sel = document.getElementById('contactSubject');
+            if (sel) sel.value = 'Group Booking Enquiry';
+          }, 400);
+        });
+      }
+    });
+  })();
+
   // Contact form → /api/contact
   (function() {
     var form    = document.getElementById('contactForm');
@@ -936,7 +980,7 @@
     if (!form) return;
 
     // Focus styles
-    form.querySelectorAll('input, textarea').forEach(function(el) {
+    form.querySelectorAll('input, textarea, select').forEach(function(el) {
       el.addEventListener('focus',  function() { this.style.borderColor = '#0f2744'; this.style.background = '#fff'; });
       el.addEventListener('blur',   function() { this.style.borderColor = '#e2e8f0'; this.style.background = '#f8fafc'; });
     });
