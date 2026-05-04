@@ -863,7 +863,7 @@
     if (urlParams.get('checkout')) document.getElementById('checkoutDate').value = urlParams.get('checkout');
     if (urlParams.get('guests')) {
       var g = parseInt(urlParams.get('guests'));
-      if (g >= 1 && g <= 5) document.getElementById('numAdults').value = g;
+      if (g >= 1 && g <= 6) document.getElementById('numAdults').value = g;
     }
 
     // Set minimum check-in to today
@@ -879,8 +879,22 @@
       updateSummary();
     });
 
+    // Cap children so adults + children never exceed 6
+    function capChildren() {
+      var adults   = parseInt(document.getElementById('numAdults').value) || 1;
+      var maxKids  = Math.max(0, 6 - adults);
+      var childSel = document.getElementById('numChildren');
+      var cur      = parseInt(childSel.value) || 0;
+      Array.from(childSel.options).forEach(function(opt) {
+        opt.disabled = parseInt(opt.value) > maxKids;
+      });
+      if (cur > maxKids) { childSel.value = maxKids; }
+    }
+    document.getElementById('numAdults').addEventListener('change', function() { capChildren(); updateSummary(); });
+    capChildren();
+
     // Wire all change events
-    ['checkinDate','checkoutDate','numAdults','numChildren'].forEach(function(id) {
+    ['checkinDate','checkoutDate','numChildren'].forEach(function(id) {
       document.getElementById(id).addEventListener('change', updateSummary);
     });
     document.querySelectorAll('.addon-option input[type="checkbox"]').forEach(function(cb) {
