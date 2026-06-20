@@ -22,7 +22,7 @@
     "maxStay": 14,
     "advanceBookingDays": 365,
     "bookingCutoffHours": 24,
-    "maxGuestsPerBooking": 6
+    "maxGuestsPerBooking": 8
   },
   "cancellationPolicies": {
     "flexible": {
@@ -53,7 +53,7 @@
   },
   "fees": {
     "cleaningFee": 60,
-    "serviceFeePercent": 10,
+    "serviceFee": 50,
     "taxPercent": 0,
     "extraGuestFee": 0,
     "petFee": 0

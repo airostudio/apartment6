@@ -10,8 +10,8 @@ const DEFAULTS = {
   shoulder:      465,
   green:         200,
   cleaningFee:   60,
-  serviceRate:   10,
-  extraGuestFee: 50,
+  serviceRate:   50,
+  extraGuestFee: 0,
 };
 
 function toJS(row) {

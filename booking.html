@@ -409,7 +409,9 @@
                     <option value="3">3 Adults</option>
                     <option value="4">4 Adults</option>
                     <option value="5">5 Adults</option>
-                    <option value="6">6 Adults (max)</option>
+                    <option value="6">6 Adults</option>
+                    <option value="7">7 Adults</option>
+                    <option value="8">8 Adults (max)</option>
                   </select>
                 </div>
                 <div class="form-group">
@@ -672,9 +674,9 @@
     var RATE_PEAK_MIDWK= _r.peakMidweek  || 600;  // Peak Sun–Wed (Jun 15–Oct 1)
     var RATE_SHOULDER  = _r.shoulder     || 465;  // May 14–Jun 14, Oct 2–Nov 1
     var RATE_GREEN     = _r.green        || 200;  // All other dates (green/summer)
-    var EXTRA_GUEST_FEE= _r.extraGuestFee|| 50;   // Per extra guest per night (beyond 2 pax)
+    var EXTRA_GUEST_FEE= _r.extraGuestFee|| 0;    // No extra guest charge
     var CLEANING_FEE   = _r.cleaningFee  || 60;
-    var SERVICE_RATE   = (_r.serviceRate || 10) / 100;
+    var SERVICE_FEE    = _r.serviceRate  || 50;   // Flat service fee per booking
     var TAX_RATE       = 0.10;
     var PLATFORM_FEE_RATE = 0.015;  // 1.5% Stripe Connect platform fee
 
@@ -803,7 +805,7 @@
       });
 
       // Cleaning, service, tax, platform fee, total
-      var serviceFee   = Math.round(stay.accom * SERVICE_RATE);
+      var serviceFee   = SERVICE_FEE;
       var subtotal     = stay.accom + extraGuestTotal + addonsTotal + CLEANING_FEE + serviceFee;
       var tax          = Math.round(subtotal * TAX_RATE);
       var preTotalAmt  = subtotal + tax;
@@ -872,7 +874,7 @@
     if (urlParams.get('checkout')) document.getElementById('checkoutDate').value = urlParams.get('checkout');
     if (urlParams.get('guests')) {
       var g = parseInt(urlParams.get('guests'));
-      if (g >= 1 && g <= 6) document.getElementById('numAdults').value = g;
+      if (g >= 1 && g <= 8) document.getElementById('numAdults').value = g;
     }
 
     // Set minimum check-in to today
@@ -891,7 +893,7 @@
     // Cap children so adults + children never exceed 6
     function capChildren() {
       var adults   = parseInt(document.getElementById('numAdults').value) || 1;
-      var maxKids  = Math.max(0, 6 - adults);
+      var maxKids  = Math.max(0, 8 - adults);
       var childSel = document.getElementById('numChildren');
       var cur      = parseInt(childSel.value) || 0;
       Array.from(childSel.options).forEach(function(opt) {

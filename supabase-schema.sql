@@ -50,8 +50,8 @@ CREATE TABLE IF NOT EXISTS rates (
   shoulder        NUMERIC NOT NULL DEFAULT 465,
   green           NUMERIC NOT NULL DEFAULT 200,
   cleaning_fee    NUMERIC NOT NULL DEFAULT 60,
-  service_rate    NUMERIC NOT NULL DEFAULT 10,
-  extra_guest_fee NUMERIC NOT NULL DEFAULT 50
+  service_rate    NUMERIC NOT NULL DEFAULT 50,
+  extra_guest_fee NUMERIC NOT NULL DEFAULT 0
 );
 
 -- Seed the single rates row so GET always returns something

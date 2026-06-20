@@ -23,7 +23,7 @@
         {
           "id": "cascade-6-entire",
           "name": "Entire Apartment",
-          "maxGuests": 6,
+          "maxGuests": 8,
           "beds": 1,
           "bunks": 2,
           "sofaBeds": 2,

@@ -742,7 +742,7 @@
         var SHOULDER  = _r.shoulder     || 465;
         var GREEN     = _r.green        || 200;
         var CLEAN     = _r.cleaningFee  || 60;
-        var SVC       = (_r.serviceRate || 10) / 100;
+        var SVC       = _r.serviceRate || 50;
         var TAX       = 0.10;
         function rate(date) {
           var m = date.getMonth() + 1, d = date.getDate(), dow = date.getDay();
@@ -760,7 +760,7 @@
         if (n > 0) {
           var accom = 0, cur = new Date(ci);
           for (var i = 0; i < n; i++) { accom += rate(cur); cur.setDate(cur.getDate() + 1); }
-          var svc      = Math.round(accom * SVC);
+          var svc      = SVC;
           var subtotal = accom + CLEAN + svc;
           var tax      = Math.round(subtotal * TAX);
           var grand    = subtotal + tax;

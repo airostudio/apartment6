@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cascade Apartment 6 — Mt Baw Baw Alpine Resort</title>
-  <meta name="description" content="Book Cascade Apartment 6 at Mt Baw Baw Alpine Resort. Ground floor, self-contained, queen bed + bunk beds, sleeps 6, gas log fire, fully equipped kitchen. From $200/night.">
+  <meta name="description" content="Book Cascade Apartment 6 at Mt Baw Baw Alpine Resort. Ground floor, self-contained, queen bed + bunk beds, sleeps 6–8, gas log fire, fully equipped kitchen. From $200/night.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -12,11 +12,11 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Cascade Apartment 6">
   <meta property="og:title" content="Cascade Apartment 6 — Mt Baw Baw Alpine Resort">
-  <meta property="og:description" content="Ground floor, self-contained apartment. Queen bed, bunk beds, gas log fire, sleeps 6. From $220/night.">
+  <meta property="og:description" content="Ground floor, self-contained apartment. Queen bed, bunk beds, gas log fire, sleeps 6–8. From $220/night.">
   <meta property="og:image" content="/public/cascade6-1.jpg">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Cascade Apartment 6 — Mt Baw Baw Alpine Resort">
-  <meta name="twitter:description" content="Ground floor, self-contained apartment. Queen bed, bunk beds, gas log fire, sleeps 6. From $220/night.">
+  <meta name="twitter:description" content="Ground floor, self-contained apartment. Queen bed, bunk beds, gas log fire, sleeps 6–8. From $220/night.">
   <meta name="twitter:image" content="/public/cascade6-1.jpg">
   <style>
     /* Gallery */
@@ -740,7 +740,7 @@
               <div class="rate-note">Subject to change for events</div>
             </div>
           </div>
-          <p class="rates-footnote">* All rates are for the entire apartment, base rate for 2 guests. Additional guests charged at $50/night per person (max 6). Public holidays may attract peak rates. Contact us to confirm pricing for your dates.</p>
+          <p class="rates-footnote">* All rates are for the entire apartment (up to 8 guests, no extra per-person charge). Public holidays may attract peak rates. Contact us to confirm pricing for your dates.</p>
         </div>
 
         <!-- Reviews Tab -->
@@ -881,7 +881,9 @@
               <option>3 Guests</option>
               <option>4 Guests</option>
               <option>5 Guests</option>
-              <option>6 Guests (max)</option>
+              <option>6 Guests</option>
+              <option>7 Guests</option>
+              <option>8 Guests (max)</option>
             </select>
           </div>
         </div>
@@ -1008,7 +1010,7 @@
     if (params.get('guests')) {
       var sel = document.getElementById('guests');
       var g = parseInt(params.get('guests'));
-      if (g >= 1 && g <= 6) sel.selectedIndex = g - 1;
+      if (g >= 1 && g <= 8) sel.selectedIndex = g - 1;
     }
 
     // ── Book button ────────────────────────────────────────────────
@@ -1227,7 +1229,7 @@
       var SHOULDER  = _r.shoulder     || 465;
       var GREEN     = _r.green        || 200;
       var CLEAN     = _r.cleaningFee  || 60;
-      var SVC_PCT   = (_r.serviceRate || 10) / 100;
+      var SVC_FEE   = _r.serviceRate || 50;
 
       // Update rates tab display
       function setPriceEl(id, val) {
@@ -1271,7 +1273,7 @@
           nights++;
           cur.setDate(cur.getDate() + 1);
         }
-        var svc   = Math.round(accom * SVC_PCT);
+        var svc   = SVC_FEE;
         var total = accom + CLEAN + svc;
 
         document.getElementById('sbNightsLabel').textContent = '$' + Math.round(accom / nights) + ' avg x ' + nights + ' night' + (nights !== 1 ? 's' : '');
