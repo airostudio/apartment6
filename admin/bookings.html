@@ -300,7 +300,10 @@
                         <option value="2" selected>2 Guests</option>
                         <option value="3">3 Guests</option>
                         <option value="4">4 Guests</option>
-                        <option value="5">5 Guests (max)</option>
+                        <option value="5">5 Guests</option>
+                        <option value="6">6 Guests</option>
+                        <option value="7">7 Guests</option>
+                        <option value="8">8 Guests (max)</option>
                     </select>
                 </div>
                 <div class="bk-form-group">
@@ -396,7 +399,7 @@
     function calcTotal(checkin, checkout) {
         if (!checkin || !checkout) return 0;
         var r = getRates();
-        var PW = r.peakWeekend || 800, PM = r.peakMidweek || 600, SH = r.shoulder || 465, GR = r.green || 200, CLEAN = r.cleaningFee || 60, SVC = (r.serviceRate || 10) / 100;
+        var PW = r.peakWeekend || 800, PM = r.peakMidweek || 600, SH = r.shoulder || 465, GR = r.green || 200, CLEAN = r.cleaningFee || 60, SVC = r.serviceRate || 50;
         var ci = new Date(checkin + 'T00:00:00'), co = new Date(checkout + 'T00:00:00');
         if (co <= ci) return 0;
         var accom = 0, cur = new Date(ci);
@@ -409,7 +412,7 @@
             else accom += GR;
             cur.setDate(cur.getDate() + 1);
         }
-        return Math.round(accom + CLEAN + accom * SVC);
+        return Math.round(accom + CLEAN + SVC);
     }
 
     // ── ID generator ─────────────────────────────────────────────────────────

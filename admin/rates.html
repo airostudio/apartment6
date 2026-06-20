@@ -215,21 +215,21 @@
                                 </tr>
                                 <tr>
                                     <td><span class="fee-name">Service Fee</span></td>
-                                    <td><span class="badge badge-info">% of accommodation</span></td>
+                                    <td><span class="badge badge-info">Per Booking (flat)</span></td>
                                     <td>
                                         <div style="display:flex;align-items:center;gap:6px;">
-                                            <input type="number" id="feeService" min="0" max="100" step="1" class="form-input" style="width:110px;padding:6px 10px;font-size:1rem;font-weight:600;" placeholder="10">
-                                            <span style="font-weight:600;color:#555;">%</span>
+                                            <span style="font-weight:600;color:#555;">$</span>
+                                            <input type="number" id="feeService" min="0" step="1" class="form-input" style="width:110px;padding:6px 10px;font-size:1rem;font-weight:600;" placeholder="50">
                                         </div>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td><span class="fee-name">Extra Guest Fee</span></td>
-                                    <td><span class="badge badge-info">Per person / per night (beyond 2 pax)</span></td>
+                                    <td><span class="badge badge-info">Included (no extra charge)</span></td>
                                     <td>
                                         <div style="display:flex;align-items:center;gap:6px;">
                                             <span style="font-weight:600;color:#555;">$</span>
-                                            <input type="number" id="feeExtraGuest" min="0" step="1" class="form-input" style="width:110px;padding:6px 10px;font-size:1rem;font-weight:600;" placeholder="50">
+                                            <input type="number" id="feeExtraGuest" min="0" step="1" class="form-input" style="width:110px;padding:6px 10px;font-size:1rem;font-weight:600;" placeholder="0">
                                         </div>
                                     </td>
                                 </tr>
@@ -245,7 +245,7 @@
                     <div style="display:flex;align-items:flex-start;gap:12px;">
                         <svg viewBox="0 0 24 24" fill="none" stroke="#1a73a7" stroke-width="2" style="width:20px;height:20px;flex-shrink:0;margin-top:2px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                         <div style="font-size:0.9rem;color:#1a3a5c;line-height:1.6;">
-                            <strong>How rates work:</strong> Each night of the stay is priced individually. During <strong>Peak Winter (Jun 15 – Oct 1)</strong>, Thu/Fri/Sat nights use the Weekend rate and Sun–Wed nights use the Midweek rate. <strong>Shoulder</strong> (May 14–Jun 14 &amp; Oct 2–Nov 1) and <strong>Green Season</strong> are flat daily rates. The Extra Guest Fee is added automatically per additional guest per night beyond the 2-pax base rate. Rates are saved to the database and applied instantly across the entire site.
+                            <strong>How rates work:</strong> Each night of the stay is priced individually. During <strong>Peak Winter (Jun 15 – Oct 1)</strong>, Thu/Fri/Sat nights use the Weekend rate and Sun–Wed nights use the Midweek rate. <strong>Shoulder</strong> (May 14–Jun 14 &amp; Oct 2–Nov 1) and <strong>Green Season</strong> are flat daily rates. The <strong>Service Fee</strong> is a flat dollar amount added once per booking (not a percentage). <strong>Extra Guest Fee is $0</strong> — all guests up to 8 are included in the room rate. Rates are saved to the database and applied instantly across the entire site.
                         </div>
                     </div>
                 </div>
@@ -266,8 +266,8 @@
             shoulder:      465,
             green:         200,
             cleaningFee:    60,
-            serviceRate:    10,
-            extraGuestFee:  50
+            serviceRate:    50,
+            extraGuestFee:  0
         };
 
         function populateForm(r) {
