@@ -110,5 +110,10 @@
     sendBookingEmail(bk) {
       return api('/api/booking-email', { method: 'POST', ...json(bk) }).catch(() => null);
     },
+
+    // ── Tax Invoice ───────────────────────────────────────────────────────
+    sendTaxInvoice(id) {
+      return api('/api/tax-invoice', { method: 'POST', ...adminJson({ id: id }) });
+    },
   };
 })();
