@@ -112,6 +112,9 @@
     },
 
     // ── Tax Invoice ───────────────────────────────────────────────────────
+    previewTaxInvoice(id) {
+      return api('/api/tax-invoice?id=' + encodeURIComponent(id), adminOpts());
+    },
     sendTaxInvoice(id) {
       return api('/api/tax-invoice', { method: 'POST', ...adminJson({ id: id }) });
     },
