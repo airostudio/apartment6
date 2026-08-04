@@ -5,30 +5,23 @@ module.exports = async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { amountCents, platformFeeCents, currency = 'aud' } = req.body;
+  const { amountCents, currency = 'aud' } = req.body;
 
   if (!amountCents || amountCents < 50) {
     return res.status(400).json({ error: 'Invalid amount' });
   }
 
   try {
-    const params = {
+    const paymentIntent = await stripe.paymentIntents.create({
       amount:   Math.round(amountCents),
       currency,
       automatic_payment_methods: { enabled: true },
-    };
+    });
 
-    // Stripe Connect: transfer to the property's connected account,
-    // retaining the platform fee. STRIPE_CONNECTED_ACCOUNT_ID is set
-    // in the Vercel environment variables.
-    const connectedAccountId = process.env.STRIPE_CONNECTED_ACCOUNT_ID;
-    if (connectedAccountId) {
-      params.application_fee_amount = Math.round(platformFeeCents || amountCents * 0.015);
-      params.transfer_data          = { destination: connectedAccountId };
-    }
-
-    const paymentIntent = await stripe.paymentIntents.create(params);
-    return res.status(200).json({ clientSecret: paymentIntent.client_secret });
+    return res.status(200).json({
+      clientSecret:   paymentIntent.client_secret,
+      publishableKey: process.env.STRIPE_PUBLISHABLE_KEY || '',
+    });
   } catch (err) {
     console.error('Stripe PaymentIntent error:', err.message);
     return res.status(500).json({ error: err.message });

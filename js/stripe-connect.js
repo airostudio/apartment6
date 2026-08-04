@@ -19,10 +19,11 @@
     stripe: null,
     elements: null,
     cardElement: null,
+    testMode: false,
 
-    // Configuration (would be set from server/environment)
+    // Configuration — key loaded dynamically from /api/stripe-config
     config: {
-      publishableKey: 'pk_test_51R90aVH4Fz8ujmcvLLzSFR1gbn30oN9qpk140e282tN6sPe4fr7HWFd7OBI1MYFhlx2CkvKQtJuzqotd6w5lFuVr00yPKpDnMG',
+      publishableKey: '',
       locale: 'en-AU',
       currency: 'aud',
       appearance: {
@@ -40,11 +41,29 @@
     },
 
     /**
-     * Initialize Stripe
+     * Initialize Stripe — loads publishable key from server first
      */
-    init() {
+    async init() {
       if (typeof Stripe === 'undefined') {
         console.warn('Stripe.js not loaded. Payment processing unavailable.');
+        this.showPlaceholder();
+        return;
+      }
+
+      // Fetch live/test key from server so it stays out of client code
+      try {
+        const cfg = await fetch('/api/stripe-config').then(r => r.json());
+        this.config.publishableKey = cfg.publishableKey || '';
+        this.testMode = !!cfg.testMode;
+
+        // Show test-mode warning banner if present on the page
+        const banner = document.getElementById('stripeTestBanner');
+        if (banner) banner.style.display = this.testMode ? 'block' : 'none';
+      } catch (e) {
+        console.warn('Could not load Stripe config:', e.message);
+      }
+
+      if (!this.config.publishableKey) {
         this.showPlaceholder();
         return;
       }
@@ -293,11 +312,12 @@
 
         if (result.success) {
           // ── Save confirmed booking to localStorage ──────────────────────
-          let confirmedRef = 'TRA-' + new Date().getFullYear() + '-' + String(Date.now()).slice(-5);
+          let confirmedRef = 'CA6-' + new Date().getFullYear() + '-' + String(Date.now()).slice(-5);
+          let confirmedBk  = null;
           try {
             const pending = JSON.parse(sessionStorage.getItem('cascade6_pending_booking') || 'null');
             if (pending) {
-              const bk = {
+              confirmedBk = {
                 id:              'bk-' + Date.now(),
                 ref:             confirmedRef,
                 name:            pending.guestName       || 'Guest',
@@ -320,13 +340,23 @@
                 bookedAt:        new Date().toISOString()
               };
               const existing = JSON.parse(localStorage.getItem('cascade6_bookings') || '[]');
-              existing.push(bk);
+              existing.push(confirmedBk);
               localStorage.setItem('cascade6_bookings', JSON.stringify(existing));
-              sessionStorage.setItem('cascade6_confirmed_booking', JSON.stringify(bk));
+              sessionStorage.setItem('cascade6_confirmed_booking', JSON.stringify(confirmedBk));
               sessionStorage.removeItem('cascade6_pending_booking');
-              confirmedRef = bk.ref;
+              confirmedRef = confirmedBk.ref;
             }
           } catch(e) { /* non-critical — proceed to confirmation */ }
+          // ────────────────────────────────────────────────────────────────
+
+          // ── Send confirmation emails via API (fire-and-forget) ──────────
+          if (confirmedBk) {
+            fetch('/api/booking-email', {
+              method:  'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body:    JSON.stringify(confirmedBk),
+            }).catch(() => {}); // non-critical
+          }
           // ────────────────────────────────────────────────────────────────
 
           window.TrendAccom?.showToast('Payment successful!', 'success');

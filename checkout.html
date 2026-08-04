@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Checkout - Cascade Apartment 6</title>
-  <meta name="description" content="Securely complete your booking payment with Cascade Apartment 6 powered by Stripe Connect.">
+  <meta name="description" content="Securely complete your booking payment for Cascade Apartment 6. Powered by Stripe.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/main.css">
-  <!-- Stripe.js must load before stripe-connect.js -->
+  <!-- Stripe.js must load before stripe payment script -->
   <script src="https://js.stripe.com/v3/"></script>
   <style>
     /* ── Progress Steps ── */
@@ -329,11 +329,11 @@
     <meta property="og:site_name" content="Cascade Apartment 6">
     <meta property="og:title" content="Checkout — Cascade Apartment 6">
     <meta property="og:description" content="Secure payment powered by Stripe. Your booking details are protected.">
-    <meta property="og:image" content="https://app.cascadeapartments.com.au/public/cascade6-1.jpg">
+    <meta property="og:image" content="https://www.cascade6.online/public/cascade6-1.jpg">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Checkout — Cascade Apartment 6">
     <meta name="twitter:description" content="Secure payment powered by Stripe. Your booking details are protected.">
-    <meta name="twitter:image" content="https://app.cascadeapartments.com.au/public/cascade6-1.jpg">
+    <meta name="twitter:image" content="https://www.cascade6.online/public/cascade6-1.jpg">
 </head>
 <body>
   <!-- Header -->
@@ -384,6 +384,12 @@
   <main class="checkout-page-content">
     <div class="container">
 
+      <!-- Test Mode Warning (shown by stripe-connect.js when test keys active) -->
+      <div id="stripeTestBanner" style="display:none;background:#fef3c7;border:1px solid #f59e0b;border-radius:8px;padding:12px 16px;margin-bottom:1rem;display:flex;align-items:center;gap:10px">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <span style="color:#92400e;font-size:0.875rem"><strong>TEST MODE</strong> — Use card 4242 4242 4242 4242, any future date &amp; any CVC. No real payments will be charged.</span>
+      </div>
+
       <!-- Progress Steps -->
       <div class="progress-steps">
         <div class="progress-step progress-step--completed">
@@ -404,6 +410,15 @@
         </div>
       </div>
 
+      <!-- Linen Notice -->
+      <div style="background:#fff7ed;border:2px solid #f59e0b;border-radius:12px;padding:18px 20px;display:flex;gap:14px;align-items:flex-start;margin-bottom:24px;max-width:700px;margin-left:auto;margin-right:auto;">
+        <svg style="flex-shrink:0;margin-top:1px" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <div>
+          <p style="margin:0 0 6px;font-weight:700;font-size:0.9375rem;color:#92400e;">Reminder: BYO Linen &amp; Towels</p>
+          <p style="margin:0;font-size:0.875rem;color:#78350f;line-height:1.55;">Don't forget to pack your own bed linen and towels for all guests. Doonas, blankets and pillows are provided for all beds. <a href="what-to-bring.html" style="color:#92400e;font-weight:600;">See full packing guide &rarr;</a></p>
+        </div>
+      </div>
+
       <!-- Two Column Layout -->
       <div class="checkout-layout">
 
@@ -420,6 +435,9 @@
                 <input type="text" id="cardHolderName" name="cardHolderName" placeholder="Name as it appears on your card" required>
               </div>
 
+              <div id="stripeTestBanner" style="display:none;background:#fef9c3;border:1px solid #fde047;border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:0.8125rem;color:#713f12;">
+                <strong>Test mode:</strong> Use card <code style="background:#fef3c7;padding:1px 4px;border-radius:3px;">4242 4242 4242 4242</code>, any future expiry, any CVC. Real payments are <strong>not</strong> processed.
+              </div>
               <div class="form-group">
                 <label>Card Details *</label>
                 <div class="stripe-card-element" id="stripe-card-element">
@@ -437,7 +455,7 @@
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>
                 </svg>
-                <p>Your payment is securely processed by <strong>Stripe Connect</strong>. Cascade Apartment 6 never stores your full card details. Funds are transferred directly to the property host via Stripe's secure payment platform.</p>
+                <p>Your payment is securely processed by <strong>Stripe</strong>. Cascade Apartment 6 never stores your full card details. Payments go directly to the property owner via Stripe's secure payment platform.</p>
               </div>
             </div>
 
@@ -463,7 +481,6 @@
 
               <!-- Hidden field: carries the authoritative grand total (in cents) to the payment handler -->
               <input type="hidden" id="bookingAmountCents" name="amount" value="0">
-              <input type="hidden" id="platformFeeCents"   name="platformFeeCents" value="0">
 
               <div class="form-row">
                 <div class="form-group">
@@ -550,10 +567,6 @@
               <span>GST (10%)</span>
               <span id="coValTax">—</span>
             </div>
-            <div class="price-row" id="coRowPlatformFee" style="display:none">
-              <span>Booking fee (1.5%)</span>
-              <span id="coValPlatformFee">—</span>
-            </div>
             <div class="price-row price-row--total" id="coRowTotal" style="display:none">
               <span>Total</span>
               <span id="coValTotal">—</span>
@@ -625,15 +638,15 @@
           <div class="footer-links">
             <a href="https://www.mountbawbaw.com.au" target="_blank" rel="noopener noreferrer">Resort Website</a>
             <a href="https://www.mountbawbaw.com.au/snow-conditions/" target="_blank" rel="noopener noreferrer">Snow Conditions</a>
-            <a href="https://www.cascadeapartments.com.au" target="_blank" rel="noopener noreferrer">Cascade Apartments</a>
+            <a href="https://www.cascade6.online" target="_blank" rel="noopener noreferrer">Cascade Apartments</a>
           </div>
         </div>
         <div>
           <h4 class="footer-heading">Contact &amp; Info</h4>
           <div class="footer-links">
-            <a href="mailto:info@cascadeapartments.com.au">Email Us</a>
-            <a href="mailto:info@cascadeapartments.com.au">Cancellation Policy</a>
-            <a href="mailto:info@cascadeapartments.com.au">Terms of Stay</a>
+            <a href="mailto:hello@cascade6.online">Email Us</a>
+            <a href="mailto:hello@cascade6.online">Cancellation Policy</a>
+            <a href="mailto:hello@cascade6.online">Terms of Stay</a>
             <a href="admin/login.html">Owner Login</a>
           </div>
         </div>
@@ -645,7 +658,8 @@
   </footer>
 
   <script src="js/app.js"></script>
-  <script src="js/stripe-connect.js"></script>
+  <script src="js/db.js"></script>
+  <script src="js/stripe.js"></script>
   <script>
   // ── Populate checkout order summary ──────────────────────────────────────
   (function() {
@@ -676,11 +690,6 @@
       var el = document.getElementById('bookingAmountCents');
       if (el) el.value = Math.round(dollars * 100);
     }
-    function setPlatformFee(dollars) {
-      var el = document.getElementById('platformFeeCents');
-      if (el) el.value = Math.round(dollars * 100);
-    }
-
     // Dates & guests header
     setHTML('coCheckin',  '<strong>Check-in:</strong> '  + fmtDate(checkin));
     setHTML('coCheckout', '<strong>Check-out:</strong> ' + fmtDate(checkout));
@@ -714,69 +723,61 @@
         });
       }
 
-      setText('coValCleaning',     fmtMoney(pending.cleaning));
-      setText('coValService',      fmtMoney(pending.service));
-      setText('coValTax',          fmtMoney(pending.tax));
-      setText('coValPlatformFee',  fmtMoney(pending.platformFee || 0));
-      setText('coValTotal',        fmtMoney(grand));
-      ['coRowNightly','coRowCleaning','coRowService','coRowTax','coRowPlatformFee','coRowTotal'].forEach(show);
+      setText('coValCleaning', fmtMoney(pending.cleaning));
+      setText('coValService',  fmtMoney(pending.service));
+      setText('coValTax',      fmtMoney(pending.tax));
+      setText('coValTotal',    fmtMoney(grand));
+      ['coRowNightly','coRowCleaning','coRowService','coRowTax','coRowTotal'].forEach(show);
       hide('coNoDates');
 
       setText('payNowLabel', 'Pay Now — ' + fmtMoney(grand));
       setAmount(grand);
-      setPlatformFee(pending.platformFee || 0);
 
     } else if (checkin && checkout) {
       // Fallback: recalculate base price from dates (no addon data available)
-      var _r = (function() {
-        try { return JSON.parse(localStorage.getItem('cascade6_rates') || 'null'); } catch(e) { return null; }
-      })() || {};
-      var PEAK_WKND = _r.peakWeekend  || 800;
-      var PEAK_MIDWK= _r.peakMidweek  || 600;
-      var SHOULDER  = _r.shoulder     || 465;
-      var GREEN     = _r.green        || 200;
-      var CLEAN     = _r.cleaningFee  || 60;
-      var SVC       = (_r.serviceRate || 10) / 100;
-      var TAX       = 0.10;
-      var PFEE      = 0.015;
+      DB.getRates().then(function(_r) {
+        _r = _r || {};
+        var PEAK_WKND = _r.peakWeekend  || 800;
+        var PEAK_MIDWK= _r.peakMidweek  || 600;
+        var SHOULDER  = _r.shoulder     || 465;
+        var GREEN     = _r.green        || 200;
+        var CLEAN     = _r.cleaningFee  || 60;
+        var SVC       = _r.serviceRate || 50;
+        var TAX       = 0.10;
+        function rate(date) {
+          var m = date.getMonth() + 1, d = date.getDate(), dow = date.getDay();
+          var isPeak = (m === 6 && d >= 15) || (m >= 7 && m <= 9) || (m === 10 && d <= 1);
+          var isShoulder = (m === 5 && d >= 14) || (m === 6 && d <= 14) ||
+                           (m === 10 && d >= 2) || (m === 11 && d === 1);
+          if (isPeak) return (dow >= 4) ? PEAK_WKND : PEAK_MIDWK;
+          if (isShoulder) return SHOULDER;
+          return GREEN;
+        }
 
-      function rate(date) {
-        var m = date.getMonth() + 1, d = date.getDate(), dow = date.getDay();
-        var isPeak = (m === 6 && d >= 15) || (m >= 7 && m <= 9) || (m === 10 && d <= 1);
-        var isShoulder = (m === 5 && d >= 14) || (m === 6 && d <= 14) ||
-                         (m === 10 && d >= 2) || (m === 11 && d === 1);
-        if (isPeak) return (dow >= 4) ? PEAK_WKND : PEAK_MIDWK;
-        if (isShoulder) return SHOULDER;
-        return GREEN;
-      }
+        var ci = new Date(checkin + 'T00:00:00');
+        var co = new Date(checkout + 'T00:00:00');
+        var n = Math.round((co - ci) / 86400000);
+        if (n > 0) {
+          var accom = 0, cur = new Date(ci);
+          for (var i = 0; i < n; i++) { accom += rate(cur); cur.setDate(cur.getDate() + 1); }
+          var svc      = SVC;
+          var subtotal = accom + CLEAN + svc;
+          var tax      = Math.round(subtotal * TAX);
+          var grand    = subtotal + tax;
 
-      var ci = new Date(checkin + 'T00:00:00');
-      var co = new Date(checkout + 'T00:00:00');
-      var n = Math.round((co - ci) / 86400000);
-      if (n > 0) {
-        var accom = 0, cur = new Date(ci);
-        for (var i = 0; i < n; i++) { accom += rate(cur); cur.setDate(cur.getDate() + 1); }
-        var svc         = Math.round(accom * SVC);
-        var subtotal    = accom + CLEAN + svc;
-        var tax         = Math.round(subtotal * TAX);
-        var preTotal    = subtotal + tax;
-        var platformFee = Math.round(preTotal * PFEE);
-        var grand       = preTotal + platformFee;
+          setText('coLblNightly',  fmtMoney(Math.round(accom / n)) + ' avg × ' + n + ' night' + (n !== 1 ? 's' : ''));
+          setText('coValNightly',  fmtMoney(accom));
+          setText('coValCleaning', fmtMoney(CLEAN));
+          setText('coValService',  fmtMoney(svc));
+          setText('coValTax',      fmtMoney(tax));
+          setText('coValTotal',    fmtMoney(grand));
+          ['coRowNightly','coRowCleaning','coRowService','coRowTax','coRowTotal'].forEach(show);
+          hide('coNoDates');
 
-        setText('coLblNightly',     fmtMoney(Math.round(accom / n)) + ' avg × ' + n + ' night' + (n !== 1 ? 's' : ''));
-        setText('coValNightly',     fmtMoney(accom));
-        setText('coValCleaning',    fmtMoney(CLEAN));
-        setText('coValService',     fmtMoney(svc));
-        setText('coValTax',         fmtMoney(tax));
-        setText('coValPlatformFee', fmtMoney(platformFee));
-        setText('coValTotal',       fmtMoney(grand));
-        ['coRowNightly','coRowCleaning','coRowService','coRowTax','coRowPlatformFee','coRowTotal'].forEach(show);
-        hide('coNoDates');
-
-        setText('payNowLabel', 'Pay Now — ' + fmtMoney(grand));
-        setAmount(grand);
-        setPlatformFee(platformFee);
-      }
+          setText('payNowLabel', 'Pay Now — ' + fmtMoney(grand));
+          setAmount(grand);
+        }
+      });
     }
   })();
   </script>

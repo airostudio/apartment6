@@ -2,222 +2,452 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-    <base href="/admin/">
+  <base href="/admin/">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Properties - Cascade Apartment 6 Admin</title>
+  <title>Property Settings — Cascade Apartment 6 Admin</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../css/main.css">
   <link rel="stylesheet" href="../css/admin.css">
+  <style>
+    .prop-section { background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; }
+    .prop-section h2 { font-size: 0.9375rem; font-weight: 700; color: #0f172a; margin-bottom: 1.25rem; padding-bottom: 0.75rem; border-bottom: 1px solid #f1f5f9; }
+    .ps-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .ps-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+    @media (max-width: 700px) { .ps-grid, .ps-grid-3 { grid-template-columns: 1fr; } }
+    .ps-full { grid-column: 1 / -1; }
+    .ps-label { display: block; font-size: 0.8125rem; font-weight: 600; color: #374151; margin-bottom: 0.375rem; }
+    .ps-hint  { font-size: 0.75rem; color: #94a3b8; margin-top: 0.25rem; }
+    .ps-input, .ps-select, .ps-textarea {
+      width: 100%; border: 1.5px solid #e2e8f0; border-radius: 8px;
+      padding: 0 0.875rem; font-size: 0.875rem; font-family: inherit; color: #0f172a;
+      background: #f8fafc; outline: none; transition: border-color 0.15s;
+    }
+    .ps-input, .ps-select { height: 40px; }
+    .ps-textarea { padding: 0.625rem 0.875rem; resize: vertical; min-height: 80px; }
+    .ps-input:focus, .ps-select:focus, .ps-textarea:focus { border-color: #0f2744; background: #fff; }
+    .save-bar { position: sticky; bottom: 0; background: #fff; border-top: 1px solid #e2e8f0; padding: 1rem 1.5rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; z-index: 10; }
+    .save-toast { font-size: 0.8125rem; color: #16a34a; display: none; }
+    .amenity-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
+    @media (max-width: 600px) { .amenity-grid { grid-template-columns: 1fr 1fr; } }
+    .amenity-cb { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8125rem; color: #374151; cursor: pointer; }
+    .amenity-cb input[type="checkbox"] { width: 16px; height: 16px; accent-color: #0f2744; flex-shrink: 0; }
+    .img-preview-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; margin-top: 0.75rem; }
+    @media (max-width: 600px) { .img-preview-grid { grid-template-columns: repeat(2, 1fr); } }
+    .img-thumb { aspect-ratio: 4/3; border-radius: 8px; overflow: hidden; background: #f1f5f9; position: relative; }
+    .img-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .img-thumb-label { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(15,23,42,0.65); color: #fff; font-size: 0.65rem; padding: 4px 6px; text-align: center; }
+  </style>
 </head>
 <body class="admin-body">
-  <div class="admin-layout">
+<div class="admin-layout">
 
-    <!-- Sidebar -->
-    <aside class="admin-sidebar">
-        <div class="admin-sidebar__header">
-            <a href="index.html" class="admin-sidebar__logo">
-                <span class="admin-sidebar__logo-text">Cascade Apartment 6</span>
-                <span class="admin-sidebar__logo-badge">Admin</span>
-            </a>
-        </div>
-        <nav class="admin-sidebar__nav">
-            <div class="admin-sidebar__section">
-                <span class="admin-sidebar__section-title">MAIN</span>
-                <ul class="admin-sidebar__menu">
-                    <li class="admin-sidebar__menu-item"><a href="index.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg><span>Dashboard</span></a></li>
-                    <li class="admin-sidebar__menu-item"><a href="properties.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>Properties</span></a></li>
-                    <li class="admin-sidebar__menu-item"><a href="bookings.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg><span>Bookings</span></a></li>
-                    <li class="admin-sidebar__menu-item"><a href="calendar.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>Calendar</span></a></li>
-                </ul>
-            </div>
-            <div class="admin-sidebar__section">
-                <span class="admin-sidebar__section-title">MANAGEMENT</span>
-                <ul class="admin-sidebar__menu">
-                    <li class="admin-sidebar__menu-item"><a href="rates.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg><span>Rates &amp; Pricing</span></a></li>
-                    <li class="admin-sidebar__menu-item"><a href="guests.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Guests</span></a></li>
-                    <li class="admin-sidebar__menu-item"><a href="reviews.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><span>Reviews</span></a></li>
-                </ul>
-            </div>
-            <div class="admin-sidebar__section">
-                <span class="admin-sidebar__section-title">INTEGRATIONS</span>
-                <ul class="admin-sidebar__menu">
-                    <li class="admin-sidebar__menu-item"><a href="ical-sync.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg><span>iCal Sync</span></a></li>
-                    <li class="admin-sidebar__menu-item"><a href="stripe-connect.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg><span>Stripe Connect</span></a></li>
-                </ul>
-            </div>
-            <div class="admin-sidebar__section">
-                <span class="admin-sidebar__section-title">SYSTEM</span>
-                <ul class="admin-sidebar__menu">
-                    <li class="admin-sidebar__menu-item"><a href="settings.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span>Settings</span></a></li>
-                    <li class="admin-sidebar__menu-item"><a href="reports.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg><span>Reports</span></a></li>
-                </ul>
-            </div>
-        </nav>
-    </aside>
-
-    <!-- Main Content -->
-    <div class="admin-main">
-
-      <!-- Top Bar -->
-      <header class="admin-topbar">
-            <div class="admin-topbar__breadcrumb">
-                <a href="index.html" class="admin-topbar__breadcrumb-link">Dashboard</a>
-                <span class="admin-topbar__breadcrumb-separator">&rsaquo;</span>
-                <span class="admin-topbar__breadcrumb-current">Properties</span>
-            </div>
-            <div class="admin-topbar__actions">
-                <div class="admin-topbar__user">
-                    <div class="admin-topbar__user-avatar">AD</div>
-                    <span class="admin-topbar__user-name">Admin</span>
-                </div>
-            </div>
-        </header>
-
-      <!-- Content Area -->
-      <main class="admin-content">
-
-        <!-- Page Header -->
-        <div class="admin-page-header">
-          <div class="admin-page-header-text">
-            <h1 class="admin-page-title">Properties</h1>
-            <p class="admin-page-subtitle">Manage your accommodation listings</p>
-          </div>
-          <a href="property-edit.html" class="btn btn-primary admin-page-action" id="addNewPropBtn" style="display:none;">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="btn-icon">
-              <line x1="12" y1="5" x2="12" y2="19"></line>
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-            </svg>
-            Add New Property
-          </a>
-        </div>
-
-        <!-- Filter Bar -->
-        <div class="admin-card" style="margin-bottom: var(--space-xl);">
-          <div class="admin-card-body" style="padding: var(--space-md) var(--space-xl);">
-            <div style="display: flex; align-items: center; gap: var(--space-md); flex-wrap: wrap;">
-              <div style="flex: 1; min-width: 200px;">
-                <input type="text" class="form-input" placeholder="Search properties..." style="width: 100%; height: 40px;">
-              </div>
-              <select class="form-select" style="width: 180px; height: 40px;">
-                <option>All Types</option>
-                <option>Hotel</option>
-                <option>Motel</option>
-                <option>Apartment</option>
-                <option>Pub</option>
-                <option>Caravan Park</option>
-                <option>Holiday Park</option>
-              </select>
-              <select class="form-select" style="width: 140px; height: 40px;">
-                <option>All Status</option>
-                <option>Active</option>
-                <option>Draft</option>
-                <option>Inactive</option>
-              </select>
-              <select class="form-select" style="width: 160px; height: 40px;">
-                <option>Sort: Newest</option>
-                <option>Sort: Oldest</option>
-                <option>Sort: Name A-Z</option>
-                <option>Sort: Name Z-A</option>
-                <option>Sort: Revenue</option>
-                <option>Sort: Occupancy</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        <!-- Properties Table -->
-        <div class="admin-card">
-          <div class="admin-card-header">
-            <h2>All Properties</h2>
-            <span style="font-size: var(--font-size-sm); color: var(--color-gray);">1 property</span>
-          </div>
-          <div style="overflow-x: auto;">
-            <table class="table">
-              <thead>
-                <tr>
-                  <th style="min-width: 280px;">Property</th>
-                  <th>Type</th>
-                  <th>Status</th>
-                  <th>Rooms</th>
-                  <th style="min-width: 160px;">Occupancy</th>
-                  <th>Revenue</th>
-                  <th style="min-width: 100px;">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-
-                <!-- Row 1: Cascade Apartment 6 -->
-                <tr>
-                  <td>
-                    <div style="display: flex; align-items: center; gap: var(--space-md);">
-                      <div class="admin-property-thumb">
-                        <img src="../public/cascade6-1.jpg" alt="Cascade Apartment 6" style="width: 80px; height: 60px; object-fit: cover; border-radius: var(--radius-md);">
-                      </div>
-                      <div class="admin-property-info">
-                        <h4>Cascade Apartment 6</h4>
-                        <p>Mt Baw Baw Alpine Resort, VIC</p>
-                      </div>
-                    </div>
-                  </td>
-                  <td><span class="badge badge--warning">Apartment</span></td>
-                  <td><span class="badge badge--success">Active</span></td>
-                  <td>1</td>
-                  <td>
-                    <div style="display: flex; align-items: center; gap: var(--space-sm);">
-                      <div style="flex: 1; height: 6px; background: var(--color-light); border-radius: var(--radius-full); overflow: hidden;">
-                        <div style="width: 87%; height: 100%; background: var(--color-success); border-radius: var(--radius-full);"></div>
-                      </div>
-                      <span style="font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); color: var(--color-success);">87%</span>
-                    </div>
-                  </td>
-                  <td style="font-weight: var(--font-weight-semibold);">$124,500</td>
-                  <td>
-                    <div style="display: flex; gap: var(--space-sm);">
-                      <a href="property-edit.html" class="btn btn--sm btn--ghost" title="Edit property" style="padding: var(--space-xs);">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                      </a>
-                      <a href="../property.html" target="_blank" class="btn btn--sm btn--ghost" title="View on website" style="padding: var(--space-xs);">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                      </a>
-                    </div>
-                  </td>
-                </tr>
-
-
-              </tbody>
-            </table>
-          </div>
-
-          <!-- Pagination -->
-          <div class="admin-card-footer">
-            <span style="font-size: var(--font-size-sm); color: var(--color-gray);">Showing 1 of 1 property</span>
-          </div>
-        </div>
-
-      </main>
+  <!-- Sidebar -->
+  <aside class="admin-sidebar">
+    <div class="admin-sidebar__header">
+      <a href="index.html" class="admin-sidebar__logo">
+        <span class="admin-sidebar__logo-text">Cascade Apartment 6</span>
+        <span class="admin-sidebar__logo-badge">Admin</span>
+      </a>
     </div>
+    <nav class="admin-sidebar__nav">
+      <div class="admin-sidebar__section">
+        <span class="admin-sidebar__section-title">MAIN</span>
+        <ul class="admin-sidebar__menu">
+          <li class="admin-sidebar__menu-item"><a href="index.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg><span>Dashboard</span></a></li>
+          <li class="admin-sidebar__menu-item admin-sidebar__menu-item--active"><a href="properties.html" class="admin-sidebar__menu-link admin-sidebar__menu-link--active"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>Property Settings</span></a></li>
+          <li class="admin-sidebar__menu-item"><a href="bookings.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg><span>Bookings</span></a></li>
+          <li class="admin-sidebar__menu-item"><a href="calendar.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>Calendar</span></a></li>
+        </ul>
+      </div>
+      <div class="admin-sidebar__section">
+        <span class="admin-sidebar__section-title">MANAGEMENT</span>
+        <ul class="admin-sidebar__menu">
+          <li class="admin-sidebar__menu-item"><a href="rates.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg><span>Rates &amp; Pricing</span></a></li>
+          <li class="admin-sidebar__menu-item"><a href="guests.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Guests</span></a></li>
+          <li class="admin-sidebar__menu-item"><a href="reviews.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><span>Reviews</span></a></li>
+        </ul>
+      </div>
+      <div class="admin-sidebar__section">
+        <span class="admin-sidebar__section-title">INTEGRATIONS</span>
+        <ul class="admin-sidebar__menu">
+          <li class="admin-sidebar__menu-item"><a href="ical-sync.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg><span>iCal Sync</span></a></li>
+          <li class="admin-sidebar__menu-item"><a href="payments.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg><span>Payments</span></a></li>
+        </ul>
+      </div>
+      <div class="admin-sidebar__section">
+        <span class="admin-sidebar__section-title">SYSTEM</span>
+        <ul class="admin-sidebar__menu">
+          <li class="admin-sidebar__menu-item"><a href="settings.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span>Settings</span></a></li>
+          <li class="admin-sidebar__menu-item"><a href="reports.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg><span>Reports</span></a></li>
+        </ul>
+      </div>
+    </nav>
+  </aside>
 
-  <script src="../js/app.js"></script>
-  <script src="../js/admin.js"></script>
-  <script src="../js/admin-auth.js"></script>
-  <script>
-    // Show "Add New Property" only for the site owner
-    (function() {
-      function showOwnerBtn() {
-        if (window.TrendAccomAdmin && window.TrendAccomAdmin.isOwner) {
-          var btn = document.getElementById('addNewPropBtn');
-          if (btn) btn.style.display = '';
+  <!-- Main Content -->
+  <div class="admin-main">
+
+    <!-- Top Bar -->
+    <header class="admin-topbar">
+      <div class="admin-topbar__breadcrumb">
+        <a href="index.html" class="admin-topbar__breadcrumb-link">Dashboard</a>
+        <span class="admin-topbar__breadcrumb-separator">&rsaquo;</span>
+        <span class="admin-topbar__breadcrumb-current">Property Settings</span>
+      </div>
+      <div class="admin-topbar__actions">
+        <div class="admin-topbar__user">
+          <div class="admin-topbar__user-avatar">AD</div>
+          <span class="admin-topbar__user-name">Admin</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Content Area -->
+    <main class="admin-content">
+
+      <div class="admin-page-header">
+        <div class="admin-page-header-text">
+          <h1 class="admin-page-title">Property Settings</h1>
+          <p class="admin-page-subtitle">Manage all details for Cascade Apartment 6</p>
+        </div>
+        <a href="../property.html" target="_blank" class="btn btn-primary admin-page-action">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          View Live Listing
+        </a>
+      </div>
+
+      <!-- Basic Info -->
+      <div class="prop-section">
+        <h2>Basic Information</h2>
+        <div class="ps-grid">
+          <div>
+            <label class="ps-label" for="propName">Property Name</label>
+            <input class="ps-input" id="propName" type="text" value="Cascade Apartment 6">
+          </div>
+          <div>
+            <label class="ps-label" for="propStatus">Status</label>
+            <select class="ps-select" id="propStatus">
+              <option value="active" selected>Active — accepting bookings</option>
+              <option value="paused">Paused — not accepting bookings</option>
+              <option value="maintenance">Maintenance</option>
+            </select>
+          </div>
+          <div class="ps-full">
+            <label class="ps-label" for="propTagline">Tagline / Headline</label>
+            <input class="ps-input" id="propTagline" type="text" value="Alpine escape at Mt Baw Baw — cosy, fully equipped, ski-in access">
+          </div>
+          <div class="ps-full">
+            <label class="ps-label" for="propDesc">Description</label>
+            <textarea class="ps-textarea" id="propDesc" rows="5">Cascade Apartment 6 is a fully self-contained alpine apartment at Mt Baw Baw Alpine Resort, Victoria. Perfect for couples, families, and small groups seeking a cosy mountain retreat with gas log fire, fully equipped kitchen, and stunning views. Ground floor with dedicated car parking just 50m away.</textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Location -->
+      <div class="prop-section">
+        <h2>Location</h2>
+        <div class="ps-grid">
+          <div class="ps-full">
+            <label class="ps-label" for="propAddress">Street Address</label>
+            <input class="ps-input" id="propAddress" type="text" value="Cascade Apartments, Mt Baw Baw Alpine Resort">
+          </div>
+          <div>
+            <label class="ps-label" for="propCity">Town / City</label>
+            <input class="ps-input" id="propCity" type="text" value="Mt Baw Baw">
+          </div>
+          <div>
+            <label class="ps-label" for="propState">State</label>
+            <select class="ps-select" id="propState">
+              <option value="VIC" selected>Victoria (VIC)</option>
+              <option value="NSW">New South Wales (NSW)</option>
+              <option value="QLD">Queensland (QLD)</option>
+              <option value="WA">Western Australia (WA)</option>
+              <option value="SA">South Australia (SA)</option>
+              <option value="TAS">Tasmania (TAS)</option>
+            </select>
+          </div>
+          <div>
+            <label class="ps-label" for="propPostcode">Postcode</label>
+            <input class="ps-input" id="propPostcode" type="text" value="3833" maxlength="4">
+          </div>
+          <div>
+            <label class="ps-label" for="propCountry">Country</label>
+            <select class="ps-select" id="propCountry">
+              <option value="AU" selected>Australia</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Capacity & Rooms -->
+      <div class="prop-section">
+        <h2>Capacity &amp; Rooms</h2>
+        <div class="ps-grid-3">
+          <div>
+            <label class="ps-label" for="propMaxGuests">Max Guests</label>
+            <input class="ps-input" id="propMaxGuests" type="number" value="5" min="1" max="20">
+          </div>
+          <div>
+            <label class="ps-label" for="propBedrooms">Bedrooms</label>
+            <input class="ps-input" id="propBedrooms" type="number" value="1" min="0">
+          </div>
+          <div>
+            <label class="ps-label" for="propBathrooms">Bathrooms</label>
+            <input class="ps-input" id="propBathrooms" type="number" value="1" min="0" step="0.5">
+          </div>
+          <div>
+            <label class="ps-label" for="propBeds">Total Beds</label>
+            <input class="ps-input" id="propBeds" type="number" value="5" min="1">
+            <p class="ps-hint">1 queen + 2 bunk singles + 2 sofa beds</p>
+          </div>
+          <div>
+            <label class="ps-label" for="propSize">Apartment Size (m²)</label>
+            <input class="ps-input" id="propSize" type="number" value="65" min="0">
+          </div>
+          <div>
+            <label class="ps-label" for="propFloor">Floor Level</label>
+            <select class="ps-select" id="propFloor">
+              <option value="ground" selected>Ground Floor</option>
+              <option value="1">Level 1</option>
+              <option value="2">Level 2</option>
+              <option value="3">Level 3</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Check-in / Check-out -->
+      <div class="prop-section">
+        <h2>Check-in &amp; Check-out</h2>
+        <div class="ps-grid">
+          <div>
+            <label class="ps-label" for="propCheckin">Check-in Time</label>
+            <select class="ps-select" id="propCheckin">
+              <option value="14:00">2:00 PM</option>
+              <option value="15:00" selected>3:00 PM</option>
+              <option value="16:00">4:00 PM</option>
+            </select>
+          </div>
+          <div>
+            <label class="ps-label" for="propCheckout">Check-out Time</label>
+            <select class="ps-select" id="propCheckout">
+              <option value="10:00" selected>10:00 AM</option>
+              <option value="11:00">11:00 AM</option>
+              <option value="12:00">12:00 PM (noon)</option>
+            </select>
+          </div>
+          <div>
+            <label class="ps-label" for="propMinStay">Minimum Stay (nights)</label>
+            <input class="ps-input" id="propMinStay" type="number" value="1" min="1">
+          </div>
+          <div>
+            <label class="ps-label" for="propMaxStay">Maximum Stay (nights)</label>
+            <input class="ps-input" id="propMaxStay" type="number" value="14" min="1">
+          </div>
+        </div>
+      </div>
+
+      <!-- Amenities -->
+      <div class="prop-section">
+        <h2>Amenities</h2>
+        <div class="amenity-grid">
+          <label class="amenity-cb"><input type="checkbox" checked> Fully Equipped Kitchen</label>
+          <label class="amenity-cb"><input type="checkbox" checked> Microwave</label>
+          <label class="amenity-cb"><input type="checkbox" checked> Gas Log Fire</label>
+          <label class="amenity-cb"><input type="checkbox" checked> TV / DVD / CD</label>
+          <label class="amenity-cb"><input type="checkbox" checked> Queen Bed</label>
+          <label class="amenity-cb"><input type="checkbox" checked> Bunk Beds</label>
+          <label class="amenity-cb"><input type="checkbox" checked> Sofa Beds</label>
+          <label class="amenity-cb"><input type="checkbox" checked> Bathroom with Shower</label>
+          <label class="amenity-cb"><input type="checkbox" checked> Bath Base</label>
+          <label class="amenity-cb"><input type="checkbox" checked> Hair Dryer</label>
+          <label class="amenity-cb"><input type="checkbox" checked> Car Park (50m)</label>
+          <label class="amenity-cb"><input type="checkbox" checked> Ground Floor Access</label>
+          <label class="amenity-cb"><input type="checkbox"> WiFi / Internet</label>
+          <label class="amenity-cb"><input type="checkbox"> Dishwasher</label>
+          <label class="amenity-cb"><input type="checkbox"> Washing Machine</label>
+          <label class="amenity-cb"><input type="checkbox"> Dryer</label>
+          <label class="amenity-cb"><input type="checkbox"> BBQ / Outdoor</label>
+          <label class="amenity-cb"><input type="checkbox"> Ski Storage</label>
+        </div>
+      </div>
+
+      <!-- Policies -->
+      <div class="prop-section">
+        <h2>Policies</h2>
+        <div class="ps-grid">
+          <div>
+            <label class="ps-label" for="propCancellation">Cancellation Policy</label>
+            <select class="ps-select" id="propCancellation">
+              <option value="flexible">Flexible — full refund 1 day prior</option>
+              <option value="moderate" selected>Moderate — full refund 5 days prior</option>
+              <option value="strict">Strict — 50% refund up to 1 week prior</option>
+              <option value="non-refundable">Non-refundable</option>
+            </select>
+          </div>
+          <div>
+            <label class="ps-label" for="propDeposit">Deposit Required</label>
+            <select class="ps-select" id="propDeposit">
+              <option value="0">No deposit</option>
+              <option value="25">25% deposit</option>
+              <option value="30" selected>30% deposit</option>
+              <option value="50">50% deposit</option>
+              <option value="100">Full payment upfront</option>
+            </select>
+          </div>
+          <div>
+            <label class="ps-label" for="propPets">Pets</label>
+            <select class="ps-select" id="propPets">
+              <option value="no" selected>Not allowed</option>
+              <option value="yes">Allowed</option>
+              <option value="request">On request</option>
+            </select>
+          </div>
+          <div>
+            <label class="ps-label" for="propSmoking">Smoking</label>
+            <select class="ps-select" id="propSmoking">
+              <option value="no" selected>Not allowed</option>
+              <option value="outside">Outside only</option>
+              <option value="yes">Allowed</option>
+            </select>
+          </div>
+          <div class="ps-full">
+            <label class="ps-label" for="propHouseRules">House Rules</label>
+            <textarea class="ps-textarea" id="propHouseRules" rows="4">No smoking inside the apartment. No pets allowed. Maximum 6 guests. Please keep noise to a minimum after 10pm. Leave the apartment in a clean and tidy condition. Report any damage immediately.</textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact -->
+      <div class="prop-section">
+        <h2>Contact Information</h2>
+        <div class="ps-grid">
+          <div>
+            <label class="ps-label" for="propEmail">Contact Email</label>
+            <input class="ps-input" id="propEmail" type="email" value="hello@cascade6.online">
+          </div>
+          <div>
+            <label class="ps-label" for="propPhone">Contact Phone</label>
+            <input class="ps-input" id="propPhone" type="tel" placeholder="+61 4xx xxx xxx">
+          </div>
+        </div>
+      </div>
+
+      <!-- Property Photos -->
+      <div class="prop-section">
+        <h2>Property Photos</h2>
+        <p style="font-size:0.8125rem;color:#64748b;margin-bottom:0.75rem;">Photos are served from <code>/public/</code>. Upload images via your hosting provider or Vercel file system.</p>
+        <div class="img-preview-grid" id="imgGrid"></div>
+      </div>
+
+      <!-- Sticky Save Bar -->
+      <div class="save-bar">
+        <span class="save-toast" id="saveToast">&#10003; Settings saved!</span>
+        <div style="display:flex;gap:0.75rem;margin-left:auto;">
+          <button class="btn btn-outline" onclick="loadDefaults()">Reset to Defaults</button>
+          <button class="btn btn-primary" onclick="saveSettings()">Save Changes</button>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+<script src="../js/app.js"></script>
+<script src="../js/db.js"></script>
+<script src="../js/admin.js"></script>
+<script src="../js/admin-auth.js"></script>
+<script>
+(function() {
+    'use strict';
+
+    // Known property photos in /public/
+    var PHOTOS = [
+        'IMG_0370.jpg','IMG_0374.jpg','IMG_0375.jpg','IMG_0376.jpg','IMG_0377.jpg',
+        'IMG_3097.jpg','IMG_3098.jpg',
+        'IMG_9081.jpg','IMG_9082.jpg','IMG_9083.jpg','IMG_9084.jpg','IMG_9085.jpg',
+        'IMG_9107.jpg','IMG_9108.jpg','IMG_9109.jpg','IMG_9110.jpg','IMG_9111.jpg'
+    ];
+
+    // Render photo thumbnails
+    var grid = document.getElementById('imgGrid');
+    if (grid) {
+        grid.innerHTML = PHOTOS.map(function(f) {
+            return '<div class="img-thumb">' +
+                '<img src="../public/' + f + '" alt="' + f + '" loading="lazy">' +
+                '<div class="img-thumb-label">' + f + '</div>' +
+            '</div>';
+        }).join('');
+    }
+
+    // Fields to persist
+    var FIELDS = [
+        'propName','propStatus','propTagline','propDesc',
+        'propAddress','propCity','propState','propPostcode',
+        'propMaxGuests','propBedrooms','propBathrooms','propBeds','propSize','propFloor',
+        'propCheckin','propCheckout','propMinStay','propMaxStay',
+        'propCancellation','propDeposit','propPets','propSmoking','propHouseRules',
+        'propEmail','propPhone'
+    ];
+
+    function collectSettings() {
+        var data = {};
+        FIELDS.forEach(function(id) {
+            var el = document.getElementById(id);
+            if (el) data[id] = el.value;
+        });
+        data.amenities = [];
+        document.querySelectorAll('.amenity-cb input[type="checkbox"]').forEach(function(cb) {
+            if (cb.checked) data.amenities.push(cb.parentElement.textContent.trim());
+        });
+        return data;
+    }
+
+    function applySettings(data) {
+        if (!data || !Object.keys(data).length) return;
+        FIELDS.forEach(function(id) {
+            if (data[id] === undefined) return;
+            var el = document.getElementById(id);
+            if (el) el.value = data[id];
+        });
+        if (Array.isArray(data.amenities)) {
+            document.querySelectorAll('.amenity-cb input[type="checkbox"]').forEach(function(cb) {
+                var label = cb.parentElement.textContent.trim();
+                cb.checked = data.amenities.includes(label);
+            });
         }
-      }
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', showOwnerBtn);
-      } else {
-        showOwnerBtn();
-      }
-    })();
-  </script>
+    }
+
+    function showToastMsg() {
+        var toast = document.getElementById('saveToast');
+        if (toast) {
+            toast.style.display = 'block';
+            setTimeout(function(){ toast.style.display = 'none'; }, 2500);
+        }
+    }
+
+    function saveSettings() {
+        var data = collectSettings();
+        DB.savePropertySettings(data).then(function() {
+            showToastMsg();
+        }).catch(function(err) {
+            alert('Save failed: ' + err.message);
+        });
+    }
+
+    function loadDefaults() {
+        if (!confirm('Reset all property settings to defaults?')) return;
+        DB.savePropertySettings({}).then(function() { location.reload(); });
+    }
+
+    window.saveSettings = saveSettings;
+    window.loadDefaults = loadDefaults;
+
+    // Load from DB on page open
+    DB.getPropertySettings().then(applySettings);
+})();
+</script>
 </div><!-- /.admin-layout -->
 </body>
 </html>

@@ -269,11 +269,11 @@
     <meta property="og:site_name" content="Cascade Apartment 6">
     <meta property="og:title" content="Book Your Stay — Cascade Apartment 6">
     <meta property="og:description" content="Complete your reservation securely. Flexible dates, transparent pricing, instant confirmation.">
-    <meta property="og:image" content="https://app.cascadeapartments.com.au/public/cascade6-1.jpg">
+    <meta property="og:image" content="https://www.cascade6.online/public/cascade6-1.jpg">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Book Your Stay — Cascade Apartment 6">
     <meta name="twitter:description" content="Complete your reservation securely. Flexible dates, transparent pricing, instant confirmation.">
-    <meta name="twitter:image" content="https://app.cascadeapartments.com.au/public/cascade6-1.jpg">
+    <meta name="twitter:image" content="https://www.cascade6.online/public/cascade6-1.jpg">
 </head>
 <body>
   <!-- Header -->
@@ -349,6 +349,15 @@
         <div class="booking-form-column">
           <form id="bookingForm" novalidate>
 
+            <!-- Linen Notice -->
+            <div style="background:#fff7ed;border:2px solid #f59e0b;border-radius:12px;padding:18px 20px;display:flex;gap:14px;align-items:flex-start;margin-bottom:24px;">
+              <svg style="flex-shrink:0;margin-top:1px" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              <div>
+                <p style="margin:0 0 6px;font-weight:700;font-size:0.9375rem;color:#92400e;">BYO Linen &amp; Towels Required</p>
+                <p style="margin:0;font-size:0.875rem;color:#78350f;line-height:1.55;">Please bring your own bed linen and towels for all guests. Doonas, blankets and pillows are provided for all beds. <a href="what-to-bring.html" style="color:#92400e;font-weight:600;">See full packing guide &rarr;</a></p>
+              </div>
+            </div>
+
             <!-- Guest Details -->
             <div class="booking-form-section">
               <h2 class="booking-form-section__title">Guest Details</h2>
@@ -401,6 +410,8 @@
                     <option value="4">4 Adults</option>
                     <option value="5">5 Adults</option>
                     <option value="6">6 Adults</option>
+                    <option value="7">7 Adults</option>
+                    <option value="8">8 Adults (max)</option>
                   </select>
                 </div>
                 <div class="form-group">
@@ -440,17 +451,6 @@
                   </div>
                 </div>
                 <span class="addon-option__price">+ $30</span>
-              </label>
-
-              <label class="addon-option">
-                <div class="addon-option__left">
-                  <input type="checkbox" id="linenHire" name="linenHire" value="55" data-addon-label="Linen hire pack">
-                  <div>
-                    <div class="addon-option__label">Linen Hire Pack</div>
-                    <div class="addon-option__desc">Full linen &amp; towels for all beds for your entire stay (pre-book recommended)</div>
-                  </div>
-                </div>
-                <span class="addon-option__price">+ $55</span>
               </label>
 
               <label class="addon-option">
@@ -574,15 +574,15 @@
           <div class="footer-links">
             <a href="https://www.mountbawbaw.com.au" target="_blank" rel="noopener noreferrer">Resort Website</a>
             <a href="https://www.mountbawbaw.com.au/snow-conditions/" target="_blank" rel="noopener noreferrer">Snow Conditions</a>
-            <a href="https://www.cascadeapartments.com.au" target="_blank" rel="noopener noreferrer">Cascade Apartments</a>
+            <a href="https://www.cascade6.online" target="_blank" rel="noopener noreferrer">Cascade Apartments</a>
           </div>
         </div>
         <div>
           <h4 class="footer-heading">Contact &amp; Info</h4>
           <div class="footer-links">
-            <a href="mailto:info@cascadeapartments.com.au">Email Us</a>
-            <a href="mailto:info@cascadeapartments.com.au">Cancellation Policy</a>
-            <a href="mailto:info@cascadeapartments.com.au">Terms of Stay</a>
+            <a href="mailto:hello@cascade6.online">Email Us</a>
+            <a href="mailto:hello@cascade6.online">Cancellation Policy</a>
+            <a href="mailto:hello@cascade6.online">Terms of Stay</a>
             <a href="admin/login.html">Owner Login</a>
           </div>
         </div>
@@ -674,9 +674,9 @@
     var RATE_PEAK_MIDWK= _r.peakMidweek  || 600;  // Peak Sun–Wed (Jun 15–Oct 1)
     var RATE_SHOULDER  = _r.shoulder     || 465;  // May 14–Jun 14, Oct 2–Nov 1
     var RATE_GREEN     = _r.green        || 200;  // All other dates (green/summer)
-    var EXTRA_GUEST_FEE= _r.extraGuestFee|| 50;   // Per extra guest per night (beyond 2 pax)
+    var EXTRA_GUEST_FEE= _r.extraGuestFee|| 0;    // No extra guest charge
     var CLEANING_FEE   = _r.cleaningFee  || 60;
-    var SERVICE_RATE   = (_r.serviceRate || 10) / 100;
+    var SERVICE_FEE    = _r.serviceRate  || 50;   // Flat service fee per booking
     var TAX_RATE       = 0.10;
     var PLATFORM_FEE_RATE = 0.015;  // 1.5% Stripe Connect platform fee
 
@@ -805,7 +805,7 @@
       });
 
       // Cleaning, service, tax, platform fee, total
-      var serviceFee   = Math.round(stay.accom * SERVICE_RATE);
+      var serviceFee   = SERVICE_FEE;
       var subtotal     = stay.accom + extraGuestTotal + addonsTotal + CLEANING_FEE + serviceFee;
       var tax          = Math.round(subtotal * TAX_RATE);
       var preTotalAmt  = subtotal + tax;
@@ -874,7 +874,7 @@
     if (urlParams.get('checkout')) document.getElementById('checkoutDate').value = urlParams.get('checkout');
     if (urlParams.get('guests')) {
       var g = parseInt(urlParams.get('guests'));
-      if (g >= 1 && g <= 5) document.getElementById('numAdults').value = g;
+      if (g >= 1 && g <= 8) document.getElementById('numAdults').value = g;
     }
 
     // Set minimum check-in to today
@@ -890,8 +890,22 @@
       updateSummary();
     });
 
+    // Cap children so adults + children never exceed 6
+    function capChildren() {
+      var adults   = parseInt(document.getElementById('numAdults').value) || 1;
+      var maxKids  = Math.max(0, 8 - adults);
+      var childSel = document.getElementById('numChildren');
+      var cur      = parseInt(childSel.value) || 0;
+      Array.from(childSel.options).forEach(function(opt) {
+        opt.disabled = parseInt(opt.value) > maxKids;
+      });
+      if (cur > maxKids) { childSel.value = maxKids; }
+    }
+    document.getElementById('numAdults').addEventListener('change', function() { capChildren(); updateSummary(); });
+    capChildren();
+
     // Wire all change events
-    ['checkinDate','checkoutDate','numAdults','numChildren'].forEach(function(id) {
+    ['checkinDate','checkoutDate','numChildren'].forEach(function(id) {
       document.getElementById(id).addEventListener('change', updateSummary);
     });
     document.querySelectorAll('.addon-option input[type="checkbox"]').forEach(function(cb) {

@@ -5,7 +5,7 @@
       "name": "Cascade Apartment 6",
       "type": "apartment",
       "status": "active",
-      "description": "Fully self-contained ground floor apartment at Mt Baw Baw Alpine Resort, Victoria's closest ski resort to Melbourne. Located approximately 50 metres from the main day car park. Bedroom features a queen size bed, two single overhead bunk beds, and a small TV. The living area includes two sofa beds, a small dining table, TV, DVD player, CD/radio, and a gas log fire. Fully equipped kitchen with microwave. Bathroom with shower, bath base, and hair dryer. Pillows and doonas supplied (BYO linen/towels or hire from Guest Services).",
+      "description": "Fully self-contained ground floor apartment at Mt Baw Baw Alpine Resort, Victoria's closest ski resort to Melbourne. Located approximately 50 metres from the main day car park. Bedroom features a queen size bed, two single overhead bunk beds, and a small TV. The living area includes two sofa beds, a small dining table, TV, DVD player, CD/radio, and a gas log fire. Fully equipped kitchen with microwave. Bathroom with shower, bath base, and hair dryer. Pillows and doonas supplied. BYO linen and towels.",
       "location": {
         "address": "Cascade Apartment 6, Mt Baw Baw Alpine Resort",
         "city": "Mt Baw Baw",
@@ -16,14 +16,14 @@
         "lng": 146.2697
       },
       "contact": {
-        "email": "info@cascadeapartments.com.au",
+        "email": "hello@cascade6.online",
         "phone": ""
       },
       "rooms": [
         {
           "id": "cascade-6-entire",
           "name": "Entire Apartment",
-          "maxGuests": 5,
+          "maxGuests": 8,
           "beds": 1,
           "bunks": 2,
           "sofaBeds": 2,
@@ -71,7 +71,7 @@
         "petsAllowed": false,
         "smokingAllowed": false,
         "depositPercent": 30,
-        "linenNote": "Pillows and doonas supplied. BYO linen and towels for all beds, or hire a linen pack from Guest Services (pre-booking recommended)."
+        "linenNote": "Pillows and doonas supplied for all beds. BYO linen and towels."
       },
       "rates": {
         "peak": { "label": "Peak (Ski Season)", "months": [6, 7, 8], "rate": 280 },

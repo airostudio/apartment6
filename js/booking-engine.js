@@ -19,8 +19,8 @@
       bookingCutoffHours: 24,
       currency: 'AUD',
       depositPercent: 30,
-      cleaningFee: 75,
-      serviceFeePercent: 5,
+      cleaningFee: 60,
+      serviceFeePercent: 0,
       taxPercent: 10,
     },
 
