@@ -25,8 +25,8 @@ module.exports = async function handler(req, res) {
 
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
-    console.warn('RESEND_API_KEY not set — contact form email skipped');
-    return res.status(200).json({ ok: true, skipped: true });
+    console.error('RESEND_API_KEY not set — contact form email NOT sent');
+    return res.status(500).json({ error: 'Email service not configured', skipped: true });
   }
 
   const resend = new Resend(apiKey);
