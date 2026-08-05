@@ -66,14 +66,14 @@ module.exports = async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(204).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) {
-    console.warn('RESEND_API_KEY not set — skipping booking email');
-    return res.status(200).json({ ok: true, skipped: true });
-  }
-
   const bk = req.body;
   if (!bk || !bk.ref) return res.status(400).json({ error: 'Missing booking data' });
+
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    console.error('RESEND_API_KEY not set — booking email NOT sent for', bk.ref);
+    return res.status(500).json({ error: 'Email service not configured', skipped: true });
+  }
 
   const resend = new Resend(apiKey);
   const results = { admin: null, guest: null };

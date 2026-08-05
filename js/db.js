@@ -108,10 +108,16 @@
 
     // ── Booking Email ──────────────────────────────────────────────────────
     sendBookingEmail(bk) {
-      return api('/api/booking-email', { method: 'POST', ...json(bk) }).catch(() => null);
+      return api('/api/booking-email', { method: 'POST', ...json(bk) }).catch(function (err) {
+        console.error('Booking confirmation email failed to send:', err.message);
+        return null;
+      });
     },
 
     // ── Tax Invoice ───────────────────────────────────────────────────────
+    previewTaxInvoice(id) {
+      return api('/api/tax-invoice?id=' + encodeURIComponent(id), adminOpts());
+    },
     sendTaxInvoice(id) {
       return api('/api/tax-invoice', { method: 'POST', ...adminJson({ id: id }) });
     },

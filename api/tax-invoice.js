@@ -150,13 +150,13 @@ function invoiceHtml(bk) {
 
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Admin-Key');
   if (req.method === 'OPTIONS') return res.status(204).end();
-  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+  if (req.method !== 'GET' && req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
   if (!requireAdmin(req, res)) return;
 
-  const id = req.body && req.body.id;
+  const id = req.method === 'GET' ? req.query.id : req.body && req.body.id;
   if (!id) return res.status(400).json({ error: 'Booking id required' });
 
   const sb = client();
@@ -164,6 +164,12 @@ module.exports = async function handler(req, res) {
   if (error || !data) return res.status(404).json({ error: 'Booking not found' });
 
   const bk = toJS(data);
+
+  // Preview only — return the rendered invoice without sending anything.
+  if (req.method === 'GET') {
+    return res.status(200).json({ ok: true, invoiceNumber: invoiceNumber(bk), html: invoiceHtml(bk), sentTo: bk.email });
+  }
+
   if (!bk.email) return res.status(400).json({ error: 'Booking has no email address' });
 
   const apiKey = process.env.RESEND_API_KEY;

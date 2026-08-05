@@ -68,6 +68,13 @@
         .bk-btn--primary:hover { background: #1a3a5c; }
         .bk-btn--danger { background: #ef4444; color: #fff; }
         .bk-btn--danger:hover { background: #dc2626; }
+        .bk-btn[disabled] { opacity: 0.6; cursor: not-allowed; }
+
+        /* Invoice preview modal */
+        .bk-invoice-frame {
+            width: 100%; height: 60vh; border: 1px solid #e2e8f0; border-radius: 8px; background: #fff;
+        }
+        .bk-invoice-loading { padding: 3rem; text-align: center; color: #94a3b8; font-size: 0.875rem; }
 
         /* View modal read-only */
         .bk-detail-row { display: flex; gap: 1rem; padding: 0.75rem 0; border-bottom: 1px solid #f1f5f9; }
@@ -374,6 +381,25 @@
     </div>
 </div>
 
+<!-- TAX INVOICE PREVIEW MODAL -->
+<div class="bk-modal-overlay" id="invoiceModal">
+    <div class="bk-modal" style="max-width:720px;">
+        <div class="bk-modal-header">
+            <h2>Tax Invoice Preview</h2>
+            <button class="bk-modal-close" id="invoiceModalClose">&times;</button>
+        </div>
+        <div class="bk-modal-body">
+            <div class="bk-invoice-loading" id="invoiceLoading">Loading invoice…</div>
+            <iframe class="bk-invoice-frame" id="invoiceFrame" style="display:none;"></iframe>
+        </div>
+        <div class="bk-modal-footer">
+            <button class="bk-btn bk-btn--outline" id="invoiceModalCancel">Close</button>
+            <button class="bk-btn bk-btn--outline" id="invoiceModalDownload" disabled>Download</button>
+            <button class="bk-btn bk-btn--primary" id="invoiceModalSend" disabled>Send Invoice</button>
+        </div>
+    </div>
+</div>
+
 <!-- Toast -->
 <div class="bk-toast" id="bkToast">Saved!</div>
 
@@ -616,22 +642,81 @@
     });
     document.getElementById('viewModalInvoice').addEventListener('click', function() {
         if (!viewingId) return;
-        sendTaxInvoice(viewingId);
+        openInvoiceModal(viewingId);
     });
 
-    // ── Tax invoice ───────────────────────────────────────────────────────────
-    async function sendTaxInvoice(id) {
+    // ── Tax invoice preview / send ───────────────────────────────────────────
+    var invoiceModal = document.getElementById('invoiceModal');
+    var invoiceFrame = document.getElementById('invoiceFrame');
+    var invoiceLoading = document.getElementById('invoiceLoading');
+    var invoiceDownloadBtn = document.getElementById('invoiceModalDownload');
+    var invoiceSendBtn = document.getElementById('invoiceModalSend');
+    var invoicingId = null;
+    var invoicePreview = null; // { invoiceNumber, html, sentTo }
+
+    async function openInvoiceModal(id) {
         var booking = _bookings.find(function(b){return b.id===id;});
         if (!booking) return;
         if (!booking.email) { showToast('Booking has no email address.'); return; }
+
+        invoicingId = id;
+        invoicePreview = null;
+        invoiceFrame.style.display = 'none';
+        invoiceFrame.srcdoc = '';
+        invoiceLoading.style.display = 'block';
+        invoiceLoading.textContent = 'Loading invoice…';
+        invoiceDownloadBtn.disabled = true;
+        invoiceSendBtn.disabled = true;
+        invoiceModal.classList.add('open');
+
         try {
-            showToast('Sending tax invoice…');
-            var result = await DB.sendTaxInvoice(id);
-            showToast('Tax invoice sent to ' + (result.sentTo || booking.email) + '.');
+            var preview = await DB.previewTaxInvoice(id);
+            if (invoicingId !== id) return; // modal was reused for a different booking meanwhile
+            invoicePreview = preview;
+            invoiceFrame.srcdoc = preview.html;
+            invoiceFrame.style.display = 'block';
+            invoiceLoading.style.display = 'none';
+            invoiceDownloadBtn.disabled = false;
+            invoiceSendBtn.disabled = false;
         } catch (err) {
-            showToast('Failed to send invoice: ' + err.message);
+            invoiceLoading.textContent = 'Failed to load invoice: ' + err.message;
         }
     }
+
+    function closeInvoiceModal() { invoiceModal.classList.remove('open'); invoicingId = null; invoicePreview = null; }
+    document.getElementById('invoiceModalClose').addEventListener('click', closeInvoiceModal);
+    document.getElementById('invoiceModalCancel').addEventListener('click', closeInvoiceModal);
+    invoiceModal.addEventListener('click', function(e) { if (e.target === invoiceModal) closeInvoiceModal(); });
+
+    invoiceDownloadBtn.addEventListener('click', function() {
+        if (!invoicePreview) return;
+        var blob = new Blob([invoicePreview.html], { type: 'text/html' });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = (invoicePreview.invoiceNumber || 'tax-invoice') + '.html';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+    });
+
+    invoiceSendBtn.addEventListener('click', async function() {
+        if (!invoicingId || !invoicePreview) return;
+        var id = invoicingId;
+        invoiceSendBtn.disabled = true;
+        invoiceSendBtn.textContent = 'Sending…';
+        try {
+            var result = await DB.sendTaxInvoice(id);
+            closeInvoiceModal();
+            showToast('Tax invoice sent to ' + (result.sentTo || '') + '.');
+        } catch (err) {
+            showToast('Failed to send invoice: ' + err.message);
+        } finally {
+            invoiceSendBtn.disabled = false;
+            invoiceSendBtn.textContent = 'Send Invoice';
+        }
+    });
 
     // ── Cancel modal ─────────────────────────────────────────────────────────
     var cancelModal = document.getElementById('cancelModal');
@@ -663,12 +748,12 @@
         if (viewBtn)    { openViewModal(viewBtn.getAttribute('data-id')); }
         if (editBtn)    { var booking = _bookings.find(function(b){return b.id===editBtn.getAttribute('data-id');}); if (booking) openEditModal(booking); }
         if (cancelBtn)  { openCancelModal(cancelBtn.getAttribute('data-id')); }
-        if (invoiceBtn) { sendTaxInvoice(invoiceBtn.getAttribute('data-id')); }
+        if (invoiceBtn) { openInvoiceModal(invoiceBtn.getAttribute('data-id')); }
     });
 
     // Escape key closes any open modal
     document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') { closeEditModal(); closeViewModal(); closeCancelModal(); }
+        if (e.key === 'Escape') { closeEditModal(); closeViewModal(); closeCancelModal(); closeInvoiceModal(); }
     });
 
     // ── Toast ─────────────────────────────────────────────────────────────────
