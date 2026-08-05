@@ -58,7 +58,9 @@ function fmtDate(s) {
 }
 
 function fmtMoney(n) {
-  return '$' + Number(n || 0).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  const num = Number(n || 0);
+  const sign = num < 0 ? '-' : '';
+  return sign + '$' + Math.abs(num).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
 
 function esc(s) {
@@ -87,12 +89,25 @@ function lineRow(label, amount) {
 function invoiceHtml(bk) {
   const num = invoiceNumber(bk);
   const subtotal = Math.max(0, Number(bk.total || 0) - Number(bk.tax || 0));
+  const addons = addonLines(bk.addons);
   const rows = [];
   rows.push(lineRow('Accommodation — ' + fmtDate(bk.checkin) + ' to ' + fmtDate(bk.checkout) + ' (' + bk.nights + ' night' + (bk.nights === 1 ? '' : 's') + ')', bk.accom));
-  addonLines(bk.addons).forEach(function (a) { rows.push(lineRow(a.label, a.amount)); });
+  addons.forEach(function (a) { rows.push(lineRow(a.label, a.amount)); });
   if (bk.extraGuestTotal) rows.push(lineRow('Extra guest fee', bk.extraGuestTotal));
   if (bk.cleaning) rows.push(lineRow('Cleaning fee', bk.cleaning));
   if (bk.service) rows.push(lineRow('Service fee', bk.service));
+
+  // Reconcile the visible line items to the booking's actual subtotal.
+  // Older bookings can have a total that was edited by hand without the
+  // underlying accom/cleaning/service fields being updated to match, which
+  // would otherwise leave an unexplained gap between the printed rows and
+  // the subtotal below. Surface that gap as an explicit line so the
+  // invoice always foots correctly to what was actually charged.
+  const itemsSum = Number(bk.accom || 0) + addons.reduce(function (s, a) { return s + a.amount; }, 0) +
+    Number(bk.extraGuestTotal || 0) + Number(bk.cleaning || 0) + Number(bk.service || 0);
+  const gap = Math.round((subtotal - itemsSum) * 100) / 100;
+  if (gap > 0.01) rows.push(lineRow('Admin fee', gap));
+  else if (gap < -0.01) rows.push(lineRow('Adjustment', gap));
 
   return `<!DOCTYPE html><html><body style="font-family:sans-serif;color:#0f172a;max-width:640px;margin:0 auto;padding:20px">
 <div style="background:#0f2744;padding:24px;border-radius:12px 12px 0 0;">
