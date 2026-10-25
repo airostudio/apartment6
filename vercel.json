@@ -9,49 +9,133 @@
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
-        { "key": "X-XSS-Protection", "value": "1; mode=block" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        }
       ]
     },
     {
       "source": "/public/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
       ]
     },
     {
       "source": "/css/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=86400" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400"
+        }
       ]
     },
     {
       "source": "/js/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=86400" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400"
+        }
       ]
     }
   ],
   "rewrites": [
-    { "source": "/admin", "destination": "/admin/index.html" },
-    { "source": "/admin/bookings", "destination": "/admin/bookings.html" },
-    { "source": "/admin/calendar", "destination": "/admin/calendar.html" },
-    { "source": "/admin/guests", "destination": "/admin/guests.html" },
-    { "source": "/admin/rates", "destination": "/admin/rates.html" },
-    { "source": "/admin/reviews", "destination": "/admin/reviews.html" },
-    { "source": "/admin/ical-sync", "destination": "/admin/ical-sync.html" },
-    { "source": "/admin/settings", "destination": "/admin/settings.html" },
-    { "source": "/admin/reports", "destination": "/admin/reports.html" },
-    { "source": "/admin/properties", "destination": "/admin/properties.html" },
-    { "source": "/admin/property-edit", "destination": "/admin/property-edit.html" },
-    { "source": "/admin/login", "destination": "/admin/login.html" },
-    { "source": "/admin/payments", "destination": "/admin/payments.html" }
+    {
+      "source": "/api/availability",
+      "destination": "/api/bookings?action=availability"
+    },
+    {
+      "source": "/api/ical-feeds",
+      "destination": "/api/blocked-dates?resource=ical-feeds"
+    },
+    {
+      "source": "/api/send-test-email",
+      "destination": "/api/booking-email?action=test"
+    },
+    {
+      "source": "/admin",
+      "destination": "/admin/index.html"
+    },
+    {
+      "source": "/admin/bookings",
+      "destination": "/admin/bookings.html"
+    },
+    {
+      "source": "/admin/calendar",
+      "destination": "/admin/calendar.html"
+    },
+    {
+      "source": "/admin/guests",
+      "destination": "/admin/guests.html"
+    },
+    {
+      "source": "/admin/rates",
+      "destination": "/admin/rates.html"
+    },
+    {
+      "source": "/admin/reviews",
+      "destination": "/admin/reviews.html"
+    },
+    {
+      "source": "/admin/ical-sync",
+      "destination": "/admin/ical-sync.html"
+    },
+    {
+      "source": "/admin/settings",
+      "destination": "/admin/settings.html"
+    },
+    {
+      "source": "/admin/reports",
+      "destination": "/admin/reports.html"
+    },
+    {
+      "source": "/admin/properties",
+      "destination": "/admin/properties.html"
+    },
+    {
+      "source": "/admin/property-edit",
+      "destination": "/admin/property-edit.html"
+    },
+    {
+      "source": "/admin/login",
+      "destination": "/admin/login.html"
+    },
+    {
+      "source": "/admin/payments",
+      "destination": "/admin/payments.html"
+    }
   ],
   "redirects": [
-    { "source": "/home", "destination": "/", "permanent": true },
-    { "source": "/admin.html", "destination": "/admin/login", "permanent": true },
-    { "source": "/login", "destination": "/admin/login", "permanent": false }
+    {
+      "source": "/home",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/admin.html",
+      "destination": "/admin/login",
+      "permanent": true
+    },
+    {
+      "source": "/login",
+      "destination": "/admin/login",
+      "permanent": false
+    }
   ]
 }

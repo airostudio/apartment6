@@ -105,6 +105,8 @@ async function conflictResponse(sb, obj, res) {
 }
 
 module.exports = async function handler(req, res) {
+  // /api/availability is rewritten here (vercel.json) to stay within the function limit.
+  if (req.query && req.query.action === 'availability') return require('./_availability-endpoint')(req, res);
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type,X-Admin-Key');

@@ -60,6 +60,8 @@ function guestEmailHtml(bk) {
 }
 
 module.exports = async function handler(req, res) {
+  // /api/send-test-email is rewritten here (vercel.json) to stay within the function limit.
+  if (req.query && req.query.action === 'test') return require('./_send-test-email')(req, res);
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');

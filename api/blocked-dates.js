@@ -23,6 +23,8 @@ function requireAdmin(req, res) {
 }
 
 module.exports = async function handler(req, res) {
+  // /api/ical-feeds is rewritten here (vercel.json) to stay within the function limit.
+  if (req.query && req.query.resource === 'ical-feeds') return require('./_ical-feeds')(req, res);
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,DELETE,OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type,X-Admin-Key');
