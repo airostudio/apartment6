@@ -1,5 +1,5 @@
 const { createClient } = require('@supabase/supabase-js');
-const { validRange, findConflict } = require('./_availability');
+const { validRange, findConflict, refreshExternal } = require('./_availability');
 
 function client() {
   return createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
@@ -136,6 +136,7 @@ module.exports = async function handler(req, res) {
 
     if (active) {
       try {
+        await refreshExternal(sb, 2 * 60 * 1000);
         if (await findConflict(sb, obj.checkin, obj.checkout)) return conflictResponse(sb, obj, res);
       } catch (err) {
         return res.status(500).json({ error: err.message });

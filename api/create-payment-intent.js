@@ -1,6 +1,6 @@
 const { createClient } = require('@supabase/supabase-js');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-const { validRange, findConflict } = require('./_availability');
+const { validRange, findConflict, refreshExternal } = require('./_availability');
 
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -19,6 +19,7 @@ module.exports = async function handler(req, res) {
   // Refuse to take payment for dates that are already booked or blocked.
   try {
     const sb = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
+    await refreshExternal(sb, 2 * 60 * 1000);
     const conflict = await findConflict(sb, checkin, checkout);
     if (conflict) {
       return res.status(409).json({ error: 'Sorry, those dates are no longer available. You have not been charged — please choose different dates.' });

@@ -5,10 +5,18 @@
 // is allowed. Admin blocked dates are inclusive of their `to` date, matching
 // the admin calendar (admin/calendar.html).
 
+const { refreshIfStale } = require('./_ical');
+
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 
 function validRange(checkin, checkout) {
   return DATE_RE.test(checkin || '') && DATE_RE.test(checkout || '') && checkout > checkin;
+}
+
+// Pull in external calendars (Airbnb, Booking.com...) if they haven't been
+// checked within maxAgeMs. Best effort: never throws, bounded to ~5s.
+function refreshExternal(sb, maxAgeMs) {
+  return refreshIfStale(sb, maxAgeMs == null ? 10 * 60 * 1000 : maxAgeMs, 5000);
 }
 
 // Returns null when the range is free, otherwise { type: 'booking'|'blocked', id }.
@@ -37,4 +45,4 @@ async function findConflict(sb, checkin, checkout, excludeId) {
   return null;
 }
 
-module.exports = { validRange, findConflict };
+module.exports = { validRange, findConflict, refreshExternal };

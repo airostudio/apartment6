@@ -68,6 +68,20 @@
       return api('/api/availability?checkin=' + encodeURIComponent(checkin) + '&checkout=' + encodeURIComponent(checkout));
     },
 
+    // ── External calendars (iCal import) ──────────────────────────────────
+    getIcalFeeds() {
+      return api('/api/ical-feeds', adminOpts());
+    },
+    addIcalFeed(feed) {
+      return api('/api/ical-feeds', { method: 'POST', ...adminJson(feed) });
+    },
+    syncIcalFeed(id) {
+      return api('/api/ical-feeds?id=' + encodeURIComponent(id), { method: 'PUT', ...adminJson({}) });
+    },
+    deleteIcalFeed(id) {
+      return api('/api/ical-feeds?id=' + encodeURIComponent(id), { method: 'DELETE', ...adminOpts() });
+    },
+
     // ── Payments ──────────────────────────────────────────────────────────
     getPayments() {
       return api('/api/payments').catch(() => []);
