@@ -191,7 +191,33 @@
       .amenities-wrap { grid-template-columns: repeat(2, 1fr); }
       .facts-grid { gap: var(--space-lg); }
     }
-  </style>
+  
+  /* ── For Sale sign ── */
+  .for-sale-sign {
+    position: fixed; left: 20px; bottom: 20px; z-index: 900;
+    display: flex; align-items: stretch; text-decoration: none;
+    border-radius: 10px; overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.28);
+    font-family: inherit; line-height: 1.2;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .for-sale-sign:hover, .for-sale-sign:focus-visible { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(0,0,0,0.34); }
+  .for-sale-sign__tag {
+    background: #c8102e; color: #fff; padding: 12px 16px;
+    font-weight: 800; font-size: 1.05rem; letter-spacing: 0.12em; text-transform: uppercase;
+    display: flex; align-items: center;
+  }
+  .for-sale-sign__body {
+    background: #fff; color: #0f2744; padding: 10px 16px;
+    display: flex; flex-direction: column; justify-content: center; gap: 2px;
+  }
+  .for-sale-sign__body strong { font-size: 0.9rem; }
+  .for-sale-sign__body span { font-size: 0.78rem; color: #c8102e; font-weight: 700; }
+  @media (max-width: 520px) {
+    .for-sale-sign { left: 12px; right: 12px; bottom: 12px; }
+    .for-sale-sign__body { flex: 1; }
+  }
+</style>
 </head>
 <body>
   <!-- Header -->
@@ -243,6 +269,15 @@
   </nav>
 
   <!-- Hero -->
+  <!-- For Sale sign -->
+  <a class="for-sale-sign" href="https://www.realestate.com.au/property-apartment-vic-mt+baw+baw-152425892" target="_blank" rel="noopener noreferrer" aria-label="Cascade Apartment 6 is for sale — view the listing on realestate.com.au (opens in a new tab)">
+    <span class="for-sale-sign__tag">For Sale</span>
+    <span class="for-sale-sign__body">
+      <strong>Cascade Apartment 6 is on the market</strong>
+      <span>View the listing &rarr;</span>
+    </span>
+  </a>
+
   <section class="hero">
     <div class="hero-slideshow" id="heroSlideshow">
       <div class="hero-slide active">
