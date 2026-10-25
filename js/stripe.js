@@ -158,6 +158,8 @@
                 body:    JSON.stringify({
                     amountCents: bookingData.amountCents,
                     currency:    'aud',
+                    checkin:     bookingData.checkin,
+                    checkout:    bookingData.checkout,
                 }),
             });
 
@@ -255,6 +257,22 @@
             } catch(_) {}
 
             const amountCents = parseInt(data.amount) || 0;
+
+            // Never take payment without the booking details needed to save the stay.
+            if (!pending || !pending.checkin || !pending.checkout) {
+                const msg = 'Your booking session has expired. You have not been charged — please start your booking again.';
+                const cardErrors = document.getElementById('card-errors');
+                if (cardErrors) cardErrors.textContent = msg;
+                window.TrendAccom?.showToast(msg, 'error');
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    const labelEl = submitBtn.querySelector('#payNowLabel');
+                    if (labelEl) labelEl.textContent = originalLabel;
+                    else submitBtn.textContent = originalLabel;
+                }
+                return;
+            }
+
             let confirmedRef = 'TRA-' + new Date().getFullYear() + '-' + String(Date.now()).slice(-5);
 
             try {
@@ -266,45 +284,64 @@
                     state:          data.billingState,
                     country:        data.billingCountry || 'AU',
                     amountCents,
+                    checkin:        pending.checkin,
+                    checkout:       pending.checkout,
                 });
 
                 if (result.success) {
                     // ── Save confirmed booking to Supabase ────────────────────
                     let savedBooking = null;
+                    const bk = {
+                        id:              'bk-' + Date.now(),
+                        ref:             confirmedRef,
+                        guestName:       pending.guestName       || 'Guest',
+                        name:            pending.guestName       || 'Guest',
+                        email:           pending.email           || '',
+                        phone:           pending.phone           || '',
+                        checkin:         pending.checkin,
+                        checkout:        pending.checkout,
+                        nights:          pending.nights          || 0,
+                        guests:          pending.guests          || 2,
+                        total:           Number(pending.total || 0),
+                        accom:           pending.accom           || 0,
+                        addons:          pending.addons          || [],
+                        extraGuestTotal: pending.extraGuestTotal || 0,
+                        cleaning:        pending.cleaning        || 0,
+                        service:         pending.service         || 0,
+                        tax:             pending.tax             || 0,
+                        specialRequests: pending.specialRequests || '',
+                        status:          'confirmed',
+                        paymentStatus:   'paid',
+                        stripeId:        result.paymentIntentId  || '',
+                        bookedAt:        new Date().toISOString()
+                    };
                     try {
-                        if (pending) {
-                            const bk = {
-                                id:              'bk-' + Date.now(),
-                                ref:             confirmedRef,
-                                guestName:       pending.guestName       || 'Guest',
-                                name:            pending.guestName       || 'Guest',
-                                email:           pending.email           || '',
-                                phone:           pending.phone           || '',
-                                checkin:         pending.checkin,
-                                checkout:        pending.checkout,
-                                nights:          pending.nights          || 0,
-                                guests:          pending.guests          || 2,
-                                total:           Number(pending.total || 0),
-                                accom:           pending.accom           || 0,
-                                addons:          pending.addons          || [],
-                                extraGuestTotal: pending.extraGuestTotal || 0,
-                                cleaning:        pending.cleaning        || 0,
-                                service:         pending.service         || 0,
-                                tax:             pending.tax             || 0,
-                                specialRequests: pending.specialRequests || '',
-                                status:          'confirmed',
-                                paymentStatus:   'paid',
-                                stripeId:        result.paymentIntentId  || '',
-                                bookedAt:        new Date().toISOString()
-                            };
-                            if (window.DB) await window.DB.createBooking(bk);
-                            if (window.DB) window.DB.sendBookingEmail(bk);
-                            sessionStorage.setItem('cascade6_confirmed_booking', JSON.stringify(bk));
-                            sessionStorage.removeItem('cascade6_pending_booking');
-                            confirmedRef = bk.ref;
-                            savedBooking = bk;
-                        }
-                    } catch(e) { /* non-critical — booking saved to DB above */ }
+                        await window.DB.createBooking(bk);
+                    } catch (saveErr) {
+                        // Payment succeeded but the booking could not be saved. Never
+                        // show a confirmation for a stay that does not exist.
+                        recordPayment({
+                            bookingRef:  confirmedRef,
+                            bookingId:   '',
+                            guestName:   bk.guestName,
+                            guestEmail:  bk.email,
+                            amount:      amountCents / 100,
+                            status:      saveErr.body && saveErr.body.refunded ? 'refunded' : 'failed',
+                            stripeId:    result.paymentIntentId || '',
+                            errorMsg:    saveErr.message,
+                        });
+                        const refunded = saveErr.status === 409 && saveErr.body && saveErr.body.refunded;
+                        const finalErr = new Error(refunded
+                            ? 'Sorry, those dates were just booked by someone else. Your payment has been automatically refunded — please choose different dates.'
+                            : 'Your payment was received but we could not save your booking. Please contact hello@cascade6.online quoting payment ' + (result.paymentIntentId || '') + ' — do not pay again.');
+                        finalErr.alreadyRecorded = true;
+                        throw finalErr;
+                    }
+                    window.DB.sendBookingEmail(bk);
+                    sessionStorage.setItem('cascade6_confirmed_booking', JSON.stringify(bk));
+                    sessionStorage.removeItem('cascade6_pending_booking');
+                    confirmedRef = bk.ref;
+                    savedBooking = bk;
 
                     // ── Record successful payment ──────────────────────────────
                     recordPayment({
@@ -323,7 +360,7 @@
 
             } catch (error) {
                 // ── Record failed payment ──────────────────────────────────────
-                recordPayment({
+                if (!error.alreadyRecorded) recordPayment({
                     bookingRef:  confirmedRef,
                     bookingId:   '',
                     guestName:   pending ? (pending.guestName || 'Guest') : 'Guest',

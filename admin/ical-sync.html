@@ -106,48 +106,19 @@
                     <line x1="12" y1="8" x2="12.01" y2="8"></line>
                 </svg>
                 <p>
-                    <strong>How iCal Sync works:</strong> iCal synchronisation allows you to import and export your property availability calendars using the industry-standard iCalendar format. By connecting your Cascade Apartment 6 calendar with external platforms like Airbnb, Booking.com, and VRBO, you can automatically keep availability in sync across all channels and prevent double bookings.
+                    <strong>How calendar import works:</strong> paste the iCal link from Airbnb, Booking.com, VRBO or Google Calendar. Their reservations are imported as blocked dates, so those nights can no longer be booked on this site. Feeds refresh automatically (at most every 10 minutes, and again just before a guest pays) or when you click <em>Sync Now</em>. If a provider can't be reached, the dates already imported stay blocked.
                 </p>
             </div>
 
-            <!-- ========================================
-                 EXPORT YOUR CALENDAR
-                 ======================================== -->
-            <div class="card">
-                <div class="card-header">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"></path>
-                        <polyline points="17 8 12 3 7 8"></polyline>
-                        <line x1="12" y1="3" x2="12" y2="15"></line>
-                    </svg>
-                    <h2>Export Your Calendar</h2>
-                </div>
-                <div class="card-body">
-                    <p>Share your Cascade Apartment 6 availability calendar with external booking platforms. Copy the iCal export URL below and paste it into the external platform's calendar import settings to keep availability synchronised.</p>
-
-                    <div class="form-group">
-                        <label for="export-property">Property</label>
-                        <select id="export-property" class="form-select" style="max-width: 400px;">
-                            <option value="cascade-apt6">Cascade Apartment 6 — Mt Baw Baw</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Export URL</label>
-                        <div class="export-url-wrapper">
-                            <div class="export-url-display" id="export-url">https://app.trendaccom.com/ical/export/cascade-apt6.ics</div>
-                            <button class="btn-copy" onclick="copyExportUrl()">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                                    <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"></path>
-                                </svg>
-                                Copy URL
-                            </button>
-                        </div>
-                    </div>
-
-                    <p class="supported-platforms">Supported platforms: Airbnb, Booking.com, VRBO, Google Calendar, and any iCal-compatible service</p>
-                </div>
+            <div class="info-box" style="margin-top:1rem;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                    <line x1="12" y1="9" x2="12" y2="13"></line>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                </svg>
+                <p>
+                    <strong>Export is not available yet.</strong> Bookings made on this site are not published back to Airbnb/Booking.com, so also block those dates on the other platforms until export is added.
+                </p>
             </div>
 
             <!-- ========================================
@@ -169,7 +140,6 @@
                             <div class="form-group">
                                 <label for="import-platform">Platform</label>
                                 <select id="import-platform" class="form-select">
-                                    <option value="">Select platform...</option>
                                     <option value="airbnb">Airbnb</option>
                                     <option value="booking">Booking.com</option>
                                     <option value="vrbo">VRBO</option>
@@ -178,33 +148,22 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="import-property">Property to Sync With</label>
-                                <select id="import-property" class="form-select">
-                                    <option value="cascade-apt6">Cascade Apartment 6 — Mt Baw Baw</option>
-                                </select>
+                                <label for="import-name">Label (optional)</label>
+                                <input type="text" id="import-name" class="form-input" placeholder="e.g. Airbnb">
                             </div>
                             <div class="form-group full-width">
                                 <label for="import-url">iCal URL</label>
                                 <input type="url" id="import-url" class="form-input" placeholder="https://www.airbnb.com/calendar/ical/12345678.ics?s=abc123...">
                             </div>
                         </div>
-                        <button class="btn-add-feed">
+                        <button class="btn-add-feed" id="addFeedBtn" type="button">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <line x1="12" y1="5" x2="12" y2="19"></line>
                                 <line x1="5" y1="12" x2="19" y2="12"></line>
                             </svg>
-                            Add Feed
+                            Add &amp; Import
                         </button>
-                    </div>
-
-                    <div class="sync-frequency-bar">
-                        <label for="sync-frequency">Sync Frequency:</label>
-                        <select id="sync-frequency" class="form-select">
-                            <option value="15">Every 15 minutes</option>
-                            <option value="30" selected>Every 30 minutes</option>
-                            <option value="60">Hourly</option>
-                            <option value="360">Every 6 hours</option>
-                        </select>
+                        <p id="importMsg" style="margin-top:0.75rem;font-size:0.875rem;display:none;"></p>
                     </div>
                 </div>
             </div>
@@ -220,198 +179,117 @@
                     </svg>
                     <h2>Connected Calendars</h2>
                 </div>
-                <div class="card-body">
-
-                    <!-- Connection 1: Airbnb — Cascade Apartment 6 -->
-                    <div class="ical-connection">
-                        <div class="ical-platform-icon airbnb">
-                            <svg viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M12 2C7.6 2 4.4 5.4 3.2 8.2c-1.2 2.8-1 5.8.6 8 .8 1.2 2 2 3.2 2.4.6.2 1.2.2 1.8 0 .4-.2.8-.4 1.2-.8.4-.4.8-1 1.2-1.6.4.6.8 1.2 1.2 1.6.4.4.8.6 1.2.8.6.2 1.2.2 1.8 0 1.2-.4 2.4-1.2 3.2-2.4 1.6-2.2 1.8-5.2.6-8C18.6 5.4 16.4 2 12 2z"/>
-                            </svg>
-                        </div>
-                        <div class="ical-connection-info">
-                            <div class="ical-connection-name">Airbnb — Cascade Apartment 6</div>
-                            <div class="ical-connection-meta">
-                                <span class="ical-status active">
-                                    <span class="status-dot green"></span>
-                                    Active
-                                </span>
-                                <span class="ical-last-sync">Last synced: 5 min ago</span>
-                            </div>
-                        </div>
-                        <div class="ical-connection-actions">
-                            <button class="btn-action btn-sync">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <polyline points="23 4 23 10 17 10"></polyline>
-                                    <path d="M20.49 15a9 9 0 01-17.02-2"></path>
-                                    <polyline points="1 20 1 14 7 14"></polyline>
-                                    <path d="M3.51 9a9 9 0 0117.02 2"></path>
-                                </svg>
-                                Sync Now
-                            </button>
-                            <button class="btn-action btn-edit">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"></path>
-                                    <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                                </svg>
-                                Edit
-                            </button>
-                            <button class="btn-action btn-remove">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <polyline points="3 6 5 6 21 6"></polyline>
-                                    <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"></path>
-                                </svg>
-                                Remove
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Connection 2: Booking.com — Cascade Apartment 6 -->
-                    <div class="ical-connection">
-                        <div class="ical-platform-icon booking">
-                            <svg viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M4 6h6v6H4V6zm0 8h6v4H4v-4zm8-8h6v4h-6V6zm0 6h6v6h-6v-6z"/>
-                            </svg>
-                        </div>
-                        <div class="ical-connection-info">
-                            <div class="ical-connection-name">Booking.com — Cascade Apartment 6</div>
-                            <div class="ical-connection-meta">
-                                <span class="ical-status active">
-                                    <span class="status-dot green"></span>
-                                    Active
-                                </span>
-                                <span class="ical-last-sync">Last synced: 12 min ago</span>
-                            </div>
-                        </div>
-                        <div class="ical-connection-actions">
-                            <button class="btn-action btn-sync">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <polyline points="23 4 23 10 17 10"></polyline>
-                                    <path d="M20.49 15a9 9 0 01-17.02-2"></path>
-                                    <polyline points="1 20 1 14 7 14"></polyline>
-                                    <path d="M3.51 9a9 9 0 0117.02 2"></path>
-                                </svg>
-                                Sync Now
-                            </button>
-                            <button class="btn-action btn-edit">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"></path>
-                                    <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                                </svg>
-                                Edit
-                            </button>
-                            <button class="btn-action btn-remove">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <polyline points="3 6 5 6 21 6"></polyline>
-                                    <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"></path>
-                                </svg>
-                                Remove
-                            </button>
-                        </div>
-                    </div>
-
-
-                </div>
-            </div>
-
-            <!-- ========================================
-                 SYNC LOG
-                 ======================================== -->
-            <div class="card">
-                <div class="card-header">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"></path>
-                        <polyline points="14 2 14 8 20 8"></polyline>
-                        <line x1="16" y1="13" x2="8" y2="13"></line>
-                        <line x1="16" y1="17" x2="8" y2="17"></line>
-                        <polyline points="10 9 9 9 8 9"></polyline>
-                    </svg>
-                    <h2>Sync Log</h2>
-                </div>
-                <div class="card-body" style="padding: 0;">
-                    <table class="sync-log-table">
-                        <thead>
-                            <tr>
-                                <th>Time</th>
-                                <th>Platform</th>
-                                <th>Property</th>
-                                <th>Direction</th>
-                                <th>Status</th>
-                                <th>Events Synced</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Today, 14:32</td>
-                                <td>Airbnb</td>
-                                <td>Cascade Apartment 6</td>
-                                <td><span class="direction-badge import">&#8595; Import</span></td>
-                                <td><span class="status-badge success"><span class="status-dot green"></span> Success</span></td>
-                                <td><span class="events-count">3</span></td>
-                            </tr>
-                            <tr>
-                                <td>Today, 14:30</td>
-                                <td>Booking.com</td>
-                                <td>Cascade Apartment 6</td>
-                                <td><span class="direction-badge import">&#8595; Import</span></td>
-                                <td><span class="status-badge success"><span class="status-dot green"></span> Success</span></td>
-                                <td><span class="events-count">1</span></td>
-                            </tr>
-                            <tr>
-                                <td>Today, 14:15</td>
-                                <td>Cascade Apartment 6</td>
-                                <td>Cascade Apartment 6</td>
-                                <td><span class="direction-badge export">&#8593; Export</span></td>
-                                <td><span class="status-badge success"><span class="status-dot green"></span> Success</span></td>
-                                <td><span class="events-count">7</span></td>
-                            </tr>
-                            <tr>
-                                <td>Today, 11:30</td>
-                                <td>Booking.com</td>
-                                <td>Cascade Apartment 6</td>
-                                <td><span class="direction-badge import">&#8595; Import</span></td>
-                                <td><span class="status-badge success"><span class="status-dot green"></span> Success</span></td>
-                                <td><span class="events-count">2</span></td>
-                            </tr>
-                            <tr>
-                                <td>Today, 10:45</td>
-                                <td>Airbnb</td>
-                                <td>Cascade Apartment 6</td>
-                                <td><span class="direction-badge import">&#8595; Import</span></td>
-                                <td><span class="status-badge success"><span class="status-dot green"></span> Success</span></td>
-                                <td><span class="events-count">5</span></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="card-body" id="feedList">
+                    <p style="color:#64748b;font-size:0.875rem;">Loading…</p>
                 </div>
             </div>
 
         </div><!-- .admin-content -->
     </main>
 
+    <script src="../js/db.js"></script>
     <script>
-        function copyExportUrl() {
-            const urlEl = document.getElementById('export-url');
-            const url = urlEl.textContent;
-            navigator.clipboard.writeText(url).then(function() {
-                const btn = document.querySelector('.btn-copy');
-                const originalText = btn.innerHTML;
-                btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px"><polyline points="20 6 9 17 4 12"></polyline></svg> Copied!';
-                btn.style.color = '#16a34a';
-                btn.style.borderColor = '#86efac';
-                setTimeout(function() {
-                    btn.innerHTML = originalText;
-                    btn.style.color = '';
-                    btn.style.borderColor = '';
-                }, 2000);
-            });
+    (function () {
+        'use strict';
+        var list = document.getElementById('feedList');
+        var msg = document.getElementById('importMsg');
+
+        function esc(t) { return String(t == null ? '' : t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+        function ago(iso) {
+            if (!iso) return 'never';
+            var m = Math.round((Date.now() - new Date(iso).getTime()) / 60000);
+            if (m < 1) return 'just now';
+            if (m < 60) return m + ' min ago';
+            if (m < 1440) return Math.round(m / 60) + ' h ago';
+            return Math.round(m / 1440) + ' d ago';
         }
 
-        // Update export URL when property changes
-        document.getElementById('export-property').addEventListener('change', function() {
-            var val = this.value;
-            document.getElementById('export-url').textContent = 'https://app.trendaccom.com/ical/export/' + val + '.ics';
+        function say(text, ok) {
+            msg.style.display = text ? 'block' : 'none';
+            msg.style.color = ok ? '#15803d' : '#b91c1c';
+            msg.textContent = text || '';
+        }
+
+        function resultText(r) {
+            var t = r.imported + ' reservation' + (r.imported === 1 ? '' : 's') + ' imported';
+            if (r.removed) t += ', ' + r.removed + ' no longer on the calendar';
+            if (r.warnings && r.warnings.length) t += '. ' + r.warnings.join(' ');
+            return t;
+        }
+
+        function render(feeds) {
+            if (!feeds.length) {
+                list.innerHTML = '<p style="color:#64748b;font-size:0.875rem;">No calendars connected yet. Add an iCal link above.</p>';
+                return;
+            }
+            list.innerHTML = feeds.map(function (f) {
+                var bad = f.lastStatus === 'error';
+                var warn = !bad && f.lastError;
+                var cls = bad ? 'error' : (warn ? 'paused' : 'active');
+                var dot = bad ? 'red' : (warn ? 'orange' : 'green');
+                var label = bad ? 'Sync failed' : (f.lastStatus === 'ok' ? 'Active' : 'Not synced yet');
+                return '<div class="ical-connection" data-id="' + esc(f.id) + '">' +
+                    '<div class="ical-connection-info">' +
+                        '<div class="ical-connection-name">' + esc(f.name) + ' <span style="color:#94a3b8;font-weight:400;font-size:0.8rem;">' + esc(f.urlHint) + '</span></div>' +
+                        '<div class="ical-connection-meta">' +
+                            '<span class="ical-status ' + cls + '"><span class="status-dot ' + dot + '"></span>' + label + '</span>' +
+                            '<span class="ical-last-sync">Last synced: ' + ago(f.lastSynced) + ' · ' + f.lastCount + ' upcoming block' + (f.lastCount === 1 ? '' : 's') + '</span>' +
+                        '</div>' +
+                        (f.lastError ? '<div style="margin-top:4px;font-size:0.8rem;color:' + (bad ? '#b91c1c' : '#b45309') + ';">' + esc(f.lastError) + '</div>' : '') +
+                    '</div>' +
+                    '<div class="ical-connection-actions">' +
+                        '<button class="btn-action btn-sync" type="button">Sync Now</button>' +
+                        '<button class="btn-action btn-remove" type="button">Remove</button>' +
+                    '</div>' +
+                '</div>';
+            }).join('');
+        }
+
+        async function load() {
+            try { render(await DB.getIcalFeeds()); }
+            catch (e) { list.innerHTML = '<p style="color:#b91c1c;font-size:0.875rem;">Could not load calendars: ' + esc(e.message) + '</p>'; }
+        }
+
+        document.getElementById('addFeedBtn').addEventListener('click', async function () {
+            var btn = this;
+            var url = document.getElementById('import-url').value.trim();
+            if (!url) { say('Please paste an iCal URL.', false); return; }
+            btn.disabled = true; say('Importing…', true);
+            try {
+                var out = await DB.addIcalFeed({
+                    platform: document.getElementById('import-platform').value,
+                    name: document.getElementById('import-name').value,
+                    url: url
+                });
+                if (out.result.ok) { say('Connected. ' + resultText(out.result), !(out.result.warnings || []).length); document.getElementById('import-url').value = ''; }
+                else say('Calendar saved, but the first import failed: ' + out.result.error, false);
+            } catch (e) { say(e.message, false); }
+            btn.disabled = false;
+            load();
         });
+
+        list.addEventListener('click', async function (e) {
+            var row = e.target.closest('.ical-connection');
+            if (!row) return;
+            var id = row.getAttribute('data-id');
+            if (e.target.closest('.btn-sync')) {
+                var b = e.target.closest('.btn-sync'); b.disabled = true; b.textContent = 'Syncing…';
+                try {
+                    var out = await DB.syncIcalFeed(id);
+                    var r = out.results[0];
+                    say(r.ok ? r.name + ': ' + resultText(r) : r.name + ' failed: ' + r.error, r.ok && !(r.warnings || []).length);
+                } catch (err) { say(err.message, false); }
+                load();
+            } else if (e.target.closest('.btn-remove')) {
+                if (!confirm('Remove this calendar? Dates it imported will become bookable again.')) return;
+                try { await DB.deleteIcalFeed(id); say('Calendar removed.', true); } catch (err) { say(err.message, false); }
+                load();
+            }
+        });
+
+        load();
+    })();
     </script>
     <script src="../js/app.js"></script>
     <script src="../js/admin.js"></script>

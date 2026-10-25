@@ -10,7 +10,10 @@
     const res = await fetch(path, options);
     if (!res.ok) {
       const body = await res.json().catch(() => ({}));
-      throw new Error(body.error || ('API error ' + res.status));
+      const err = new Error(body.error || ('API error ' + res.status));
+      err.status = res.status;
+      err.body = body;
+      throw err;
     }
     return res.json();
   }
@@ -58,6 +61,25 @@
     },
     deleteBooking(id) {
       return api('/api/bookings?id=' + encodeURIComponent(id), { method: 'DELETE', ...adminOpts() });
+    },
+
+    // Resolves { available: boolean }; rejects if availability can't be verified.
+    checkAvailability(checkin, checkout) {
+      return api('/api/availability?checkin=' + encodeURIComponent(checkin) + '&checkout=' + encodeURIComponent(checkout));
+    },
+
+    // ── External calendars (iCal import) ──────────────────────────────────
+    getIcalFeeds() {
+      return api('/api/ical-feeds', adminOpts());
+    },
+    addIcalFeed(feed) {
+      return api('/api/ical-feeds', { method: 'POST', ...adminJson(feed) });
+    },
+    syncIcalFeed(id) {
+      return api('/api/ical-feeds?id=' + encodeURIComponent(id), { method: 'PUT', ...adminJson({}) });
+    },
+    deleteIcalFeed(id) {
+      return api('/api/ical-feeds?id=' + encodeURIComponent(id), { method: 'DELETE', ...adminOpts() });
     },
 
     // ── Payments ──────────────────────────────────────────────────────────

@@ -111,3 +111,31 @@ ALTER TABLE rates             ENABLE ROW LEVEL SECURITY;
 ALTER TABLE blocked_dates     ENABLE ROW LEVEL SECURITY;
 ALTER TABLE property_settings ENABLE ROW LEVEL SECURITY;
 ALTER TABLE site_settings     ENABLE ROW LEVEL SECURITY;
+
+-- ── Double-booking guard ──────────────────────────────────────────────────────
+-- See supabase-migrations/2026-10-25-prevent-double-booking.sql (run its
+-- STEP 1 check before applying this on a database that already has bookings).
+ALTER TABLE bookings
+  ADD CONSTRAINT bookings_checkout_after_checkin
+  CHECK (checkin IS NULL OR checkout IS NULL OR checkout > checkin) NOT VALID;
+ALTER TABLE bookings
+  ADD CONSTRAINT bookings_no_overlap
+  EXCLUDE USING gist (daterange(checkin, checkout, '[)') WITH &&)
+  WHERE (status <> 'cancelled' AND checkin IS NOT NULL AND checkout IS NOT NULL);
+
+-- ── External calendar (iCal) feeds ────────────────────────────────────────────
+-- See supabase-migrations/2026-10-25-ical-feeds.sql
+CREATE TABLE IF NOT EXISTS ical_feeds (
+  id           TEXT PRIMARY KEY,
+  platform     TEXT NOT NULL DEFAULT 'other',
+  name         TEXT NOT NULL DEFAULT '',
+  url          TEXT NOT NULL,
+  enabled      BOOLEAN NOT NULL DEFAULT TRUE,
+  last_checked TIMESTAMPTZ,
+  last_synced  TIMESTAMPTZ,
+  last_status  TEXT NOT NULL DEFAULT '',
+  last_error   TEXT NOT NULL DEFAULT '',
+  last_count   INTEGER NOT NULL DEFAULT 0,
+  created_at   TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+ALTER TABLE ical_feeds ENABLE ROW LEVEL SECURITY;

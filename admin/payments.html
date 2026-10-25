@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <base href="/admin/">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Payments & Stripe Connect - Cascade Apartment 6 Admin</title>
+    <title>Payments - Cascade Apartment 6 Admin</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -45,7 +45,7 @@
                 <span class="admin-sidebar__section-title">INTEGRATIONS</span>
                 <ul class="admin-sidebar__menu">
                     <li class="admin-sidebar__menu-item"><a href="ical-sync.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg><span>iCal Sync</span></a></li>
-                    <li class="admin-sidebar__menu-item"><a href="stripe-connect.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg><span>Stripe Connect</span></a></li>
+                    <li class="admin-sidebar__menu-item"><a href="payments.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg><span>Payments</span></a></li>
                 </ul>
             </div>
             <div class="admin-sidebar__section">
@@ -66,7 +66,7 @@
                 <nav class="breadcrumb">
                     <a href="index.html">Dashboard</a>
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-                    <span class="current">Stripe Connect</span>
+                    <span class="current">Payments</span>
                 </nav>
             </div>
 
@@ -75,7 +75,7 @@
 
                 <!-- Page Header -->
                 <div class="page-header">
-                    <h1>Payments &amp; Stripe Connect</h1>
+                    <h1>Payments</h1>
                     <p>Manage your payment processing and payouts</p>
                 </div>
 
@@ -83,44 +83,6 @@
                 <div id="stripeTestWarning" style="display:none;background:#fef3c7;border:1px solid #f59e0b;border-radius:8px;padding:12px 16px;margin-bottom:1.5rem;display:flex;align-items:center;gap:10px">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
                     <span style="color:#92400e;font-size:0.875rem"><strong>TEST MODE ACTIVE</strong> — Stripe is in test mode. No real payments are being processed. Switch to live keys in Vercel environment variables when ready to go live.</span>
-                </div>
-
-                <!-- Stripe Connect Status -->
-                <div class="card stripe-status">
-                    <div class="card-header">
-                        <h2>Stripe Connect Status</h2>
-                    </div>
-                    <div class="card-body">
-                        <div class="stripe-info">
-                            <div class="stripe-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <rect x="1" y="4" width="22" height="16" rx="2"/>
-                                    <line x1="1" y1="10" x2="23" y2="10"/>
-                                </svg>
-                            </div>
-                            <div class="stripe-details">
-                                <h3>
-                                    Connected
-                                    <span class="badge badge-success">Connected</span>
-                                </h3>
-                                <div class="stripe-meta">
-                                    <span><strong>Business:</strong> Cascade Apartment 6 Properties Pty Ltd</span>
-                                    <span><strong>Account ID:</strong> acct_1234567890</span>
-                                    <span><strong>Connected since:</strong> 15 Jan 2026</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="stripe-actions">
-                            <a href="https://dashboard.stripe.com" target="_blank" class="btn btn-primary">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-                                View Stripe Dashboard
-                            </a>
-                            <button class="btn btn-danger-outline" onclick="disconnectStripe()">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg>
-                                Disconnect
-                            </button>
-                        </div>
-                    </div>
                 </div>
 
                 <!-- Stats Grid -->
@@ -268,7 +230,7 @@
                         <!-- Info Box -->
                         <div class="info-box">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-                            <span>Stripe Connect ensures secure payment processing. Funds are held until check-in and automatically transferred to your account.</span>
+                            <span>Payments are processed directly through Stripe using the API key configured in your Vercel environment variables.</span>
                         </div>
 
                     </div>
@@ -426,50 +388,11 @@
 
                 </div>
 
-                <!-- ===== Connect with Stripe Onboarding (for properties not yet connected) =====
-                <div class="card">
-                    <div class="stripe-onboarding">
-                        <div class="onboarding-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <rect x="1" y="4" width="22" height="16" rx="2"/>
-                                <line x1="1" y1="10" x2="23" y2="10"/>
-                            </svg>
-                        </div>
-                        <h2>Connect with Stripe</h2>
-                        <p>Set up Stripe Connect to securely process payments for your vacation rental properties. Accept credit cards, Apple Pay, and more with industry-leading security.</p>
-
-                        <div class="onboarding-benefits">
-                            <div class="benefit">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="32" height="32"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                                <h4>Secure Payments</h4>
-                                <p>PCI-compliant processing with fraud protection built in</p>
-                            </div>
-                            <div class="benefit">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="32" height="32"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                                <h4>Global Reach</h4>
-                                <p>Accept 135+ currencies from guests worldwide</p>
-                            </div>
-                            <div class="benefit">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="32" height="32"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-                                <h4>Instant Payouts</h4>
-                                <p>Get paid directly to your bank account on your schedule</p>
-                            </div>
-                        </div>
-
-                        <button class="btn btn-stripe" onclick="connectStripe()">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-                            Connect with Stripe
-                        </button>
-                    </div>
-                </div>
-                ===== End Connect with Stripe Onboarding ===== -->
-
             </div>
         </main>
 
     <script src="../js/app.js"></script>
     <script src="../js/admin.js"></script>
-    <script src="../js/stripe-connect.js"></script>
     <script>
         // Load Stripe mode from API and show warning if in test mode
         (function() {
@@ -488,16 +411,6 @@
                 })
                 .catch(() => {});
         })();
-
-        function disconnectStripe() {
-            if (confirm('Are you sure you want to disconnect your Stripe account? This will disable payment processing.')) {
-                alert('Stripe account disconnected.');
-            }
-        }
-
-        function connectStripe() {
-            window.location.href = 'https://connect.stripe.com/oauth/authorize?response_type=code&client_id=ca_xxx&scope=read_write';
-        }
     </script>
     <script src="../js/admin-auth.js"></script>
 </div><!-- /.admin-layout -->

@@ -1,4 +1,5 @@
 const { createClient } = require('@supabase/supabase-js');
+const { validRange, findConflict, refreshExternal } = require('./_availability');
 
 function client() {
   return createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
@@ -72,7 +73,40 @@ function requireAdmin(req, res) {
   return true;
 }
 
+const CONFLICT_MSG = 'Sorry, those dates are no longer available.';
+
+// A guest who paid for dates that were taken in the meantime must not keep
+// being charged. Refund the PaymentIntent, but only when it is a genuine
+// succeeded payment made for exactly these dates and not yet tied to a booking.
+async function refundIfPaid(sb, obj) {
+  const piId = obj.stripeId;
+  if (!piId || !/^pi_/.test(piId) || !process.env.STRIPE_SECRET_KEY) return false;
+  try {
+    const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+    const { data: used } = await sb.from('bookings').select('id').eq('stripe_id', piId).limit(1);
+    if (used && used.length) return false;
+    const pi = await stripe.paymentIntents.retrieve(piId);
+    if (pi.status !== 'succeeded') return false;
+    if (pi.metadata.checkin !== obj.checkin || pi.metadata.checkout !== obj.checkout) return false;
+    await stripe.refunds.create({ payment_intent: piId, reason: 'duplicate', metadata: { cause: 'dates_no_longer_available' } });
+    return true;
+  } catch (err) {
+    console.error('Auto-refund failed for', piId, err.message);
+    return false;
+  }
+}
+
+async function conflictResponse(sb, obj, res) {
+  const refunded = await refundIfPaid(sb, obj);
+  return res.status(409).json({
+    error: refunded ? CONFLICT_MSG + ' Your payment has been refunded.' : CONFLICT_MSG,
+    refunded,
+  });
+}
+
 module.exports = async function handler(req, res) {
+  // /api/availability is rewritten here (vercel.json) to stay within the function limit.
+  if (req.query && req.query.action === 'availability') return require('./_availability-endpoint')(req, res);
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type,X-Admin-Key');
@@ -91,22 +125,23 @@ module.exports = async function handler(req, res) {
 
   if (req.method === 'POST') {
     const obj = req.body || {};
-    // Server-side overlap check: half-open interval [checkin, checkout)
-    if (obj.checkin && obj.checkout) {
-      const { data: existing, error: fetchErr } = await sb
-        .from('bookings')
-        .select('id, checkin, checkout, status')
-        .neq('status', 'cancelled');
-      if (!fetchErr && existing) {
-        const ci = new Date(obj.checkin + 'T00:00:00');
-        const co = new Date(obj.checkout + 'T00:00:00');
-        for (const b of existing) {
-          const bs = new Date((b.checkin || '') + 'T00:00:00');
-          const be = new Date((b.checkout || '') + 'T00:00:00');
-          if (ci < be && co > bs) {
-            return res.status(409).json({ error: 'Those dates are already booked.' });
-          }
-        }
+    const active = obj.status !== 'cancelled';
+    if (active && !validRange(obj.checkin, obj.checkout)) {
+      return res.status(400).json({ error: 'Valid check-in and check-out dates are required.' });
+    }
+
+    // A retried save of an already-recorded payment is not a conflict with itself.
+    if (obj.stripeId) {
+      const { data: dup } = await sb.from('bookings').select('*').eq('stripe_id', obj.stripeId).limit(1);
+      if (dup && dup.length) return res.status(200).json(toJS(dup[0]));
+    }
+
+    if (active) {
+      try {
+        await refreshExternal(sb, 2 * 60 * 1000);
+        if (await findConflict(sb, obj.checkin, obj.checkout)) return conflictResponse(sb, obj, res);
+      } catch (err) {
+        return res.status(500).json({ error: err.message });
       }
     }
     const { data, error } = await sb
@@ -114,6 +149,8 @@ module.exports = async function handler(req, res) {
       .insert(toDB(obj))
       .select()
       .single();
+    // 23P01 = exclusion_violation: the database-level guard caught a race.
+    if (error && error.code === '23P01') return conflictResponse(sb, obj, res);
     if (error) return res.status(500).json({ error: error.message });
     return res.status(201).json(toJS(data));
   }
@@ -122,12 +159,32 @@ module.exports = async function handler(req, res) {
     if (!requireAdmin(req, res)) return;
     const id = req.query.id;
     if (!id) return res.status(400).json({ error: 'id required' });
+
+    // Merge onto the stored booking so partial updates (e.g. just a status
+    // change) don't blank every other field.
+    const { data: existing, error: getErr } = await sb.from('bookings').select('*').eq('id', id).single();
+    if (getErr || !existing) return res.status(404).json({ error: 'Booking not found' });
+    const merged = Object.assign(toJS(existing), req.body || {}, { id });
+
+    if (merged.status !== 'cancelled') {
+      if (!validRange(merged.checkin, merged.checkout)) {
+        return res.status(400).json({ error: 'Valid check-in and check-out dates are required.' });
+      }
+      try {
+        if (await findConflict(sb, merged.checkin, merged.checkout, id)) {
+          return res.status(409).json({ error: CONFLICT_MSG });
+        }
+      } catch (err) {
+        return res.status(500).json({ error: err.message });
+      }
+    }
     const { data, error } = await sb
       .from('bookings')
-      .update(toDB(req.body))
+      .update(toDB(merged))
       .eq('id', id)
       .select()
       .single();
+    if (error && error.code === '23P01') return res.status(409).json({ error: CONFLICT_MSG });
     if (error) return res.status(500).json({ error: error.message });
     return res.status(200).json(toJS(data));
   }
