@@ -1,3 +1,9 @@
+// Local-calendar 'YYYY-MM-DD'. Never use toISOString() for date-only values:
+// it converts to UTC, which shifts the date by a day for Australian users.
+function localISODate(d) {
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
+
 /**
  * TrendAccom - Booking Engine
  * Handles: Price calculations, booking form validation, availability checks,
@@ -93,7 +99,7 @@
         }
 
         nightlyBreakdown.push({
-          date: currentDate.toISOString().split('T')[0],
+          date: localISODate(currentDate),
           rate: Math.round(nightRate * 100) / 100,
           season: rateName
         });
@@ -174,7 +180,7 @@
       for (let i = 0; i < nights; i++) {
         const currentDate = new Date(checkinDate);
         currentDate.setDate(currentDate.getDate() + i);
-        const dateStr = currentDate.toISOString().split('T')[0];
+        const dateStr = localISODate(currentDate);
 
         if (bookedDates.includes(dateStr)) {
           unavailable.push({ date: dateStr, reason: 'booked' });

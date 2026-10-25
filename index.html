@@ -731,7 +731,7 @@
   <script>
     // Set min dates
     (function() {
-      var today = new Date().toISOString().split('T')[0];
+      var today = localISODate(new Date());
       var ci = document.getElementById('searchCheckin');
       var co = document.getElementById('searchCheckout');
       ci.min = today;
@@ -778,36 +778,19 @@
         sessionStorage.setItem('cascade6_search', JSON.stringify({ checkin: checkin, checkout: checkout, guests: guests }));
       } catch(e) {}
 
-      // Check against stored bookings in localStorage
-      var available = true;
-      var unavailMsg = '';
-      try {
-        var bookings = JSON.parse(localStorage.getItem('cascade6_bookings') || '[]');
-        var ci = new Date(checkin + 'T00:00:00');
-        var co = new Date(checkout + 'T00:00:00');
-        for (var i = 0; i < bookings.length; i++) {
-          var b = bookings[i];
-          if (b.status === 'cancelled') continue;
-          var bs = new Date((b.checkin || b.checkIn || b.check_in) + 'T00:00:00');
-          var be = new Date((b.checkout || b.checkOut || b.check_out) + 'T00:00:00');
-          // Overlap: requested start < booked end AND requested end > booked start
-          if (ci < be && co > bs) {
-            available = false;
-            unavailMsg = 'Sorry, those dates are not available. Please try different dates.';
-            break;
-          }
-        }
-      } catch(e) { /* localStorage unavailable — assume available */ }
-
-      if (!available) {
-        showAvailResult('error', unavailMsg);
-        return;
-      }
-
-      // Dates are available — show result with Book Now button
+      // Check live availability (bookings + blocked dates) on the server
       var nights = Math.round((new Date(checkout) - new Date(checkin)) / 86400000);
       var bookHref = 'booking.html?' + new URLSearchParams({ checkin: checkin, checkout: checkout, guests: guests }).toString();
-      showAvailSuccess(nights, bookHref);
+      fetch('/api/availability?checkin=' + encodeURIComponent(checkin) + '&checkout=' + encodeURIComponent(checkout))
+        .then(function(r) { if (!r.ok) throw new Error('unverified'); return r.json(); })
+        .then(function(d) {
+          var stale = document.getElementById('availResult'); if (stale) stale.remove();
+          if (!d.available) { showAvailResult('error', 'Sorry, those dates are not available. Please try different dates.'); return; }
+          showAvailSuccess(nights, bookHref);
+        })
+        .catch(function() {
+          showAvailResult('error', 'We could not check availability right now. Please try again in a moment.');
+        });
     });
 
     function showAvailResult(type, msg) {

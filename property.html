@@ -1064,30 +1064,28 @@
       }
       err.style.display = 'none';
 
-      // Check availability against stored bookings
-      var available = true;
-      try {
-        var bookings = JSON.parse(localStorage.getItem('cascade6_bookings') || '[]');
-        var ci = new Date(checkin + 'T00:00:00');
-        var co = new Date(checkout + 'T00:00:00');
-        for (var i = 0; i < bookings.length; i++) {
-          var b = bookings[i];
-          if (b.status === 'cancelled') continue;
-          var bs = new Date((b.checkin || b.checkIn || b.check_in) + 'T00:00:00');
-          var be = new Date((b.checkout || b.checkOut || b.check_out) + 'T00:00:00');
-          if (ci < be && co > bs) { available = false; break; }
-        }
-      } catch(e) { /* localStorage unavailable — assume available */ }
+      // Check live availability (bookings + blocked dates) on the server
+      fetch('/api/availability?checkin=' + encodeURIComponent(checkin) + '&checkout=' + encodeURIComponent(checkout))
+        .then(function(r) { if (!r.ok) throw new Error('unverified'); return r.json(); })
+        .then(function(d) {
+          if (!d.available) {
+            err.textContent = 'Sorry, those dates are not available. Please try different dates.';
+            err.style.display = 'block';
+            ar.style.display = 'none';
+            ar.innerHTML = '';
+            setTimeout(function() { err.style.display = 'none'; }, 6000);
+            return;
+          }
+          showAvailable();
+        })
+        .catch(function() {
+          err.textContent = 'We could not check availability right now. Please try again in a moment.';
+          err.style.display = 'block';
+          ar.style.display = 'none';
+          setTimeout(function() { err.style.display = 'none'; }, 6000);
+        });
 
-      if (!available) {
-        err.textContent = 'Sorry, those dates are not available. Please try different dates.';
-        err.style.display = 'block';
-        ar.style.display = 'none';
-        ar.innerHTML = '';
-        setTimeout(function() { err.style.display = 'none'; }, 6000);
-        return;
-      }
-
+      function showAvailable() {
       // Dates are available — show result + Book Now button
       var nights = Math.round((new Date(checkout) - new Date(checkin)) / 86400000);
       var guests = parseInt(guestsRaw) || 2;
@@ -1108,6 +1106,7 @@
             + '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>'
           + '</a>'
         + '</div>';
+      }
     });
 
     // ── Photo Gallery Lightbox ─────────────────────────────────────
@@ -1298,7 +1297,7 @@
       document.getElementById('guests').addEventListener('change', updateSidebarPrice);
 
       // Pre-fill from URL and run initial price update
-      var today = new Date().toISOString().split('T')[0];
+      var today = localISODate(new Date());
       document.getElementById('checkin').min  = today;
       document.getElementById('checkout').min = today;
       updateSidebarPrice();

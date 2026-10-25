@@ -1,3 +1,10 @@
+// Local-calendar 'YYYY-MM-DD'. Never use toISOString() for date-only values:
+// it converts to UTC, which shifts the date by a day for Australian users.
+function localISODate(d) {
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
+window.localISODate = localISODate;
+
 /**
  * TrendAccom - Main Application JavaScript
  * Handles: Navigation, hero slideshow, parallax, scroll animations,
@@ -271,7 +278,7 @@
 
   // Set minimum dates for date inputs
   function initDateInputs() {
-    const today = new Date().toISOString().split('T')[0];
+    const today = localISODate(new Date());
 
     const checkinInput = document.getElementById('searchCheckin');
     const checkoutInput = document.getElementById('searchCheckout');
@@ -282,9 +289,9 @@
         if (checkoutInput) {
           const nextDay = new Date(checkinInput.value);
           nextDay.setDate(nextDay.getDate() + 1);
-          checkoutInput.setAttribute('min', nextDay.toISOString().split('T')[0]);
+          checkoutInput.setAttribute('min', localISODate(nextDay));
           if (checkoutInput.value && checkoutInput.value <= checkinInput.value) {
-            checkoutInput.value = nextDay.toISOString().split('T')[0];
+            checkoutInput.value = localISODate(nextDay);
           }
         }
       });
@@ -293,7 +300,7 @@
     if (checkoutInput) {
       const tomorrow = new Date();
       tomorrow.setDate(tomorrow.getDate() + 1);
-      checkoutInput.setAttribute('min', tomorrow.toISOString().split('T')[0]);
+      checkoutInput.setAttribute('min', localISODate(tomorrow));
     }
   }
 

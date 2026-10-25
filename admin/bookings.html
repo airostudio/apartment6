@@ -595,7 +595,12 @@
             bookedAt:  isExisting ? (_bookings.find(function(b){return b.id===id;})||{}).bookedAt || new Date().toISOString() : new Date().toISOString(),
         };
 
-        if (isExisting) { await DB.updateBooking(id, record); } else { await DB.createBooking(record); }
+        try {
+            if (isExisting) { await DB.updateBooking(id, record); } else { await DB.createBooking(record); }
+        } catch (err) {
+            alert(err.message || 'Could not save booking.');
+            return;
+        }
         closeEditModal();
         renderTable();
         showToast(isExisting ? 'Booking updated!' : 'Booking created!');

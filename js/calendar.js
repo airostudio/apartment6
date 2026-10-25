@@ -1,3 +1,9 @@
+// Local-calendar 'YYYY-MM-DD'. Never use toISOString() for date-only values:
+// it converts to UTC, which shifts the date by a day for Australian users.
+function localISODate(d) {
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
+
 /**
  * TrendAccom - Calendar Widget
  * Handles: Availability calendar rendering, date range selection,
@@ -123,12 +129,12 @@
     renderDay(date, isOtherMonth) {
       const dayEl = document.createElement('div');
       dayEl.className = 'calendar-day';
-      dayEl.dataset.date = date.toISOString().split('T')[0];
+      dayEl.dataset.date = localISODate(date);
 
       const today = new Date();
       today.setHours(0, 0, 0, 0);
 
-      const dateStr = date.toISOString().split('T')[0];
+      const dateStr = localISODate(date);
 
       if (isOtherMonth) {
         dayEl.classList.add('calendar-day--other-month');
@@ -154,10 +160,10 @@
       }
 
       // Selected state
-      if (this.selectedStart && dateStr === this.selectedStart.toISOString().split('T')[0]) {
+      if (this.selectedStart && dateStr === localISODate(this.selectedStart)) {
         dayEl.classList.add('calendar-day--selected');
       }
-      if (this.selectedEnd && dateStr === this.selectedEnd.toISOString().split('T')[0]) {
+      if (this.selectedEnd && dateStr === localISODate(this.selectedEnd)) {
         dayEl.classList.add('calendar-day--selected');
       }
 
